@@ -2,6 +2,10 @@
 
 Laminated Plate Theory in a SPA using vanilla Javascript
 
+Deploy:  git push github-pages main
+
+Development Repo: git push origin main
+
 Uses:
 - a dead-simple hash based router
 - string template literals for html templating
