@@ -1,0 +1,69 @@
+* {
+    box-sizing: border-box;
+    color: rgb(19, 20, 65);
+    background-color: rgb(212, 239, 247);
+    margin: 3px 5px 3px 5px;
+    padding: 1px 2px 1px 2px;
+}
+
+input:enabled {
+    filter: brightness(110%) saturate(110%);
+}
+
+input {
+    border-style: none;
+}
+
+button {
+    text-align: center;
+    min-width: 7em;
+}
+
+button:hover, select:hover {
+    filter: brightness(110%) saturate(110%);
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+thead {
+    filter: brightness(70%) saturate(150%);
+}
+
+tbody tr:hover {
+    filter: brightness(110%) saturate(110%);
+}
+
+
+/* Style the side navigation */
+.left-nav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(24, 37, 148);
+    overflow-x: hidden;
+}
+
+/* Side navigation links */
+.left-nav a {
+    background-color: rgb(29, 44, 179);
+    color: white;
+    padding: 12px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color on hover */
+.left-nav a:hover {
+    filter: brightness(150%) saturate(150%);
+}
+
+.main-container {
+    margin-left: 200px;
+    padding-left: 4px;
+}
