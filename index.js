@@ -1,5 +1,5 @@
 // @ts-check
-/*jshint esversion: 6 */
+/* jshint esversion: 6 */
 
 import { router } from "./js/router.mjs";
 
