@@ -4,7 +4,7 @@
 import { router } from "./js/router.mjs";
 
 /**
- * Main application element, simply registers the web components
+ * Main application element, simply adds listeners for the router.
  */
 const app = async () => {
 
