@@ -13,7 +13,7 @@ const app = async () => {
   window.addEventListener("load", router);
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./js/sw.js");
+    navigator.serviceWorker.register("sw.js");
   }
 };
 
