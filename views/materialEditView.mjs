@@ -128,7 +128,6 @@ export class MaterialEditView extends AbstractView {
     } else {
       this.html = `<h1> No material with id = ${this.request.id}.</h1>`;
     }
-    this.title = `Material editing: ${this.material.name}`;
     return this.html;
   }
 
@@ -144,6 +143,7 @@ export class MaterialEditView extends AbstractView {
   // Wire up UI select options and event handlers
   addListeners() {
     super.addListeners();
+    this.title = `Material editing: ${this.material.name}`;
     // imports
     let doc = document;
     // references to HTML elements
