@@ -1,11 +1,11 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import {MaterialView} from './views/MaterialView.mjs';
-import { MaterialEditView } from './views/MaterialEditView.mjs';
-import { MaterialsListView } from './views/MaterialsListView.mjs';
+import {MaterialView} from './views/materialView.mjs';
+import { MaterialEditView } from './views/materialEditView.mjs';
+import { MaterialsListView } from './views/materialsListView.mjs';
 import { MaterialsCreateView } from './views/MaterialsCreateView.mjs';
-import { StaticView } from './views/StaticView.mjs';
+import { StaticView } from './views/staticView.mjs';
 import { BCView } from './views/barrelCompression.mjs';
 
 export function getRoutes() {
