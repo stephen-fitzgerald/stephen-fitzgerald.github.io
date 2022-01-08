@@ -1,5 +1,4 @@
 // import any javascript needed by our service worker
-// perhaps some data as object literals in a .js file
 //self.importScripts("/data/materialsData.mjs");
 
 // Files to cache
