@@ -4,13 +4,13 @@
 import {
     Material, Mat_Isotropic, Mat_PlanarIso12, Mat_PlanarIso13,
     Mat_PlanarIso23, Mat_Orthotropic, Mat_FRP
-} from '../lpt/material.mjs';
+} from '../js/lpt/material.mjs';
 
-import { assert } from '../lpt/assert.mjs';
-import { printToHTML, printHighlightedHTML } from '../lpt/printToHTML.mjs';
-import { serialize, deserialize } from '../lpt/serialize.mjs';
+import { assert } from '../js/lpt/assert.mjs';
+import { printToHTML, printHighlightedHTML } from '../js/lpt/printToHTML.mjs';
+import { serialize, deserialize } from '../js/lpt/serialize.mjs';
 
-import '../../lib/lodash/lodash.js';
+import '../js/ext/lodash/lodash.js';
 
 let dummy = function materialTest() {
 
