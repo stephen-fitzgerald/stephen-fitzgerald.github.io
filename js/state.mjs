@@ -2,7 +2,7 @@
 // see: https://github.com/craigbuckler/asayer-idbstate
 
 // simple state handler
-import { IndexedDB } from "./indexedDb.mjs";
+import { Database } from "./database.mjs";
 
 export class State {
   static dbName = "stateDB";
@@ -33,7 +33,7 @@ export class State {
   async dbConnect() {
     State.DB =
       State.DB ||
-      (await new IndexedDB(
+      (await new Database(
         State.dbName,
         State.dbVersion,
         (db, oldVersion, newVersion) => {

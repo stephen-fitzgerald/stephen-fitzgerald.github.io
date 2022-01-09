@@ -2,7 +2,7 @@
 // see: https://github.com/craigbuckler/asayer-idbstate
 
 // IndexedDB wrapper class
-export class IndexedDB {
+export class Database {
   // connect to IndexedDB database
   constructor(dbName, dbVersion, dbUpgrade) {
     //@ts-expect-error
