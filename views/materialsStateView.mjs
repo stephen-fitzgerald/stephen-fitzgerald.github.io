@@ -1,7 +1,7 @@
 //@ts-check
 
 import { Material } from "../js/lpt/material.mjs";
-import { State } from "../services/state.mjs";
+import { State } from "../js/state.mjs";
 import { AbstractView } from "./AbstractView.mjs";
 
 export class MaterialsStateView extends AbstractView {
