@@ -128,6 +128,33 @@ function calculateBarrelCompressions(parentElement = document.body) {
     isWoven: false,
   });
 
+  let lam_4b = new Laminate({
+    name: "Lam_4b",
+    description: "8 layers of carbon at +/- 30 degrees",
+    plies: [
+      carbonUni,
+      carbonUni,
+      carbonUni,
+      carbonUni,
+      carbonUni,
+      carbonUni,
+      carbonUni,
+      carbonUni,
+    ],
+    angles: [30.0, -30.0, 30.0, -30.0, 30.0, -30.0, 30.0, -30.0],
+    orientations: [
+      UPRIGHT,
+      UPRIGHT,
+      UPRIGHT,
+      UPRIGHT,
+      UPRIGHT,
+      UPRIGHT,
+      UPRIGHT,
+      UPRIGHT,
+    ],
+    isWoven: false,
+  });
+
   let lam_4L = new Laminate({
     name: "4L",
     description: "4 layers of carbon +/- 30 degrees",
@@ -250,8 +277,8 @@ function calculateBarrelCompressions(parentElement = document.body) {
   printToHTML(
     "55f4 Barrel compression = " +
       calculateBarrelCompression(batOd, [lam_5, lam_5f, lam_4]).toFixed(0),
-      undefined,
-      parentElement
+    undefined,
+    parentElement
   );
 
   printToHTML(
@@ -334,6 +361,18 @@ function calculateBarrelCompressions(parentElement = document.body) {
   );
 
   printToHTML(
+    "4b4b4b4b Barrel compression (8 layer calc)= " +
+      calculateBarrelCompression(batOd, [
+        lam_4b,
+        lam_4b,
+        lam_4b,
+        lam_4b,
+      ]).toFixed(0),
+    undefined,
+    parentElement
+  );
+
+  printToHTML(
     "5L5L5L Barrel compression = " +
       calculateBarrelCompression(batOd, [lam_5L, lam_5L, lam_5L]).toFixed(0),
     undefined,
@@ -406,16 +445,23 @@ function calculateBarrelCompressions(parentElement = document.body) {
     undefined,
     parentElement
   );
- /* 
-  let theLaminate = lam_5f;
+
+  let theLaminate = lam_4;
   let highlightedText = syntaxHighlight(retrocycle(decycle(theLaminate)));
- printToHTML(
+  printToHTML(
     'Laminate "' + theLaminate.name + '": ' + highlightedText,
     undefined,
     parentElement
   );
- */
-
+/*
+  theLaminate = lam_4b;
+  highlightedText = syntaxHighlight(retrocycle(decycle(theLaminate)));
+  printToHTML(
+    'Laminate "' + theLaminate.name + '": ' + highlightedText,
+    undefined,
+    parentElement
+  );
+  /**/
 }
 
 /**
