@@ -41,6 +41,9 @@ const contentToCache = [
   "/js/lpt/serialize.mjs",
   "/js/lpt/util.mjs",
 
+  "/js/indexedDB.mjs",
+  "/js/state.mjs",
+
   "/js/router.mjs",
 
   "/views/404.html",
@@ -53,6 +56,7 @@ const contentToCache = [
   "/views/materialView.mjs",
   "/views/home.html",
   "/views/materialsListView.mjs",
+  "/views/materialsStateView.mjs",
   "/views/MaterialsCreateView.mjs",
 ];
 
