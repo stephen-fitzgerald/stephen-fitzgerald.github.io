@@ -4,7 +4,7 @@
 import { router, parseRequestURL } from '../js/router.mjs';
 import { isString } from "../js/lpt/util.mjs";
 import { getMaterial } from '../data/materialsData.mjs';
-import { AbstractView } from './AbstractView.mjs';
+import { AbstractView } from './abstractView.mjs';
 
 export class MaterialView extends AbstractView {
 

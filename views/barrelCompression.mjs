@@ -7,7 +7,7 @@ import { printToHTML, syntaxHighlight } from "../js/lpt/printToHTML.mjs";
 import { CompositeLamina, Laminate } from "../js/lpt/lpt.mjs";
 import { decycle, retrocycle } from "../js/lpt/serialize.mjs";
 import { ORIENTATION } from "../js/lpt/orientation.mjs";
-import { AbstractView } from "./AbstractView.mjs";
+import { AbstractView } from "./abstractView.mjs";
 
 export class BCView extends AbstractView {
   constructor(args) {

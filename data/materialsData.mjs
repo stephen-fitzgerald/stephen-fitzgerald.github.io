@@ -1,7 +1,6 @@
 //@ts-check
 
 import { Material, Mat_FRP, Mat_Isotropic, Mat_PlanarIso12, Mat_PlanarIso23 } from '../js/lpt/material.mjs';
-import { MaterialsCreateView } from '../views/MaterialsCreateView.mjs';
 
 let _materials = null;
 

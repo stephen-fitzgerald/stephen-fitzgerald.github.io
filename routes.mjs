@@ -4,7 +4,7 @@
 import {MaterialView} from './views/materialView.mjs';
 import { MaterialEditView } from './views/materialEditView.mjs';
 import { MaterialsListView } from './views/materialsListView.mjs';
-import { MaterialsCreateView } from './views/MaterialsCreateView.mjs';
+import { MaterialsCreateView } from './views/materialsCreateView.mjs';
 import { StaticView } from './views/staticView.mjs';
 import { BCView } from './views/barrelCompression.mjs';
 
