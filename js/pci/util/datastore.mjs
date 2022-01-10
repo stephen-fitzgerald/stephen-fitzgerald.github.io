@@ -1,8 +1,7 @@
 //@ts-check
 /*jshint esversion: 6 */
 
-import { hasProperty } from "./util.mjs";
-import { isString } from "./util.mjs";
+import { hasProperty, isString } from "./util.mjs";
 
 /**
  * Object storage by name(id), multiple categories, and clazz/constructor name.

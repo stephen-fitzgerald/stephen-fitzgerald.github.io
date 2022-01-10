@@ -4,7 +4,7 @@
 //self.importScripts("/data/materialsData.mjs");
 
 // update name whenever an asset changes
-const cacheName = "stratus-lpt-2022-01-08-22";
+const cacheName = "stratus-lpt-2022-01-10-01";
 
 // Files to cache - add evrything required for offline use.
 const contentToCache = [
@@ -19,45 +19,48 @@ const contentToCache = [
   "/assets/home.jpeg",
   "/assets/myIcon.png",
 
+  "/data/batLaminates.mjs",
+  "/data/databaseConfig.mjs",
   "/data/materialsData.mjs",
   "/data/plyData.mjs",
 
   "/js/ext/vjs-toolkit/cleanHTML.mjs",
 
-  "/js/lpt/assert.mjs",
-  "/js/lpt/batcalcs.mjs",
-  "/js/lpt/convert.mjs",
-  "/js/lpt/datastore.mjs",
-  "/js/lpt/functions.mjs",
-  "/js/lpt/layup.mjs",
-  "/js/lpt/lpt.mjs",
-  "/js/lpt/material.mjs",
-  "/js/lpt/matrix.mjs",
-  "/js/lpt/moldedTube.mjs",
-  "/js/lpt/orientation.mjs",
-  "/js/lpt/plyspec.mjs",
-  "/js/lpt/printToHTML.mjs",
-  "/js/lpt/profile.mjs",
-  "/js/lpt/serialize.mjs",
-  "/js/lpt/util.mjs",
+  "/js/pci/bats/batcalcs.mjs",
+  "/js/pci/bats/moldedTube.mjs",
+  "/js/pci/bats/profile.mjs",
+
+  "/js/pci/lpt/layup.mjs",
+  "/js/pci/lpt/lpt.mjs",
+  "/js/pci/lpt/material.mjs",
+  "/js/pci/lpt/matrix.mjs",
+  "/js/pci/lpt/orientation.mjs",
+  "/js/pci/lpt/plyspec.mjs",
+
+  "/js/pci/util/assert.mjs",
+  "/js/pci/util/convert.mjs",
+  "/js/pci/util/datastore.mjs",
+  "/js/pci/util/functions.mjs",
+  "/js/pci/util/printToHTML.mjs",
+  "/js/pci/util/serialize.mjs",
+  "/js/pci/util/util.mjs",
 
   "/js/database.mjs",
+  "/js/router.mjs",
   "/js/state.mjs",
 
-  "/js/router.mjs",
-
   "/views/404.html",
-  "/views/AbstractView.mjs",
-  "/views/staticView.mjs",
   "/views/about.html",
+  "/views/abstractView.mjs",
   "/views/barrelCompression.html",
   "/views/barrelCompression.mjs",
-  "/views/materialEditView.mjs",
-  "/views/materialView.mjs",
   "/views/home.html",
+  "/views/materialEditView.mjs",
+  "/views/materialsCreateView.mjs",
   "/views/materialsListView.mjs",
   "/views/materialsStateView.mjs",
-  "/views/MaterialsCreateView.mjs",
+  "/views/materialView.mjs",
+  "/views/staticView.mjs",
 ];
 
 // based on: https://stackoverflow.com/questions/33262385/service-worker-force-update-of-new-assets

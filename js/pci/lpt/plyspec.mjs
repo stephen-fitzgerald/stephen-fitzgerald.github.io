@@ -2,7 +2,6 @@
 /*jshint esversion: 6 */
 
 import { ORIENTATION } from "./orientation.mjs";
-import { registerClazzConstructor } from "./serialize.mjs";
 
 /**
  * A PlySpec describes the layup position of a tubular layer of material.
@@ -105,6 +104,3 @@ export class PlySpec {
         return (this.numPieces * (a + b + c));
     }
 }
-
-
-registerClazzConstructor('PlySpec', PlySpec);

@@ -1,8 +1,8 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { interpolateY, interpolateX } from './functions.mjs';
-import { registerClazzConstructor } from './serialize.mjs';
+import { interpolateY, interpolateX } from '../util/functions.mjs';
+import { registerClazzConstructor } from '../util/serialize.mjs';
 
 
 export class Profile {

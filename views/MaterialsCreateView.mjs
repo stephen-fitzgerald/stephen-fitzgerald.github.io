@@ -7,7 +7,7 @@ import {
   Mat_PlanarIso12,
   Mat_PlanarIso13,
   Mat_PlanarIso23,
-} from "../js/lpt/material.mjs";
+} from "../js/pci/lpt/material.mjs";
 import { addMaterial } from "../data/materialsData.mjs";
 import { AbstractView } from "./abstractView.mjs";
 

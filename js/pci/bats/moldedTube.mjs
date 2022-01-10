@@ -1,12 +1,12 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { Material } from './material.mjs';
-import { Laminate } from './lpt.mjs';
-import { integrateFunction } from './functions.mjs';
-import { registerClazzConstructor } from './serialize.mjs';
-import { PlySpec } from './plyspec.mjs';
-import { Profile } from './profile.mjs';
+import { Material } from '../lpt/material.mjs';
+import { Laminate } from '../lpt/lpt.mjs';
+import { integrateFunction } from '../util/functions.mjs';
+import { registerClazzConstructor } from '../util/serialize.mjs';
+import { PlySpec } from '../lpt/plyspec.mjs';
+import { Profile } from '../lpt/profile.mjs';
 import {barrelCompression} from './batcalcs.mjs';
 
 

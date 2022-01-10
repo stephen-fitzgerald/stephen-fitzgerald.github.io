@@ -1,9 +1,9 @@
 //@ts-check
 
-import { CONVERT } from "../js/lpt/convert.mjs";
-import { ORIENTATION } from "../js/lpt/orientation.mjs";
-import { Mat_Isotropic, Mat_PlanarIso23 } from "../js/lpt/material.mjs";
-import { CompositeLamina, Laminate } from "../js/lpt/lpt.mjs";
+import { CONVERT } from "../js/pci/util/convert.mjs";
+import { ORIENTATION } from "../js/pci/lpt/orientation.mjs";
+import { Mat_Isotropic, Mat_PlanarIso23 } from "../js/pci/lpt/material.mjs";
+import { CompositeLamina, Laminate } from "../js/pci/lpt/lpt.mjs";
 
 export function getBatLaminates() {
     const UPRIGHT = ORIENTATION.UPRIGHT;

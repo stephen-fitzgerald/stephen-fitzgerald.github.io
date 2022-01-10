@@ -1,12 +1,12 @@
 //@ts-check
 /*jshint esversion: 6 */
 
-import { CONVERT } from "../js/lpt/convert.mjs";
-import { Mat_Isotropic, Mat_PlanarIso23 } from "../js/lpt/material.mjs";
-import { printToHTML, syntaxHighlight } from "../js/lpt/printToHTML.mjs";
-import { CompositeLamina, Laminate } from "../js/lpt/lpt.mjs";
-import { decycle, retrocycle } from "../js/lpt/serialize.mjs";
-import { ORIENTATION } from "../js/lpt/orientation.mjs";
+import { CONVERT } from "../js/pci/util/convert.mjs";
+import { Mat_Isotropic, Mat_PlanarIso23 } from "../js/pci/lpt/material.mjs";
+import { printToHTML, syntaxHighlight } from "../js/pci/util/printToHTML.mjs";
+import { CompositeLamina, Laminate } from "../js/pci/lpt/lpt.mjs";
+import { decycle, retrocycle } from "../js/pci/util/serialize.mjs";
+import { ORIENTATION } from "../js/pci/lpt/orientation.mjs";
 import { AbstractView } from "./abstractView.mjs";
 
 export class BCView extends AbstractView {
