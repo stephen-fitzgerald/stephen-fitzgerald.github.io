@@ -15,12 +15,12 @@ const app = async () => {
   window.addEventListener("load", router);
 
   // set up service worker for cahcing
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-  }
+  //if ("serviceWorker" in navigator) {
+    //navigator.serviceWorker.register("sw.js");
+  //}
 
   // open up the database & bootstrap or update, if needed
-  let idb = await configureDatabase();
+  //let idb = await configureDatabase();
 };
 
 document.addEventListener("DOMContentLoaded", app);
