@@ -8,6 +8,7 @@ import { configureDatabase } from "./data/databaseConfig.mjs";
  * Main application entry point
  */
 const app = async () => {
+  console.log("I'm running");
   // Listen on hash change:
   window.addEventListener("hashchange", router);
 
