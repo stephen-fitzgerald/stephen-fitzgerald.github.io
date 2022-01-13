@@ -4,11 +4,11 @@
 import {
     Material, Mat_Isotropic, Mat_PlanarIso12, Mat_PlanarIso13,
     Mat_PlanarIso23, Mat_Orthotropic, Mat_FRP
-} from '../js/lpt/material.mjs';
+} from '../js/pci/lpt/material.mjs';
 
-import { assert } from '../js/lpt/assert.mjs';
-import { printToHTML, printHighlightedHTML } from '../js/lpt/printToHTML.mjs';
-import { serialize, deserialize } from '../js/lpt/serialize.mjs';
+import { assert } from '../js/pci/util/assert.mjs';
+import { printToHTML, printHighlightedHTML } from '../js/pci/util/printToHTML.mjs';
+import { serialize, deserialize } from '../js/pci/util/serialize.mjs';
 
 import '../js/ext/lodash/lodash.js';
 

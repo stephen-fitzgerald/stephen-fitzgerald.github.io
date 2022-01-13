@@ -1,8 +1,8 @@
 //@ts-check
 
-import { Material } from "../js/lpt/material.mjs";
+import { Material } from "../js/pci/lpt/material.mjs";
 import { State } from "../js/state.mjs";
-import { AbstractView } from "./AbstractView.mjs";
+import { AbstractView } from "./abstractView.mjs";
 
 export class MaterialsStateView extends AbstractView {
   constructor(args = {}) {
