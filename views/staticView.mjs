@@ -1,6 +1,6 @@
 //@ts-check
 
-import { AbstractView } from "./abstractView.mjs";
+import { AbstractView } from "./abstractViewx.mjs";
 import {cleanHTML} from "../js/ext/vjs-toolkit/cleanHTML.mjs"
 
 export class StaticView extends AbstractView {

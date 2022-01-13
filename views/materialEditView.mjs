@@ -2,7 +2,7 @@
 /* jshint esversion: 6 */
 
 import { parseRequestURL } from "../js/router.mjs";
-import { AbstractView } from "./abstractView.mjs";
+import { AbstractView } from "./abstractViewx.mjs";
 import {
   getMaterial,
   getMaterials,

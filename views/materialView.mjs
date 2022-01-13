@@ -3,7 +3,7 @@
 
 import { parseRequestURL } from '../js/router.mjs';
 import { getMaterial } from '../data/materialsData.mjs';
-import { AbstractView } from './abstractView.mjs';
+import { AbstractView } from './abstractViewx.mjs';
 
 export class MaterialView extends AbstractView {
 
