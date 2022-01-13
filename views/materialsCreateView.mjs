@@ -9,7 +9,7 @@ import {
   Mat_PlanarIso23,
 } from "../js/pci/lpt/material.mjs";
 import { addMaterial } from "../data/materialsData.mjs";
-import { AbstractView } from "./abstractViewx.mjs";
+import { AbstractView } from "./abstractView.mjs";
 
 const matTypeHTML = `
     <div id="mat-type-div">

@@ -5,7 +5,7 @@ import {
     getMaterials,
   } from "../data/materialsData.mjs";
   import { Material } from "../js/pci/lpt/material.mjs";
-  import { AbstractView } from "./abstractViewx.mjs";
+  import { AbstractView } from "./abstractView.mjs";
   
   export class MaterialsListView extends AbstractView {
     /** @override */
