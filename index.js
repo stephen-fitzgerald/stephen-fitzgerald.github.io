@@ -1,8 +1,7 @@
 // @ts-check
-/* jshint esversion: 6 */
 
 import { router } from "./js/router.mjs";
-import { configureDatabase } from "./data/databaseConfig.mjs";
+import {configureDatabase} from "./js/databaseConfig.mjs";
 
 /**
  * Main application entry point

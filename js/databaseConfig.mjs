@@ -1,10 +1,10 @@
 //@ts-check
 
-import { Database } from "../js/database.mjs";
-import { Material } from "../js/pci/lpt/material.mjs";
-import { Laminate } from "../js/pci/lpt/lpt.mjs";
-import { getBatLaminates } from "./batLaminates.mjs";
-import { getMaterials } from "./materialsData.mjs";
+import { Database } from "./database.mjs";
+import { Material } from "./pci/lpt/material.mjs";
+import { Laminate } from "./pci/lpt/lpt.mjs";
+import { getBatLaminates } from "../data/batLaminates.mjs";
+import { getMaterials } from "../data/materialsData.mjs";
 
 export async function configureDatabase() {
   let idb = await new Database(
@@ -27,32 +27,20 @@ function setupObjectStores(db, oldVersion, newVersion) {
   let materialsList = getBootstrapMaterials();
   let batLaminates = getBootstrapLaminates();
 
-  let materialsStore = db.createObjectStore("materials", {
+  let stateStore = db.createObjectStore("state", {
     keyPath: "id",
-    autoIncrement: true,
+    autoIncrement: false,
   });
-  materialsStore.createIndex("name", "_name", { unique: false });
-
-  let laminatesStore = db.createObjectStore("laminates", {
-    keyPath: "id",
-    autoIncrement: true,
-  });
-  laminatesStore.createIndex("name", "_name", { unique: false });
 
   // load bootstrap data
-  laminatesStore.transaction.oncomplete = function (event) {
-    let laminateObjectStore = db
-      .transaction("laminates", "readwrite")
-      .objectStore("laminates");
-    batLaminates.forEach((laminate) => {
-      laminateObjectStore.add(laminate);
-    });
+  stateStore.transaction.oncomplete = function (event) {
 
-    let materialObjectStore = db
-      .transaction("materials", "readwrite")
-      .objectStore("materials");
-    materialsList.forEach((material) => {
-      materialObjectStore.add(material);
+    let stateTransaction = db.transaction("state", "readwrite");
+    let stateObjectStore = stateTransaction.objectStore("state");
+    stateObjectStore.add({
+      id: 1,
+      materials: materialsList,
+      laminates: batLaminates,
     });
   };
 }

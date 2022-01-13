@@ -35,20 +35,15 @@ export class Database {
     });
   }
 
-  // return database connection
-  get connection() {
-    return this.db;
-  }
-
   // store item
-  set(storeName, name, value) {
+  set(storeName, value) {
     return new Promise((resolve, reject) => {
       // new transaction
       const transaction = this.db.transaction(storeName, "readwrite"),
         store = transaction.objectStore(storeName);
 
       // write record
-      store.put(value, name);
+      store.put(value);
 
       transaction.oncomplete = () => {
         resolve(true); // success

@@ -182,7 +182,7 @@ function reconstitute(root) {
 
         // convert strings to Date objects if they are in ISO date format
         if (isString(obj)) {
-            obj = parseIsoDate(obj);
+            obj = isIsoDateString(obj) ? new Date(obj) : obj;
         }
 
         // instantiate a proper object from class information
@@ -274,21 +274,18 @@ function buildClassMap(obj, classMap) {
 // regex to determine if a string is a valid ISO 8601 (JSON) formatted date
 const reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
 
-function isIsoDateString(str) {
+export function isIsoDateString(str) {
     return (isString(str) && reISO.exec(str));
 }
 
 /**
  * Convert string that is in ISO 8601 / JSON date format to javascript Date object
  *
- * @param {Object} obj
- * @returns {Object} a Date object if obj is an ISO 8601 formatted string, the original object otherwise
+ * @param {object} obj
+ * @returns {Date} a Date object if obj is an ISO 8601 formatted string, the original object otherwise
  */
-function parseIsoDate(obj) {
-    if (isIsoDateString(obj)) {
-        obj = new Date(obj);
-    }
-    return obj;
+export function parseIsoDate(obj) {
+    return isIsoDateString(obj) ? new Date(obj) : obj;
 }
 
 // Make a deep copy of an object or array, assuring that there is at most
