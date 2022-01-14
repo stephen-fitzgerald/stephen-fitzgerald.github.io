@@ -8,10 +8,10 @@ import { matrixCreate, matrixCopy, matrixInvert, matrixMultiply, matrixAdd, matr
 
 let _laminaNumber = 1;
 
-export class Lamina {
+export class AbstractLamina {
 
     /**
-     * Creates an instance of Lamina, which is an abstract super class for specific lamina types.  
+     * Creates an instance of AbstractLamina, which is an abstract super class for specific lamina types.  
      * 
      * All units are basic kg / m / sec / degC. IE moduli are in (kg-m/s^2)/m^2 = N/m^2 = Pa. 
      * 
@@ -20,14 +20,14 @@ export class Lamina {
      * @param {string} [options.description]
      * @param {boolean} [options.isRandom]
      * 
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     constructor(options) {
-        if (new.target === Lamina) {
+        if (new.target === AbstractLamina) {
             throw new TypeError("Cannot construct abstract class " + new.target.name + " instances directly");
         }
         //this._clazz is used to find the constructor when deserializing
-        this._clazz = this.constructor.name;  // will be sub-class name, not Lamina
+        this._clazz = this.constructor.name;  // will be sub-class name, not AbstractLamina
         this._name = "Lamina # " + _laminaNumber++;
         this._description = "";
         this._isRandom = false;
@@ -51,13 +51,13 @@ export class Lamina {
      * are not composed of themselves checks may be required.  Basic lamina do not
      * contain any others.  Override this for multi-layered lamina.
      *
-     * @param {Lamina} target
+     * @param {AbstractLamina} target
      * @return {boolean} 
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     contains(target) {
-        if (!(target instanceof Lamina)) {
-            throw new Error("Illegal argument: target must be a Lamina.");
+        if (!(target instanceof AbstractLamina)) {
+            throw new Error("Illegal argument: target must be a AbstractLamina.");
         }
         return false;
     }
@@ -65,7 +65,7 @@ export class Lamina {
     /**
      * A human-friendly name for a Lamina.
      * @type {string}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     get name() { return this._name; }
     set name(value) { this._name = String(value); }
@@ -73,7 +73,7 @@ export class Lamina {
     /**
      * A human-friendly description of a Lamina.
      * @type {string}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     get description() { return this._description; }
     set description(value) { this._description = value; }
@@ -81,7 +81,7 @@ export class Lamina {
     /**
      * Randomize properties in 1-2 plane?
      * @type {boolean}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     get isRandom() { return this._isRandom; }
     set isRandom(value) { this._isRandom = value ? true : false; }
@@ -90,7 +90,7 @@ export class Lamina {
      * Total areal weight, in kg/sq.m
      * Total AW = Solid AW + Fiber AW + Resin AW
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     get taw() { return this.saw + this.faw + this.raw; }
 
@@ -103,7 +103,7 @@ export class Lamina {
      * The properties of this Lamina collected in a plain object.
      * @type {Object}
      * @readonly
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     get properties() {
         let ABD = this.stiffnessMatrix;
@@ -138,7 +138,7 @@ export class Lamina {
      * Average mass fraction of fiber, excluding any solid portions.
      * mf = faw / ( faw + raw )
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     get mf() {
         if (this.faw === 0.0) { return 0.0; }
@@ -149,7 +149,7 @@ export class Lamina {
      * The number of plies in this Lamina
      * 
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     get plyCount() { return 1.0; }
 
@@ -210,105 +210,105 @@ export class Lamina {
      * Throw an error explaining that an abstract property needs to be overridden.
      * @returns {number}
      * @param {string} argName
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
     static throwArgNeedsImplementationError(argName) {
-        throw new Error("Sub classes of Lamina must define getter for " + argName + ".");
+        throw new Error("Sub classes of AbstractLamina must define getter for " + argName + ".");
     }
 
     /**
      * The thickness of this Lamina
      * 
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get thickness() { return Lamina.throwArgNeedsImplementationError("thickness"); }
+    get thickness() { return AbstractLamina.throwArgNeedsImplementationError("thickness"); }
 
     /**
      * Density of the lamina in kg/cu.m
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get density() { return Lamina.throwArgNeedsImplementationError("density"); }
+    get density() { return AbstractLamina.throwArgNeedsImplementationError("density"); }
 
     /**
      * Total areal weight, in kg/sq.m
      * Total AW = Solid AW + Fiber AW + Resin AW
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get faw() { return Lamina.throwArgNeedsImplementationError("faw"); }
+    get faw() { return AbstractLamina.throwArgNeedsImplementationError("faw"); }
 
     /**
      * Total areal weight, in kg/sq.m
      * Total AW = Solid AW + Fiber AW + Resin AW
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get saw() { return Lamina.throwArgNeedsImplementationError("saw"); }
+    get saw() { return AbstractLamina.throwArgNeedsImplementationError("saw"); }
 
     /**
      * Total areal weight, in kg/sq.m
      * Total AW = Solid AW + Fiber AW + Resin AW
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get raw() { return Lamina.throwArgNeedsImplementationError("raw"); }
+    get raw() { return AbstractLamina.throwArgNeedsImplementationError("raw"); }
 
     /**
      * Average volume fraction in composite, excluding any solid portions.
      * 
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get vf() { return Lamina.throwArgNeedsImplementationError("vf"); }
+    get vf() { return AbstractLamina.throwArgNeedsImplementationError("vf"); }
 
     /**
      * Principle modulus X or '1" direction.
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get E1() { return Lamina.throwArgNeedsImplementationError("E1"); }
+    get E1() { return AbstractLamina.throwArgNeedsImplementationError("E1"); }
     /**
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get E2() { return Lamina.throwArgNeedsImplementationError("E2"); }
+    get E2() { return AbstractLamina.throwArgNeedsImplementationError("E2"); }
     /**
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get E3() { return Lamina.throwArgNeedsImplementationError("E3"); }
+    get E3() { return AbstractLamina.throwArgNeedsImplementationError("E3"); }
     /**
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get G12() { return Lamina.throwArgNeedsImplementationError("G12"); }
+    get G12() { return AbstractLamina.throwArgNeedsImplementationError("G12"); }
     /**
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get G13() { return Lamina.throwArgNeedsImplementationError("G13"); }
+    get G13() { return AbstractLamina.throwArgNeedsImplementationError("G13"); }
     /**
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get G23() { return Lamina.throwArgNeedsImplementationError("G23"); }
+    get G23() { return AbstractLamina.throwArgNeedsImplementationError("G23"); }
     /**
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get PR12() { return Lamina.throwArgNeedsImplementationError("PR12"); }
+    get PR12() { return AbstractLamina.throwArgNeedsImplementationError("PR12"); }
     /**
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get PR13() { return Lamina.throwArgNeedsImplementationError("PR13"); }
+    get PR13() { return AbstractLamina.throwArgNeedsImplementationError("PR13"); }
     /**
      * @type {number}
-     * @memberof Lamina
+     * @memberof AbstractLamina
      */
-    get PR23() { return Lamina.throwArgNeedsImplementationError("PR23"); }
+    get PR23() { return AbstractLamina.throwArgNeedsImplementationError("PR23"); }
 
 }
 
@@ -317,7 +317,7 @@ export class Lamina {
  * SolidLamina is a layer of solid material that absorbs no resin.
  * 
  */
-export class SolidLamina extends Lamina {
+export class SolidLamina extends AbstractLamina {
 
     /**
      * A material ply for a laminate
@@ -389,7 +389,7 @@ export class SolidLamina extends Lamina {
 
 //=============================================================================
 // CompositeLamina
-export class CompositeLamina extends Lamina {
+export class CompositeLamina extends AbstractLamina {
 
     /**
      * A composite material ply for a laminate
@@ -411,12 +411,14 @@ export class CompositeLamina extends Lamina {
         this._resin = null;
         this._vf = 0.0;
         this._faw = 0.0;
+        this._isRandom = false;
 
         if (options) {
             this._fiber = options.fiber == undefined ? this._fiber : options.fiber;
             this._resin = options.resin == undefined ? this._resin : options.resin;
             this._vf = options.vf == undefined ? this._vf : options.vf;
             this._faw = options.faw == undefined ? this._faw : options.faw;
+            this._isRandom = options.isRandom == undefined ? this._isRandom : options.isRandom;
         }
         this._material = undefined; // causes this.material to be reset
     }
@@ -524,7 +526,7 @@ export class CompositeLamina extends Lamina {
 // Laminate
 
 
-export class Laminate extends Lamina {
+export class Laminate extends AbstractLamina {
 
     /**
      * Creates a laminate instance, which is a collection of plies and sub-laminates.
@@ -639,12 +641,12 @@ export class Laminate extends Lamina {
 
     /**
      *
-     * @param {Lamina} thePly must be a Ply or Laminate object
+     * @param {AbstractLamina} thePly must be a Ply or Laminate object
      * @returns {boolean} whether the ply is a valid addition
      */
 
     canAddPly(thePly) {
-        if (!(thePly instanceof Lamina)) {
+        if (!(thePly instanceof AbstractLamina)) {
             return false; // must be a Ply or Laminate
         } else
             if (thePly === this) {
@@ -660,13 +662,13 @@ export class Laminate extends Lamina {
     /**
      * Add a ply to the top of this laminate
      *
-     * @param {Lamina} thePly the Ply to add - a Ply or Laminate object
+     * @param {AbstractLamina} thePly the Ply to add - a Ply or Laminate object
      * @param {number} angle the angle of rotation relative to laminate axis
-     * @param {number} orientation LPT.ORIENTATION.UPRIGHT or .FLIPPED
+     * @param {any} orientation LPT.ORIENTATION.UPRIGHT or .FLIPPED
      *
      * @returns {Laminate} this Laminate, for method chaining
      */
-    addPly(thePly, angle, orientation) {
+    addPly(thePly, angle=0.0, orientation=ORIENTATION.UPRIGHT) {
         return this.addPlyAt(this._plies.length, thePly, angle, orientation);
     }
 
@@ -674,10 +676,10 @@ export class Laminate extends Lamina {
      * Add a ply at a specific index in this laminate
      *
      * @param {number} index the position to add the ply, <= 0 is bottom, >=length is top
-     * @param {Lamina} thePly  a Ply or Laminate object to add
+     * @param {AbstractLamina} thePly  a Ply or Laminate object to add
      * @returns {Laminate} this Laminate, for method chaining
      */
-    addPlyAt(index, thePly, angle, orientation) {
+    addPlyAt(index, thePly, angle=0.0, orientation=ORIENTATION.UPRIGHT) {
         let i = Math.max(0, index);
         i = Math.min(this._plies.length, i);
         if (this.canAddPly(thePly)) {
@@ -708,7 +710,7 @@ export class Laminate extends Lamina {
     /**
      * Is a ply contained in this laminate
      *
-     * @param {Lamina} thePly we are checking for  SolidLamina, CompositeLamina or Laminate
+     * @param {AbstractLamina} thePly we are checking for  SolidLamina, CompositeLamina or Laminate
      * @returns {boolean} true if ply is in this Laminate
      */
     contains(thePly) {
