@@ -1,7 +1,7 @@
 // @ts-check
 
 import { router } from "./js/router.mjs";
-import {configureDatabase} from "./js/databaseConfig.mjs";
+import {configureDatabase} from "./js/database-config.mjs";
 
 /**
  * Main application entry point

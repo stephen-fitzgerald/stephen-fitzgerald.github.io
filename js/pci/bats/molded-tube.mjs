@@ -6,8 +6,8 @@ import { Laminate } from '../lpt/lpt.mjs';
 import { integrateFunction } from '../util/functions.mjs';
 import { registerClazzConstructor } from '../util/serialize.mjs';
 import { PlySpec } from '../lpt/plyspec.mjs';
-import { Profile } from '../bats/profile.mjs';
-import {barrelCompression} from './batcalcs.mjs';
+import { Profile } from './profile.mjs';
+import {barrelCompression} from './bat-calcs.mjs';
 
 
 /**

@@ -4,7 +4,7 @@
 //self.importScripts("/data/materialsData.mjs");
 
 // update name whenever an asset changes
-const cacheName = "stratus-lpt-2022-01-13-01";
+const cacheName = "stratus-lpt-2022-01-15-04";
 
 // Files to cache - add everything required for offline use.
 const contentToCache = [
@@ -17,16 +17,17 @@ const contentToCache = [
 
   "/assets/404.png",
   "/assets/home.jpeg",
-  "/assets/myIcon.png",
+  "/assets/my-icon.png",
+  "/assets/lpt-icon.svg",
 
-  "/data/batLaminates.mjs",
-  "/data/materialsData.mjs",
-  "/data/plyData.mjs",
+  "/data/bat-laminates.mjs",
+  "/data/materials-data.mjs",
+  "/data/ply-data.mjs",
 
-  "/js/ext/vjs-toolkit/cleanHTML.mjs",
+  "/js/ext/vjs-toolkit/clean-html.mjs",
 
-  "/js/pci/bats/batcalcs.mjs",
-  "/js/pci/bats/moldedTube.mjs",
+  "/js/pci/bats/bat-calcs.mjs",
+  "/js/pci/bats/molded-tube.mjs",
   "/js/pci/bats/profile.mjs",
 
   "/js/pci/lpt/layup.mjs",
@@ -40,27 +41,27 @@ const contentToCache = [
   "/js/pci/util/convert.mjs",
   "/js/pci/util/datastore.mjs",
   "/js/pci/util/functions.mjs",
-  "/js/pci/util/printToHTML.mjs",
+  "/js/pci/util/print-to-html.mjs",
   "/js/pci/util/serialize.mjs",
   "/js/pci/util/util.mjs",
 
+  "/js/database-config.mjs",
   "/js/database.mjs",
-  "/js/databaseConfig.mjs",
   "/js/router.mjs",
   "/js/state.mjs",
 
   "/views/404.html",
   "/views/about.html",
-  "/views/abstractView.mjs",
-  "/views/barrelCompression.html",
-  "/views/barrelCompression.mjs",
+  "/views/abstract-view.mjs",
+  "/views/barrel-compression.html",
+  "/views/barrel-compression.mjs",
   "/views/home.html",
-  "/views/materialEditView.mjs",
-  "/views/materialsCreateView.mjs",
-  "/views/materialsListView.mjs",
-  "/views/materialsStateView.mjs",
-  "/views/materialView.mjs",
-  "/views/staticView.mjs",
+  "/views/material-edit-view.mjs",
+  "/views/materials-create-view.mjs",
+  "/views/materials-list-view.mjs",
+  "/views/materials-state-view.mjs",
+  "/views/material-view.mjs",
+  "/views/static-view.mjs",
 ];
 
 // based on: https://stackoverflow.com/questions/33262385/service-worker-force-update-of-new-assets

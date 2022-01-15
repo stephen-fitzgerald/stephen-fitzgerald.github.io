@@ -6,7 +6,7 @@
  */
 
 import {getRoutes} from '../routes.mjs';
-import {cleanHTML} from '../js/ext/vjs-toolkit/cleanHTML.mjs';
+import {cleanHTML} from '../js/ext/vjs-toolkit/clean-html.mjs';
 
 export function parseRequestURL() {
 
@@ -43,6 +43,7 @@ export async function router() {
     let html = await page.buildHTML();
     html = cleanHTML(html);
     content.innerHTML = html;
+    // TODO wait for document to (re-)load
     page.addListeners();
     page.modelToView();
 

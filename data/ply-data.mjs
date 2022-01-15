@@ -1,12 +1,7 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { ReleaseLayer } from '../js/pci/lpt/layup.mjs';
-import { SolidLayer } from '../js/pci/lpt/layup.mjs';
-import { FiberLayer } from '../js/pci/lpt/layup.mjs';
-import { PrepregLayer } from '../js/pci/lpt/layup.mjs';
-import { WEAVETYPE } from '../js/pci/lpt/layup.mjs';
-import { FabricLayer } from '../js/pci/lpt/layup.mjs';
+import { ReleaseLayer, SolidLayer, FiberLayer, PrepregLayer, WEAVETYPE, FabricLayer } from '../js/pci/lpt/layup.mjs';
 
 let PLY_DATA = function () {
 

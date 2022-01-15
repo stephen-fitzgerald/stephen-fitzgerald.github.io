@@ -1,15 +1,9 @@
 // @ts-check
 /* jshint esversion: 6 */
 
-import {
-  Mat_Isotropic,
-  Mat_Orthotropic,
-  Mat_PlanarIso12,
-  Mat_PlanarIso13,
-  Mat_PlanarIso23,
-} from "../js/pci/lpt/material.mjs";
-import { addMaterial } from "../data/materialsData.mjs";
-import { AbstractView } from "./abstractView.mjs";
+import { Mat_Isotropic, Mat_Orthotropic, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23 } from "../js/pci/lpt/material.mjs";
+import { addMaterial } from "../data/materials-data.mjs";
+import { AbstractView } from "./abstract-view.mjs";
 
 const matTypeHTML = `
     <div id="mat-type-div">
@@ -32,10 +26,12 @@ export class MaterialsCreateView extends AbstractView {
     this.html = matTypeHTML;
   }
 
+  /** override */
   buildHTML() {
     return this.html;
   }
 
+  /** override */
   addListeners() {
     super.addListeners();
     let matCreateBtn = document.getElementById("mat-create-btn");

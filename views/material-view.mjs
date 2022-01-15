@@ -2,8 +2,8 @@
 /*jshint esversion: 6 */
 
 import { parseRequestURL } from '../js/router.mjs';
-import { getMaterial } from '../data/materialsData.mjs';
-import { AbstractView } from './abstractView.mjs';
+import { getMaterial } from '../data/materials-data.mjs';
+import { AbstractView } from './abstract-view.mjs';
 
 export class MaterialView extends AbstractView {
 

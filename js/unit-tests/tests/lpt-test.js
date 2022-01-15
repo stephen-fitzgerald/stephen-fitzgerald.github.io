@@ -1,10 +1,10 @@
 /*jshint esversion: 6 */
 // @ts-check
 
-import { assert, diff} from "../pci/util/assert.mjs";
-import {CONVERT} from "../pci/util/convert.mjs";
-import { Mat_Isotropic, Mat_PlanarIso23 } from "../pci/lpt/material.mjs";
-import { SolidLamina, Laminate, CompositeLamina } from "../pci/lpt/lpt.mjs";
+import { assert, diff} from "../../pci/util/assert.mjs";
+import {CONVERT} from "../../pci/util/convert.mjs";
+import { Mat_Isotropic, Mat_PlanarIso23 } from "../../pci/lpt/material.mjs";
+import { SolidLamina, Laminate, CompositeLamina } from "../../pci/lpt/lpt.mjs";
 
 export function lptTest() {
 

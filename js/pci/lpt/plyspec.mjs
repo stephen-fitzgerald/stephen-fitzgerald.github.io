@@ -1,6 +1,7 @@
 // @ts-check
 /*jshint esversion: 6 */
 
+import { AbstractLayer } from "./layup.mjs";
 import { ORIENTATION } from "./orientation.mjs";
 
 /**
@@ -23,7 +24,7 @@ import { ORIENTATION } from "./orientation.mjs";
  * startAngles[] is an array of the starting angles ("clocking") for each piece
  *
  * @param {object} options
- * @param {object} options.layer Solid, Fiber, Prepreg, Release, Braided or Fabric Layer
+ * @param {AbstractLayer} options.layer Solid, Fiber, Prepreg, Release, Braided or Fabric Layer
  * @param {number} options.start start position on x axis, in meters
  * @param {number} options.end end position on x axis, in meters
  * @param {number} [options.widthAtStart] width of layer at start, in meters

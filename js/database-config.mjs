@@ -3,8 +3,8 @@
 import { Database } from "./database.mjs";
 import { Material } from "./pci/lpt/material.mjs";
 import { Laminate } from "./pci/lpt/lpt.mjs";
-import { getBatLaminates } from "../data/batLaminates.mjs";
-import { getMaterials } from "../data/materialsData.mjs";
+import { getBatLaminates } from "../data/bat-laminates.mjs";
+import { getMaterials } from "../data/materials-data.mjs";
 
 export async function configureDatabase() {
   let idb = await new Database(

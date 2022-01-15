@@ -1,7 +1,7 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { printToHTML } from './printToHTML.mjs';
+import { printToHTML } from './print-to-html.mjs';
 
 // for sync tests
 export function assert(condition, message) {

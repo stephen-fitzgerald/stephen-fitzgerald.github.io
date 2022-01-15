@@ -1,20 +1,13 @@
 //@ts-check
-
+import { addMaterial, getMaterial, getMaterials, } from "../data/materials-data.mjs";
 import { Material } from "../js/pci/lpt/material.mjs";
-import { State } from "../js/state.mjs";
-import { AbstractView } from "./abstractView.mjs";
+import { AbstractView } from "./abstract-view.mjs";
 
-export class MaterialsStateView extends AbstractView {
-  constructor(args = {}) {
-    super(args);
-    this.state = new State(["materialsList"], this.stateChanged.bind(this));
-  }
+export class MaterialsListView extends AbstractView {
 
-  // called whenever the materialsList database changes.
-  stateChanged(name, value) {
-    console.log(`State of ${name} has changed.`);
-    // this[name] = value;
-    this.materialsList = value;
+
+  constructor(templateStr) {
+    super(templateStr);
   }
 
   /**
@@ -22,7 +15,8 @@ export class MaterialsStateView extends AbstractView {
    * @returns {String} the html to show for this page
    */
   buildHTML() {
-    this.html = this.generateTable(this.materialsList);
+    this.materials = getMaterials();
+    this.html = this.generateTable(this.materials);
     return this.html;
   }
 
@@ -35,22 +29,23 @@ export class MaterialsStateView extends AbstractView {
     html += `<br>`;
     html += `<br>`;
     html += `<style>
-                        tr, td {
-                            margin: 4px 8px 4px 8px;
-                            padding: 6px 12px;
-                        }
-                    </style>`;
+                          tr, td {
+                              margin: 4px 8px 4px 8px;
+                              padding: 6px 12px;
+                          }
+                      </style>`;
 
     html += `<table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th colspan="3">Description</th>
-                        </tr>
-                    </thead>`;
+                      <thead>
+                          <tr>
+                              <th>ID</th>
+                              <th>Name</th>
+                              <th colspan="3">Description</th>
+                          </tr>
+                      </thead>`;
 
     html += `<tbody>`;
+    
     for (let row = 0; row < mats.length; row++) {
       html += `<tr `;
       html += `mat-id="${row}"`;
@@ -75,6 +70,7 @@ export class MaterialsStateView extends AbstractView {
    * @override
    */
   addListeners() {
+    super.addListeners();
     // add listeners for links to copy each material
     let copyLinks = Array.from(document.getElementsByClassName("copy-link"));
     copyLinks.forEach((element) => {
@@ -86,9 +82,10 @@ export class MaterialsStateView extends AbstractView {
     e.preventDefault();
     let theLink = e.target;
     let matId = theLink.attributes["mat-id"].value;
-    let srcMaterial = this.materialsList[matId];
+    let srcMaterial = getMaterial(matId);
     let newMaterial = Material.duplicate(srcMaterial);
     newMaterial.name = `Copy of: ${srcMaterial.name}`;
-    this.state.set("materialsList", this.materialsList.concat(newMaterial));
+    let newId = addMaterial(newMaterial);
+    document.location.hash = `#/material/${newId}/edit`;
   }
 }

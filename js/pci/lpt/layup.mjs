@@ -1,26 +1,57 @@
 //@ts-check
 /* jshint esversion: 6 */
 
-//@ts-ignore
 import { Material } from './material.mjs';
-//@ts-ignore
-import { SolidLamina, CompositeLamina, Laminate, ORIENTATION } from './lpt.mjs';
+import { SolidLamina, CompositeLamina, Laminate } from './lpt.mjs';
+import {ORIENTATION} from './orientation.mjs';
 
 
 function isNumeric(obj) { return !!(!isNaN(parseFloat(obj)) && isFinite(obj)); }
 
 let _nextLayerNumber = 1;
 
-export class LayupLayer {
+/**
+ * A superclass for layers in a layup.  A layup is the conection bewteen the layup 
+ * created in the shop and the molded laminate that comes from it. It's a stack of
+ * layers that, when combined with a context, generates a molded laminate that we 
+ * can use laminated plate theory on to determine mechanical properties.
+ * 
+ * Properties / methods are: 
+ * name, 
+ * description, 
+ * isCompressible, 
+ * fiberDensity, 
+ * resinDensity, 
+ * solidDensity, 
+ * getTotalArealWt(ctx), 
+ * getResinArealWt(ctx), 
+ * getSolidArealWt(ctx), 
+ * getFiberArealWt(ctx), 
+ * getVf(ctx), 
+ * getThickness(ctx), 
+ * contains(AbstractLayer), 
+ * getLaminate(ctx), 
+ * 
+ * ctx is a LayupContext that provides parameters like compaction presssure, the reisn to use, etc..
+ * 
+ * Known subclasses are: 
+ * PrepregLayer, 
+ * ReleaseLayer, 
+ * SolidLayer, 
+ * FiberLayer, 
+ * FabricLayer, 
+ * BraidedLayer
+ */
+export class AbstractLayer {
 
     /**
-     * Check for a valid LayupLayer argument.  Used by sub-classes that contain sub-layers.
-     * @param layer {LayupLayer} the argument being checked
+     * Check for a valid AbstractLayer argument.  Used by sub-classes that contain sub-layers.
+     * @param layer {AbstractLayer} the argument being checked
      * @param name {string} used in error message
-     * @returns {LayupLayer} the argument, if valid, undefined otherwise
+     * @returns {AbstractLayer} the argument, if valid, undefined otherwise
      */
     static _checkLayerArg(layer, name) {
-        if (!(layer instanceof LayupLayer)) { throw new TypeError(name + " must be an instance of LayupLayer."); }
+        if (!(layer instanceof AbstractLayer)) { throw new TypeError(name + " must be an instance of AbstractLayer."); }
         return layer;
     }
 
@@ -71,25 +102,24 @@ export class LayupLayer {
     }
 
     /**
-     * Do not call this constructor directly.  It's only used by sub-classes
+     * Do not call this constructor directly.  It's only used by sub-classes 
+     * Note pattern for property initializations from options: 
+     * 
+     *  this._prop =  options._prop || options.prop || {default value}
      * @param {object} [options] can call with no options, but must be valid if present
      * @param {string} [options.name]
+     * @param {string} [options._name]
      * @param {string} [options.description]
+     * @param {string} [options._description]
      */
-    constructor(options) {
-        if (new.target === LayupLayer) {
+    constructor(options = {}) {
+        if (new.target === AbstractLayer) {
             throw new TypeError("Cannot construct abstract class " + new.target.name + " instances directly");
         }
         //this._clazz is used to find the constructor when deserializing
         this._clazz = this.constructor.name;  // will be sub-class name
-        this._name = "Layer # " + _nextLayerNumber++;
-        this._description = "";
-        if (options) {
-            //@ts-ignore
-            this._name = options._name || options.name || this._name;
-            //@ts-ignore
-            this._description = options._description || options.description || this._description;
-        }
+        this._name = options._name || options.name || "Layer # " + _nextLayerNumber++;
+        this._description = options._description || options.description || "";
     }
 
     get clazz() { return this._clazz; }
@@ -103,14 +133,14 @@ export class LayupLayer {
     /**
      * Does this layer compress under molding pressure? Subclasses must override.
      * @type boolean
-     * @memberof LayupLayer
+     * @memberof AbstractLayer
      */
     get isCompressible() { throw new Error("Sub classes must override getter for isCompressible."); }
 
     /**
      * The average density of the fibers in this layer, in kg/cu.m.
      * @readonly
-     * @memberof LayupLayer
+     * @memberof AbstractLayer
      * @type {number} 
      * @returns {number}
      */
@@ -119,7 +149,7 @@ export class LayupLayer {
     /**
      * The average density of the resin in this layer, in kg/cu.m.
      * @readonly
-     * @memberof LayupLayer
+     * @memberof AbstractLayer
      * @type {number} 
      */
     get resinDensity() { throw new Error("Sub classes must override getter for fiberDensity."); }
@@ -127,7 +157,7 @@ export class LayupLayer {
     /**
      * The average density of the solids in this layer, in kg/cu.m.
      * @readonly
-     * @memberof LayupLayer
+     * @memberof AbstractLayer
      * @type {number} 
      */
     get solidDensity() { throw new Error("Sub classes must override getter for fiberDensity."); }
@@ -186,12 +216,12 @@ export class LayupLayer {
      * LayupLayers may be composed of other LayupLayers.  In order to ensure that they
      * are not composed of themselves, checks may be required. Override this for multi-
      * layered LayupLayers. Note: a layer does 'contain' itself.
-     * @param {LayupLayer} target
+     * @param {AbstractLayer} target
      * @return {boolean} 
-     * @memberof LayupLayer
+     * @memberof AbstractLayer
      */
     contains(target) {
-        if (!(target instanceof LayupLayer)) { throw new TypeError('Target must be a LayupLayer.'); }
+        if (!(target instanceof AbstractLayer)) { throw new TypeError('Target must be a AbstractLayer.'); }
         return (target === this);
     }
 
@@ -202,16 +232,16 @@ export class LayupLayer {
      */
     getLaminate(layupContext) { throw new Error("Sub classes must override getLaminate(layupContext)."); }
 
-} // LayupLayer
+} // AbstractLayer
 
 //========================================================================================
 
 /**
- * A PrepregLayer combines a 'wrapped' LayupLayer, with a resin at a resin content, with
+ * A PrepregLayer combines a 'wrapped' AbstractLayer, with a resin at a resin content, with
  * a resin flow.  Final resin content = resinContent - resinFlow.
- * @extends LayupLayer
+ * @extends AbstractLayer
  */
-export class PrepregLayer extends LayupLayer {
+export class PrepregLayer extends AbstractLayer {
     /**
      * A PrepregLayer has a 'wrapped' layupLayer, an as-purchased resin content, 
      * and resin flow.  Final resin content = resinContent - resinFlow.
@@ -219,7 +249,7 @@ export class PrepregLayer extends LayupLayer {
      * @param {object} [options] can call with no options, but must be valid if present
      * @param {string} [options.name] 
      * @param {string} [options.description] 
-     * @param {LayupLayer} [options.layer] the fiber layer, can be any LayupLayer
+     * @param {AbstractLayer} [options.layer] the fiber layer, can be any AbstractLayer
      * @param {Material} [options.resin] the prepreg resin
      * @param {number} [options.resinContent] resin fraction (0-1) of total as-purchased wt
      * @param {number} [options.resinFlow] resin flow, as % of total wt
@@ -324,7 +354,7 @@ export class PrepregLayer extends LayupLayer {
     }
 
     /**
-     * @param {LayupLayer} target
+     * @param {AbstractLayer} target
      * @return {boolean} 
      */
     contains(target) {
@@ -355,7 +385,7 @@ export class PrepregLayer extends LayupLayer {
  * A ReleaseLayer can not be added to a FabricLayer.  They must always 
  * be at the top-level of the laminate stack.
  */
-export class ReleaseLayer extends LayupLayer {
+export class ReleaseLayer extends AbstractLayer {
 
     /**
      * A release layer creates a separation between an inner and 
@@ -368,8 +398,8 @@ export class ReleaseLayer extends LayupLayer {
      * @param {object} [options] can call with no options, but must be valid if present
      * @param {string} [options.name] 
      * @param {string} [options.description] 
-     * @param {LayupLayer} [options.layer] the 'wrapped' layer, can be any LayupLayer
-     * @param {LayupLayer} [options._layer] from serialized form
+     * @param {AbstractLayer} [options.layer] the 'wrapped' layer, can be any AbstractLayer
+     * @param {AbstractLayer} [options._layer] from serialized form
      */
     constructor(options) {
         super(options);
@@ -412,7 +442,7 @@ export class ReleaseLayer extends LayupLayer {
 /**
  * A SolidLayer is a material with a thickness
  */
-export class SolidLayer extends LayupLayer {
+export class SolidLayer extends AbstractLayer {
 
     /**
      * A SolidLayer is a material with a thickness
@@ -484,7 +514,7 @@ export class SolidLayer extends LayupLayer {
 /**
  * A FiberLayer represents a dry fiber layer.  Resin is provided by the LayupContext.
  */
-export class FiberLayer extends LayupLayer {
+export class FiberLayer extends AbstractLayer {
     /**
      * A FiberLayer represents a dry fiber layer.  Resin is provided by the part.
      *
@@ -615,15 +645,15 @@ export const WEAVETYPE = Object.freeze({
 /**
  * A FabricLayer is a collection of other Layers at angles, with a weave type
  */
-export class FabricLayer extends LayupLayer {
+export class FabricLayer extends AbstractLayer {
 
     /**
      * FabricLayer is a collection of other Layers at angles, with a weave type
      * @param {object} [options]
      * @param {string} [options.name]
      * @param {string} [options.description]
-     * @param {LayupLayer[]} [options.layers] array of Solid, Uni, Random, Prepreg or Fabric Layers
-     * @param {LayupLayer[]} [options._layers] serialized form is saved with underscores
+     * @param {AbstractLayer[]} [options.layers] array of Solid, Uni, Random, Prepreg or Fabric Layers
+     * @param {AbstractLayer[]} [options._layers] serialized form is saved with underscores
      * @param {number[]} [options.angles] array of angles for each Layer
      * @param {number[]} [options._angles] serialized form is saved with underscores
      * @param {*} [options.weaveType] WEAVETYPE.NONE (default), KNIT, PLAIN, TWILL ..
@@ -694,7 +724,7 @@ export class FabricLayer extends LayupLayer {
     canAddLayer(layer) {
         return (
             layer !== this &&
-            (layer instanceof LayupLayer) &&
+            (layer instanceof AbstractLayer) &&
             (layer.contains(this) === false)
         );
     }
@@ -743,9 +773,24 @@ export class FabricLayer extends LayupLayer {
 /**
  * A BraidedLayer is a braided tubular material. 
  * Braided plys have properties that vary with diameter. 
- * If more than one fiber is included they are all at the same vf.
+ * If more than one fiber is included they are all at the same vf. 
+ * 
+ * name, 
+ * description, 
+ * isCompressible, 
+ * fiberDensity, 
+ * resinDensity, 
+ * solidDensity, 
+ * getTotalArealWt(ctx), 
+ * getResinArealWt(ctx), 
+ * getSolidArealWt(ctx), 
+ * getFiberArealWt(ctx), 
+ * getVf(ctx), 
+ * getThickness(ctx), 
+ * contains(AbstractLayer), 
+ * getLaminate(ctx), 
  */
-export class BraidedLayer {
+export class BraidedLayer extends AbstractLayer {
 
     /**
      * A BraidedLayer is a braided tubular material. 
@@ -753,39 +798,253 @@ export class BraidedLayer {
      * If more than one fiber is included they are all at the same vf.
      *
      * @param {object} options
+     * @param {string} [options.name]
+     * @param {string} [options.description]
      * 
-     * @param {Material[]} options.biaxFibers an array of fibers
-     * @param {number[]} options.biaxFAWs an array of the fiber areal wts (kg/sq.m) when braided
+     * @param {Material[]} [options._biaxFibers] an array of fibers
+     * @param {Material[]} [options.biaxFibers] an array of fibers
      * 
-     * @param {number} options.braidDiameter the diameter (meters) when braided
+     * @param {number[]} [options._biaxFAWs] an array of the fiber areal wts (kg/sq.m) when braided
+     * @param {number[]} [options.biaxFAWs] an array of the fiber areal wts (kg/sq.m) when braided
+     * 
+     * @param {number} [options._braidDiameter] the diameter (meters) when braided
+     * @param {number} [options.braidDiameter] the diameter (meters) when braided
+     * 
+     * @param {number} [options._braidAngle] the angle (degrees) when braided, default = 45 degrees
      * @param {number} [options.braidAngle] the angle (degrees) when braided, default = 45 degrees
+     * 
+     * @param {number} [options._braidVf] the vf when braided, default = 0.375
      * @param {number} [options.braidVf] the vf when braided, default = 0.375
      * 
+     * @param {Material[]} [options._axialFibers] an array of fibers
      * @param {Material[]} [options.axialFibers] an array of fibers
+     * 
+     * @param {number[]} [options._axialFAWs] an array of the fiber areal wts (kg/sq.m) when braided
      * @param {number[]} [options.axialFAWs] an array of the fiber areal wts (kg/sq.m) when braided
      * 
+     * @param {number} [options._braidVfj] the vf when braid jams, default = 0.55
      * @param {number} [options.braidVfj] the vf when braid jams, default = 0.55
+     * 
+     * @param {number} [options._braidVfmax] the maximum possible vf, default = 0.67
      * @param {number} [options.braidVfmax] the maximum possible vf, default = 0.67
+     * 
+     * @param {number} [options._braidPackingFactor] parameter to calc vf after jamming, default = 0.375
      * @param {number} [options.braidPackingFactor] parameter to calc vf after jamming, default = 0.375
+     * 
+     * @param {object}   [options.compactionModel] fiber volume fraction
+     * @param {object}   [options._compactionModel] serialized form
      */
-    constructor(options) {
+    constructor(options = {}) {
 
-        if (options) {
-            this.biaxFibers = options.biaxFibers;
-            this.biaxFAWs = options.biaxFAWs; // total, IE + and - layers
+        super(options);
 
-            this.braidDiameter = options.braidDiameter;
-            this.braidAngle = options.braidAngle == undefined ? 45.0 : options.braidAngle;
-            this.braidVf = options.braidVf == undefined ? 0.375 : options.braidVf;
+        this._biaxFibers = options._biaxFibers || options.biaxFibers || [];
+        this._biaxFAWs = options._biaxFAWs || options.biaxFAWs || []; // total, IE + and - layers
 
-            this.axialFibers = options.axialFibers;
-            this.axialFAWs = options.axialFAWs; // total, IE + and - layers
+        this._braidDiameter = options._braidDiameter || options.braidDiameter || 1.0;
+        this._braidAngle = options._braidAngle || options.braidAngle || 45.0;
+        this._braidVf = options._braidVf || options.braidVf || 0.375;
 
-            this.braidVfj = options.braidVfj == undefined ? 0.55 : options.braidVfj;
-            this.braidVfmax = options.braidVfmax == undefined ? 0.67 : options.braidVfmax;
-            this.braidPackingFactor = options.braidPackingFactor == undefined ? 0.375 : options.braidPackingFactor;
+        this._axialFibers = options._axialFibers || options.axialFibers || [];
+        this._axialFAWs = options._axialFAWs || options.axialFAWs || []; // total, IE + and - layers
+
+        this._braidVfj = options._braidVfj || options.braidVfj || 0.55;
+        this._braidVfmax = options._braidVfmax || options.braidVfmax || 0.67;
+        this._braidPackingFactor = options._braidPackingFactor || options.braidPackingFactor || 0.375;
+
+        this._compactionModel = options._compactionModel || options.compactionModel;
+    }
+
+
+    /** @override */
+    get isCompressible() { return !!(this.compactionModel); }
+
+    get compactionModel() { return this._compactionModel; }
+    set compactionModel(value) { this._compactionModel = value; }
+
+    /** @override */
+    get fiberDensity() {
+        const biaxDensity = this.getBiaxialFiberDensity();
+        const biaxFAW = this.getBiaxialFAWo();
+        const biaxThick = biaxFAW / biaxDensity;
+        const axialDensity = this.getAxialFiberDensity();
+        const axialFAW = this.getAxialFAWo();
+        const axialThick = axialFAW / axialDensity;
+        return (biaxFAW + axialFAW) / (biaxThick + axialThick);
+    }
+
+    /** @override */
+    get resinDensity() { return undefined; }
+
+    /** @override */
+    get solidDensity() { return undefined; }
+
+    /**
+     * Resin areal weight - subclasses must override.
+     * @argument {object} layupContext - pressure, resin & other info on the layup
+     * @returns {number} areal weight in kg/sq.m
+     */
+    getResinArealWt(layupContext) {
+        if (!(layupContext && layupContext.resin)) {
+            throw new Error("Braided layers need a resin to determine resin areal wt.");
+        } else {
+            let fiberDensity = this.fiberDensity;
+            let resinDensity = layupContext.resin.density;
+            let vf = this.getVf(layupContext);
+            let mf = vf * fiberDensity / (fiberDensity * vf + resinDensity * (1 - vf));
+            let faw = this.getFiberArealWt(layupContext);
+            return faw * (1 - mf) / mf;
         }
     }
+    /**
+     * Fiber areal weight - subclasses must override.
+     * @argument {object} layupContext - pressure, resin & other info on the layup
+     * @returns {number} areal weight in kg/sq.m
+     */
+    getFiberArealWt(layupContext) { return this.getFAW(layupContext.diameter); }
+
+    /**
+     * Solid areal weight - subclasses must override.
+     * @argument {LayupContext} layupContext - pressure, resin & other info on the layup
+     * @returns {number} areal weight in kg/sq.m
+     */
+    getSolidArealWt(layupContext) { return 0.0; }
+
+    /**
+     * @override 
+     */
+    getVf(layupContext) {
+        let diameter = layupContext.diameter;
+        // calc Vfc for constant thickness, vf scales with FAW
+        let vf = this.braidVf * this.getFAW(diameter) / this.getFAWo();
+
+        // If the braid is jammed, vf will go up less than FAW,
+        // because jamming forces thickness to increase.
+        if (vf > this.braidVfj) {
+            vf = this.braidPackingFactor * vf + (1 - this.braidPackingFactor) * this.braidVfj;
+        }
+
+        //arbitrary limit at braid max Vf
+        if (vf > this.braidVfMax) {
+            vf = this.braidVfMax;
+        }
+        return vf;
+    }
+
+    /**
+     * Calculate the layup's thickness under the layupContext conditions.
+     * @argument {object} layupContext - info on the layup, IE pressure, resin, tool diameter... 
+     * @returns {number}  thickness in meters
+     */
+    getThickness(layupContext) {
+        let vf = this.getVf(layupContext);
+        let rhof = this.fiberDensity;
+        let faw = this.getFiberArealWt(layupContext);
+        return faw / (rhof * vf);
+    }
+
+    /**
+     * @override
+     */
+    contains(target) {
+        return (target === this);
+    }
+
+    /**
+     * Triaxial braids are represented as a three-layer laminate:
+     *
+     *  1. Top half of biaxial +/- theta fibers, woven, 50% of biaxial FAW
+     *  2. Zero degree axial fibers, full FAW in a single layer
+     *  3. Bottom half of biaxial +/- theta fibers, woven, 50% of biaxial FAW
+     *
+     * If there are multiple biax or axial fibers they will be included as
+     * multiple layers, which will be woven together into layers 1-3.
+     *
+     * If thre are no axial fibers the top and bottom halves may be consolidated.
+     *
+     * @param {LayupContext} layupContext data required to build laminate, resin, diameter etc.
+     * @returns {Laminate} a LPT.Laminate for this braided ply
+     * @override
+     */
+    getLaminate(layupContext) {
+
+        const d = this.getDiaFromOd(layupContext.od); // get nominal diameter 
+        const vf = this.getVf(d);
+        const resin = layupContext.resin;
+        // individual biaxial FAWs scale with overall biaxialFAW as diameter changes
+        const biaxialFAWRatio = (this.getFAW(d) / this.getFAWo());
+        const biaxAngle = this.getBiaxialFiberAngle(d);
+
+        // build upper and lower laminates from the biaxial fibers
+        // +/- layers are added for each biaxial fiber type in the braid
+        const upperBiaxLam = new Laminate();
+        upperBiaxLam.isWoven = true;
+        const lowerBiaxLam = new Laminate();
+        lowerBiaxLam.isWoven = true;
+        for (let i = 0; i < this.biaxFibers.length; i++) {
+            // ply is half of FAW at +angle & half at -angle
+            let ply = new CompositeLamina({
+                name: '',
+                description: '',
+                fiber: this.biaxFibers[i],
+                resin: resin,
+                vf: vf,
+                faw: this.biaxFAWs[i] * biaxialFAWRatio / 4.0,
+                isRandom: false,
+            });
+            upperBiaxLam.addPly(ply, biaxAngle, ORIENTATION.UPRIGHT);
+            upperBiaxLam.addPly(ply, -biaxAngle, ORIENTATION.UPRIGHT);
+            lowerBiaxLam.addPly(ply, biaxAngle, ORIENTATION.UPRIGHT);
+            lowerBiaxLam.addPly(ply, -biaxAngle, ORIENTATION.UPRIGHT);
+        }
+
+        // axial fibers go in the middle
+        // one layer is added for each axial fiber type in the braid
+        const axialLam = new Laminate();
+        axialLam.isWoven = true;
+        for (let i = 0; i < this.axialFibers.length; i++) {
+            let ply = new CompositeLamina({
+                name: '',
+                description: '',
+                fiber: this.axialFibers[i],
+                resin: resin,
+                vf: vf,
+                faw: this.axialFAWs[i] * (this.braidDiameter / d),
+                isRandom: false,
+            });
+            axialLam.addPly(ply, 0.0, ORIENTATION.UPRIGHT);
+        }
+
+        // the braid is the lower biaxials, axials and upper biaxials
+        const theLaminate = new Laminate();
+        theLaminate.addPly(lowerBiaxLam, 0.0, ORIENTATION.UPRIGHT);
+        theLaminate.addPly(axialLam, 0.0, ORIENTATION.UPRIGHT);
+        theLaminate.addPly(upperBiaxLam, 0.0, ORIENTATION.UPRIGHT);
+
+        return theLaminate;
+    }
+
+    get biaxFibers() { return this._biaxFibers; }
+
+    get biaxFAWs() { return this._biaxFAWs; }
+
+    get braidDiameter() { return this._braidDiameter; }
+
+    get braidAngle() { return this.braidAngle; }
+
+    get braidVf() { return this._braidVf; }
+
+    get axialFibers() { return this.axialFibers; }
+
+    get axialFAWs() { return this.axialFAWs; }
+
+    /** The volume fraction when the braid is jammed.  @returns number */
+    get braidVfj() { return this._braidVfj; }
+
+    get braidVfMax() { return this._braidVfmax; }
+
+    get braidPackingFactor() { return this._braidPackingFactor; }
+
     /**
      *
      * @returns {number} the as-braided fiber areal wt in kg/sq.m
@@ -815,19 +1074,7 @@ export class BraidedLayer {
         }
         return faw;
     }
-    /**
-     *
-     * @returns{number} the average fiber density in kg/cu.m
-     */
-    getFiberDensity() {
-        const biaxDensity = this.getBiaxialFiberDensity();
-        const biaxFAW = this.getBiaxialFAWo();
-        const biaxThick = biaxFAW / biaxDensity;
-        const axialDensity = this.getAxialFiberDensity();
-        const axialFAW = this.getAxialFAWo();
-        const axialThick = axialFAW / axialDensity;
-        return (biaxFAW + axialFAW) / (biaxThick + axialThick);
-    }
+
     /**
      *
      * @returns{number} the average biaxial fiber density in kg/cu.m
@@ -911,28 +1158,7 @@ export class BraidedLayer {
     getAxialFAW(diameter) {
         return this.getAxialFAWo() * this.braidDiameter / diameter;
     }
-    /**
-     * Fiber volume fraction varies with diameter in use.
-     *
-     * @param {number} diameter the diameter in use
-     * @returns {number} the fiber volume fraction at diameter d
-     */
-    getVf(diameter) {
-        // calc Vfc for constant thickness, vf scales with FAW
-        let vf = this.braidVf * this.getFAW(diameter) / this.getFAWo();
 
-        // If the braid is jammed, vf will go up less than FAW,
-        // because jamming forces thickness to increase.
-        if (vf > this.braidVfj) {
-            vf = this.braidPackingFactor * vf + (1 - this.braidPackingFactor) * this.braidVfj;
-        }
-
-        //arbitrary limit at braid max Vf
-        if (vf > this.braidVfmax) {
-            vf = this.braidVfmax;
-        }
-        return vf;
-    }
     /**
      * The braid nominal diameter is (od - thickness), but
      * thickness varies with diameter, so we iterate a few times
@@ -942,7 +1168,7 @@ export class BraidedLayer {
      * @returns {number} the braid's nominal diameter
      */
     getDiaFromOd(outsideDiameter) {
-        let fiberDensity = this.getFiberDensity();
+        let fiberDensity = this.fiberDensity;
 
         let thickness = this.getFAW(outsideDiameter) / (this.getVf(outsideDiameter) * fiberDensity);
 
@@ -965,7 +1191,7 @@ export class BraidedLayer {
      * @returns {number} the braid's nominal diameter
      */
     getDiaFromId(insideDiameter) {
-        let fiberDensity = this.getFiberDensity();
+        let fiberDensity = this.fiberDensity;
 
         let thickness = this.getFAW(insideDiameter) / (this.getVf(insideDiameter) * fiberDensity);
 
@@ -979,78 +1205,7 @@ export class BraidedLayer {
 
         return d;
     }
-    /**
-     * Triaxial braids are represented as a three-layer laminate:
-     *
-     *  1. Top half of biaxial +/- theta fibers, woven, 50% of biaxial FAW
-     *  2. Zero degree axial fibers, full FAW in a single layer
-     *  3. Bottom half of biaxial +/- theta fibers, woven, 50% of biaxial FAW
-     *
-     * If there are multiple biax or axial fibers they will be included as
-     * multiple layers, which will be woven together into layers 1-3.
-     *
-     * If thre are no axial fibers the top and bottom halves may be consolidated.
-     *
-     * @param {LayupContext} layupContext data required to build laminate, resin, diameter etc.
-     * @returns {Laminate} a LPT.Laminate for this braided ply
-     */
-    getLaminate(layupContext) {
 
-        const d = this.getDiaFromOd(layupContext.od); // get nominal diameter 
-        const vf = this.getVf(d);
-        const resin = layupContext.resin;
-        // individual biaxial FAWs scale with overall biaxialFAW as diameter changes
-        const biaxialFAWRatio = (this.getFAW(d) / this.getFAWo());
-        const biaxAngle = this.getBiaxialFiberAngle(d);
-
-        // build upper and lower laminates from the biaxial fibers
-        // +/- layers are added for each biaxial fiber type in the braid
-        const upperBiaxLam = new Laminate();
-        upperBiaxLam.isWoven = true;
-        const lowerBiaxLam = new Laminate();
-        lowerBiaxLam.isWoven = true;
-        for (let i = 0; i < this.biaxFibers.length; i++) {
-            // ply is half of FAW at +angle & half at -angle
-            let ply = new CompositeLamina({
-                name: '',
-                description: '',
-                fiber: this.biaxFibers[i],
-                resin: resin,
-                vf: vf,
-                faw: this.biaxFAWs[i] * biaxialFAWRatio / 4.0,
-                isRandom: false,
-            });
-            upperBiaxLam.addPly(ply, biaxAngle, ORIENTATION.UPRIGHT);
-            upperBiaxLam.addPly(ply, -biaxAngle, ORIENTATION.UPRIGHT);
-            lowerBiaxLam.addPly(ply, biaxAngle, ORIENTATION.UPRIGHT);
-            lowerBiaxLam.addPly(ply, -biaxAngle, ORIENTATION.UPRIGHT);
-        }
-
-        // axial fibers go in the middle
-        // one layer is added for each axial fiber type in the braid
-        const axialLam = new Laminate();
-        axialLam.isWoven = true;
-        for (let i = 0; i < this.axialFibers.length; i++) {
-            let ply = new CompositeLamina({
-                name: '',
-                description: '',
-                fiber: this.axialFibers[i],
-                resin: resin,
-                vf: vf,
-                faw: this.axialFAWs[i] * (this.braidDiameter / d),
-                isRandom: false,
-            });
-            axialLam.addPly(ply, 0.0, ORIENTATION.UPRIGHT);
-        }
-
-        // the braid is the lower biaxials, axials and upper biaxials
-        const theLaminate = new Laminate();
-        theLaminate.addPly(lowerBiaxLam, 0.0, ORIENTATION.UPRIGHT);
-        theLaminate.addPly(axialLam, 0.0, ORIENTATION.UPRIGHT);
-        theLaminate.addPly(upperBiaxLam, 0.0, ORIENTATION.UPRIGHT);
-
-        return theLaminate;
-    }
 }
 
 

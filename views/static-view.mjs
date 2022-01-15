@@ -1,7 +1,7 @@
 //@ts-check
 
-import { AbstractView } from "./abstractView.mjs";
-import {cleanHTML} from "../js/ext/vjs-toolkit/cleanHTML.mjs"
+import { AbstractView } from "./abstract-view.mjs";
+import {cleanHTML} from "../js/ext/vjs-toolkit/clean-html.mjs"
 
 export class StaticView extends AbstractView {
   constructor(args) {
@@ -10,6 +10,7 @@ export class StaticView extends AbstractView {
     this.path = args ? args.path : undefined;
   }
 
+  /** override */
   async buildHTML() {
     if (this.html == undefined) {
       let response = await fetch(this.path);

@@ -1,11 +1,10 @@
 {
-    "short_name": "Stratus Composites",
-    "name": "Stratus Composite Laminate Analysis",
+    "short_name": "Stratus LPT",
+    "name": "Stratus Laminate Plate Theory",
     "icons": [
       {
-        "src": "assets/myIcon.png",
-        "type": "image/png",
-        "sizes": "180x180"
+        "src": "assets/lpt-icon.svg",
+        "type": "image/svg"
       }
     ],
     "start_url": "index.html",

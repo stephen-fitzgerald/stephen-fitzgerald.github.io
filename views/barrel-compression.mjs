@@ -3,11 +3,11 @@
 
 import { CONVERT } from "../js/pci/util/convert.mjs";
 import { Mat_Isotropic, Mat_PlanarIso23 } from "../js/pci/lpt/material.mjs";
-import { printToHTML, syntaxHighlight } from "../js/pci/util/printToHTML.mjs";
+import { printToHTML, syntaxHighlight } from "../js/pci/util/print-to-html.mjs";
 import { CompositeLamina, Laminate } from "../js/pci/lpt/lpt.mjs";
 import { decycle, retrocycle } from "../js/pci/util/serialize.mjs";
 import { ORIENTATION } from "../js/pci/lpt/orientation.mjs";
-import { AbstractView } from "./abstractView.mjs";
+import { AbstractView } from "./abstract-view.mjs";
 
 export class BCView extends AbstractView {
   constructor(args) {

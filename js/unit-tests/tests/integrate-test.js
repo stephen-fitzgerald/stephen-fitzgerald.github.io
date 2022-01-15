@@ -1,9 +1,9 @@
 /*jshint esversion: 6 */
 // @ts-check
 
-import { assert, diff } from "../pci/util/assert.mjs";
-import { integrateFunction, isFunction } from "../pci/util/functions.mjs";
-import { printToHTML } from "../pci/util/printToHTML.mjs";
+import { assert, diff } from "../../pci/util/assert.mjs";
+import { integrateFunction, isFunction } from "../../pci/util/functions.mjs";
+import { printToHTML } from "../../pci/util/print-to-html.mjs";
 
 export function integrateTest() {
 
