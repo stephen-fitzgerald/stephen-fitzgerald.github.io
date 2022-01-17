@@ -1,72 +1,99 @@
 * {
-    box-sizing: border-box;
-    color: rgb(19, 20, 65);
-    background-color: rgb(212, 239, 247);
-    margin: 0px;
-    padding: 0px;
-    font: menu;
+  box-sizing: border-box;
+  color: rgb(19, 20, 65);
+  background-color: rgb(212, 239, 247);
+  margin: 0px;
+  padding: 0px;
+  font: menu;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 input:enabled {
-    filter: brightness(110%) saturate(110%);
+  filter: brightness(110%) saturate(110%);
 }
 
 input {
-    border-style: none;
+  border-style: none;
 }
 
 button {
-    text-align: center;
-    min-width: 7em;
+  text-align: center;
+  min-width: 7em;
 }
 
-button:hover, select:hover {
-    filter: brightness(110%) saturate(110%);
+button:hover,
+select:hover {
+  filter: brightness(110%) saturate(110%);
 }
 
 table {
-    border-collapse: collapse;
-    border-spacing: 0px;
+  border-collapse: collapse;
+  border-spacing: 0px;
 }
 
 thead {
-    filter: brightness(70%) saturate(150%);
+  filter: brightness(70%) saturate(150%);
 }
 
 tbody tr:hover {
-    filter: brightness(110%) saturate(110%);
+  filter: brightness(110%) saturate(110%);
 }
-
 
 /* Style the side navigation */
 .left-nav {
-    height: 100%;
-    width: 200px;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: rgb(24, 37, 148);
-    overflow-x: hidden;
-    margin: 0px;
-    padding: 0px;
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(24, 37, 148);
+  overflow-x: hidden;
+  margin: 0px;
+  padding: 0px;
 }
 
 /* Side navigation links */
 .left-nav a {
-    background-color: rgb(29, 44, 179);
-    color: white;
-    padding: 12px;
-    text-decoration: none;
-    display: block;
+  background-color: rgb(29, 44, 179);
+  color: white;
+  padding: 12px;
+  text-decoration: none;
+  display: block;
 }
 
 /* Change color on hover */
 .left-nav a:hover {
-    filter: brightness(150%) saturate(150%);
+  filter: brightness(150%) saturate(150%);
 }
 
 .main-container {
-    margin: 0px 0px 0px 200px;
-    padding: 4px;
+  margin-left: 200px;
+  padding: 4px;
+}
+
+/* For smaller screens */
+@media only screen and (max-width: 768px) {
+  * {
+    color: rgb(6, 10, 245);
+    background-color: rgb(247, 212, 242);
+  }
+
+  /* hide the left nav-bar */
+  .left-nav {
+      display: none;
+  }
+  .main-container {
+    margin-left: 0px;
+  }
+  
 }
