@@ -2,13 +2,12 @@
 //@ts-check
 
 import {
-    Material, Mat_Isotropic, Mat_PlanarIso12, Mat_PlanarIso13,
-    Mat_PlanarIso23, Mat_Orthotropic, Mat_FRP
-} from '../../pci/lpt/material.mjs';
+    Material, Mat_Isotropic, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, Mat_Orthotropic, Mat_FRP
+} from '../../js/pci/lpt/material.mjs';
 
-import { assert } from '../../pci/util/assert.mjs';
-import { printToHTML, printHighlightedHTML } from '../../pci/util/print-to-html.mjs';
-import { serialize, deserialize } from '../../pci/util/serialize.mjs';
+import { assert } from '../../js/pci/util/assert.mjs';
+import { printHighlightedHTML } from '../../js/pci/util/print-to-html.mjs';
+import { serialize, deserialize } from '../../js/pci/util/serialize.mjs';
 
 export function materialTest() {
 

@@ -9,7 +9,8 @@ import { StaticView } from "./views/static-view.mjs";
 import { BCView } from "./views/barrel-compression.mjs";
 
 export function getRoutes() {
-  return {
+
+  let routes = {
 
     "/": new StaticView({ title: "Stratus LPT", path: "/views/home.html" }),
     "/about": new StaticView({ title: "Stratus LPT: About", path: "/views/about.html", }),
@@ -20,7 +21,9 @@ export function getRoutes() {
 
     "/materials": new MaterialsListView({ title: "Stratus LPT: Materials List" }),
     "/materials-create": new MaterialsCreateView({ title: "Stratus LPT: New Material" }),
-    
+
     Error404: new StaticView({ title: "Stratus LPT: File Not Found", path: "/views/404.html" }),
   };
+
+  return (routes);
 }

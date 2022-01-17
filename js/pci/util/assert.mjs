@@ -21,7 +21,12 @@ export function assert(condition, message) {
         printToHTML('✖ ' + error);
     }
 }
-
+/**
+ * 
+ * @param {number} a 
+ * @param {number} b 
+ * @returns {number} Abs(a - b) / a
+ */
 export function diff(a, b) {
     return Math.abs((a - b) / a);
 }

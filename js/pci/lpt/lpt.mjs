@@ -96,7 +96,7 @@ export class AbstractLamina {
 
     // these should never need to be overridden
     get PR21() { return this.PR12 * this.E1 / this.E2; }
-    get PR31() { return this.PR31 * this.E3 / this.E1; }
+    get PR31() { return this.PR13 * this.E3 / this.E1; }
     get PR32() { return this.PR23 * this.E2 / this.E3; }
 
     /**
@@ -477,21 +477,18 @@ export class CompositeLamina extends AbstractLamina {
 
     /**
      * Material object that calculates the composite properties.
-     * Must be redefined when fiber, resin or vf are changed.
      * @type Mat_FRP
      * @readonly
      * @memberof CompositeLamina
      */
     get material() {
-        if (this._material == undefined) {
-            this._material = new Mat_FRP({
-                name: "<" + this.name + ">",
-                description: "<" + this.description + ">",
-                fiber: this._fiber,
-                resin: this._resin,
-                vf: this._vf,
-            });
-        }
+        this._material = new Mat_FRP({
+            name: "<" + this.name + ">",
+            description: "<" + this.description + ">",
+            fiber: this._fiber,
+            resin: this._resin,
+            vf: this._vf,
+        });
         return this._material;
     }
 
@@ -609,14 +606,14 @@ export class Laminate extends AbstractLamina {
                 compositeThickness += ti;
             }
         }
-        return ret / compositeThickness;
+        return compositeThickness > 0.0 ? ret / compositeThickness : 0.0;
     }
     get density() {
         let txd = this._plies.reduce((sum, ply) => sum + ply.thickness * ply.density, 0);
         return txd / this.thickness;
     }
     get taw() {
-        return this._plies.reduce((sum, ply) => sum + ply.arealWt, 0);
+        return this._plies.reduce((sum, ply) => sum + ply.taw, 0);
     }
     get saw() {
         return this._plies.reduce((sum, ply) => sum + ply.saw, 0);
@@ -627,6 +624,57 @@ export class Laminate extends AbstractLamina {
     get raw() {
         return this._plies.reduce((sum, ply) => sum + ply.raw, 0);
     }
+
+    // in-plane properties
+    get E1() { return this.properties.Ex; }
+    get E2() { return this.properties.Ey; }
+    get G12() { return this.properties.Gxy; }
+    get PR12() { return this.properties.PRxy; }
+
+    //TODO improve 3D estimates
+
+    /** @override uses simple weighted averages, for now. */
+    get E3() {
+        let ret = 0.0;
+        let thickness = 0.0;
+        for (let i = this._plies.length - 1; i >= 0; i--) {
+            let ti = this._plies[i].thickness;
+            ret = ret + ti * this._plies[i].E3;
+            thickness += ti;
+        }
+        return ret / thickness;
+    }
+
+    /** @override uses simple weighted averages, for now. */
+    get G13() {
+        let ret = 0.0;
+        let thickness = 0.0;
+        for (let i = this._plies.length - 1; i >= 0; i--) {
+            let ti = this._plies[i].thickness;
+            ret = ret + ti * this._plies[i].G13;
+            thickness += ti;
+        }
+        return ret / thickness;
+    }
+
+    /** @override uses simple weighted averages, for now. */
+    get G23() {
+        let ret = 0.0;
+        let thickness = 0.0;
+        for (let i = this._plies.length - 1; i >= 0; i--) {
+            let ti = this._plies[i].thickness;
+            ret = ret + ti * this._plies[i].G23;
+            thickness += ti;
+        }
+        return ret / thickness;
+    }
+
+    /** @override */
+    get PR13() { return this.E1 / (2.0 * this.G13) - 1.0; }
+
+    /** @override */
+    get PR23() { return this.E2 / (2.0 * this.G23) - 1.0; }
+
     get plyCount() {
         return this._plies.length;
     }
@@ -668,7 +716,7 @@ export class Laminate extends AbstractLamina {
      *
      * @returns {Laminate} this Laminate, for method chaining
      */
-    addPly(thePly, angle=0.0, orientation=ORIENTATION.UPRIGHT) {
+    addPly(thePly, angle = 0.0, orientation = ORIENTATION.UPRIGHT) {
         return this.addPlyAt(this._plies.length, thePly, angle, orientation);
     }
 
@@ -679,7 +727,7 @@ export class Laminate extends AbstractLamina {
      * @param {AbstractLamina} thePly  a Ply or Laminate object to add
      * @returns {Laminate} this Laminate, for method chaining
      */
-    addPlyAt(index, thePly, angle=0.0, orientation=ORIENTATION.UPRIGHT) {
+    addPlyAt(index, thePly, angle = 0.0, orientation = ORIENTATION.UPRIGHT) {
         let i = Math.max(0, index);
         i = Math.min(this._plies.length, i);
         if (this.canAddPly(thePly)) {

@@ -1,11 +1,14 @@
 /*jshint esversion: 6 */
 // @ts-check
 
-import { assert, diff } from "../../pci/util/assert.mjs";
-import { integrateFunction, isFunction } from "../../pci/util/functions.mjs";
-import { printToHTML } from "../../pci/util/print-to-html.mjs";
+import { assert, diff } from "../../js/pci/util/assert.mjs";
+import { integrateFunction, isFunction } from "../../js/pci/util/functions.mjs";
+import { printToHTML } from "../../js/pci/util/print-to-html.mjs";
 
 export function integrateTest() {
+
+    assert( true, "/*******************   Starting integration test.   ***************************");
+    assert( false, "This is just a test to make sure assert() is working.");
 
     let abs = Math.abs;
 

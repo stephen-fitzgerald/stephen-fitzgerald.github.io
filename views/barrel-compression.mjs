@@ -446,6 +446,7 @@ function calculateBarrelCompressions(parentElement = document.body) {
     parentElement
   );
 
+  /*
   let theLaminate = lam_4;
   let highlightedText = syntaxHighlight(retrocycle(decycle(theLaminate)));
   printToHTML(
@@ -453,6 +454,7 @@ function calculateBarrelCompressions(parentElement = document.body) {
     undefined,
     parentElement
   );
+  */
 /*
   theLaminate = lam_4b;
   highlightedText = syntaxHighlight(retrocycle(decycle(theLaminate)));

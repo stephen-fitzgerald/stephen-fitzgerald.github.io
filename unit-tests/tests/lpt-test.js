@@ -1,20 +1,20 @@
 /*jshint esversion: 6 */
 // @ts-check
 
-import { assert, diff} from "../../pci/util/assert.mjs";
-import {CONVERT} from "../../pci/util/convert.mjs";
-import { Mat_Isotropic, Mat_PlanarIso23 } from "../../pci/lpt/material.mjs";
-import { SolidLamina, Laminate, CompositeLamina } from "../../pci/lpt/lpt.mjs";
+import { assert, diff } from "../../js/pci/util/assert.mjs";
+import { CONVERT } from "../../js/pci/util/convert.mjs";
+import { Mat_Isotropic, Mat_PlanarIso23 } from "../../js/pci/lpt/material.mjs";
+import { SolidLamina, Laminate, CompositeLamina } from "../../js/pci/lpt/lpt.mjs";
 
 export function lptTest() {
 
-    console.log("Testing lpt.js...");
+    assert(true, "***  Testing lpt.js...  ***");
 
     const eps = 1e-9;
 
-    assert( false, "This is just a test to make sure assert() is working.");
+    assert(false, "This is just a test to make sure assert() is working.");
 
-    let eGlassFiber =  new Mat_Isotropic({
+    let eGlassFiber = new Mat_Isotropic({
         name: 'S-Glass Fiber',
         description: 'Generic S-glass fiber.',
         density: 2540.0, // kg/m^3
@@ -44,7 +44,7 @@ export function lptTest() {
     assert(diff(steelProps.Ex / 210e9, 1) < 0.005, 'Steel Ply modulus within 0.5% of 210 GPa.');
     assert(diff(steelProps.Ex, steelProps.Exf) < eps, 'Steel Ply flex & in-plane modulii within 0.00001%.');
 
-    let steelLam = new Laminate({name:'steel'}).addPly(steelPly);
+    let steelLam = new Laminate({ name: 'steel' }).addPly(steelPly);
     assert(steelLam.plyCount === 1, 'Steel laminate has 1 ply.');
 
     let steelLamProps = steelLam.properties;
@@ -69,12 +69,12 @@ export function lptTest() {
     });
 
     let epoxyResin = new Mat_Isotropic({
-            name: 'Epoxy Resin',
-            description: 'Generic epoxy resin.',
-            density: 1170.0, // kg/m^3
-            E1: 3.1e9,
-            PR12: 0.30,
-        });
+        name: 'Epoxy Resin',
+        description: 'Generic epoxy resin.',
+        density: 1170.0, // kg/m^3
+        E1: 3.1e9,
+        PR12: 0.30,
+    });
 
     let carbonPly = new CompositeLamina({
         name: '305 gsm uni Carbon at 57% vf',

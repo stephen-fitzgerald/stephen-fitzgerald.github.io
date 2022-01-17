@@ -450,9 +450,9 @@ export class SolidLayer extends AbstractLayer {
      * @param {string} [options.name]
      * @param {string} [options.description]
      * @param {Material} [options.material]
-     * @param {number} options.thickness thickness in meters
+     * @param {number} [options.thickness] thickness in meters
      */
-    constructor(options) {
+    constructor(options={}) {
         super(options);
         this._material = undefined;
         this._thickness = 0.0;
