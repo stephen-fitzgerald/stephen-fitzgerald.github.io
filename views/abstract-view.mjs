@@ -18,5 +18,10 @@ export class AbstractView {
     document.title = this.title;
   }
 
-  modelToView() {}
+  modelToView() {
+    let parent = document.getElementById('main-container');
+    let e = document.createElement("DIV");
+    e.innerHTML = `Resolution is: ${window.screen.width} x ${window.screen.height}`
+    parent.appendChild(e);
+  }
 }
