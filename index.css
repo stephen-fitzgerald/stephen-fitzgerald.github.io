@@ -21,8 +21,15 @@ input:enabled {
   filter: brightness(110%) saturate(110%);
 }
 
+input:hover:enabled {
+  filter: brightness(120%) saturate(120%);
+}
+
 input {
   border-style: none;
+  margin: 4pt 0pt 4pt 0pt;
+  width: 7em;
+  text-align: right;
 }
 
 button {
@@ -81,6 +88,9 @@ tbody tr:hover {
   padding: 4px;
 }
 
+[class^="units-"] {
+  font-size: 80%;
+}
 /* For smaller screens */
 @media only screen and (max-width: 768px) {
   * {
