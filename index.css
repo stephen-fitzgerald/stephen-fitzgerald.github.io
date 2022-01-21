@@ -91,19 +91,3 @@ tbody tr:hover {
 [class^="units-"] {
   font-size: 80%;
 }
-/* For smaller screens */
-@media only screen and (max-width: 768px) {
-  * {
-    color: rgb(6, 10, 245);
-    background-color: rgb(247, 212, 242);
-  }
-
-  /* hide the left nav-bar */
-  .left-nav {
-      display: none;
-  }
-  .main-container {
-    margin-left: 0px;
-  }
-  
-}
