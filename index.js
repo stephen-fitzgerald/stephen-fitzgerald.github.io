@@ -25,17 +25,27 @@ const app = async () => {
   /*
     Set up a menu button to hide/show the navigation pane
   */
-  let menuIcon = document.getElementById("hamburger-icon");
-  let navPane = document.getElementById("left-nav");
-  if (menuIcon != undefined ) {
-    menuIcon.addEventListener("click", (event) => {
-      if (navPane.style.display == "none") {
-        navPane.style.display = "";
-      } else {
-        navPane.style.display = "none";
-      }
-    });
-  }
+    let menuIcon = document.getElementById("hamburger-icon");
+    let navPane = document.getElementById("left-nav");
+    if (menuIcon != undefined ) {
+      menuIcon.addEventListener("click", (event) => {
+        if (navPane.style.display == "none") {
+          navPane.style.display = "";
+        } else {
+          navPane.style.display = "none";
+        }
+      });
+    }
+
+    /*
+      Set up a menu button to login/logout 
+    */
+    menuIcon = document.getElementById("login-icon");
+    if (menuIcon != undefined ) {
+      menuIcon.addEventListener("click", (event) => {
+       alert("Someday this may be a login or logout dialog.");
+      });
+    }
 };
 
 document.addEventListener("DOMContentLoaded", app);
