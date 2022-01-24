@@ -7,6 +7,7 @@ import { MaterialsListView } from "./views/materials-list-view.mjs";
 import { MaterialsCreateView } from "./views/materials-create-view.mjs";
 import { StaticView } from "./views/static-view.mjs";
 import { BCView } from "./views/barrel-compression.mjs";
+import { Cube3dView } from "./views/cube3d-view.mjs";
 
 export function getRoutes() {
 
@@ -21,6 +22,8 @@ export function getRoutes() {
 
     "/materials": new MaterialsListView({ title: "Stratus LPT: Materials List" }),
     "/materials-create": new MaterialsCreateView({ title: "Stratus LPT: New Material" }),
+
+    "/cube": new Cube3dView({ title: "Stratus LPT: 3D Cube" }),
 
     Error404: new StaticView({ title: "Stratus LPT: File Not Found", path: "/views/404.html" }),
   };

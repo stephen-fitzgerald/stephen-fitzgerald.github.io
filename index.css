@@ -1,3 +1,21 @@
+:root {
+  --text-clr: rgb(32, 39, 12);
+  
+  --header-bg-clr: rgb(99, 99, 247);
+  --header-hilite-clr: rgb(144, 144, 252);
+
+  --main-bg-clr: antiquewhite;
+
+  --table-clr: rgb(253, 226, 191);
+  --table-hilite-clr: rgb(252, 214, 165);
+  --table-hdr-clr: rgb(250, 170, 66);
+
+  --nav-bg-clr: aquamarine;
+  --nav-hilite-clr: rgb(181, 255, 230);
+
+  --footer-bg-clr: coral;
+}
+
 @font-face {
   font-family: Regular;
   src: url("./assets/Roboto/Roboto-Regular.ttf");
@@ -14,7 +32,7 @@
 }
 
 * {
-  color: rgb(53, 65, 19);
+  color: var(--text-clr);
   box-sizing: border-box;
   margin: 0px;
   padding: 0px;
@@ -31,8 +49,9 @@ html {
 }
 
 body {
+
   font-family: Regular;
-  font-size: smaller;
+
   display: grid;
   grid-template-areas:
     "header header"
@@ -46,24 +65,17 @@ body {
 
 header {
   grid-area: header;
-
   padding: 1rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: rgb(99, 99, 247);
-}
-
-main {
-  padding: 1rem;
-  grid-area: content;
-  background-color: antiquewhite;
+  background-color: var(--header-bg-clr);
 }
 
 nav {
   grid-area: nav;
-  background-color: aquamarine;
+  background-color: var(--nav-bg-clr);
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -75,14 +87,46 @@ nav a {
 }
 
 nav a:hover {
-  filter: brightness(110%) saturate(110%);
+  background-color: var(--nav-hilite-clr);
 }
 
 footer {
   grid-area: footer;
-  background-color: coral;
+  background-color: var(--footer-bg-clr);
   padding: 1rem;
 }
+
+main {
+  padding: 0.75rem;
+  grid-area: content;
+  background-color: var(--main-bg-clr);
+  overflow: auto;
+}
+
+.menu-icon {
+  cursor: pointer;
+  padding: 0.3rem;
+}
+
+header .menu-icon:hover{
+  background-color: var(--header-hilite-clr);
+}
+
+/* Hamburger menu item in header hides/shows nav */
+#hamburger-icon:before,
+#hamburger-icon:after,
+#hamburger-icon div {
+  width: 1.75rem;
+  background: var(--text-clr);
+  content: "";
+  display: block;
+  height: 5px;
+  border-radius: 2px;
+  margin: 5px 0;
+  transition: 0.5s;
+}
+
+/*  input styling for forms */
 
 input:enabled {
   filter: brightness(110%) saturate(110%);
@@ -110,12 +154,22 @@ select:hover {
 }
 
 table {
+  background-color: var(--table-clr);
   border-collapse: collapse;
   border-spacing: 0px;
 }
-
+table thead{
+  background-color: var(--table-hdr-clr);
+}
 tbody tr:hover {
-  filter: brightness(110%) saturate(110%);
+  background-color: var(--table-hilite-clr);
+  /* filter: brightness(50%) saturate(150%); */
+}
+
+/* The only canvas right now is in Cube 3D page */
+canvas {
+  background-color: blue;
+  background-color: transparent;
 }
 
 @media (max-width: 768px) {
@@ -131,7 +185,4 @@ tbody tr:hover {
     grid-template-rows: auto auto 1fr auto;
   }
 
-  nav a {
-    padding: 0.15em;
-  }
 }
