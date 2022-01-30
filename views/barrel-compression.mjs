@@ -10,12 +10,14 @@ import { ORIENTATION } from "../js/pci/lpt/orientation.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 
 export class BCView extends AbstractView {
+  /** @override */
   constructor(args) {
     super(args);
     this.html = undefined;
     this.path = args ? args.path : undefined;
   }
 
+  /** @override */
   async buildHTML() {
     if (this.html == undefined) {
       let response = await fetch(this.path);
@@ -24,6 +26,7 @@ export class BCView extends AbstractView {
     return this.html;
   }
 
+  /** @override */
   modelToView() {
     this.parentElement = document.getElementById("bc-div");
     calculateBarrelCompressions(this.parentElement);

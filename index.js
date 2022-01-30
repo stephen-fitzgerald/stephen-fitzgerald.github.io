@@ -34,6 +34,7 @@ const app = async () => {
         } else {
           navPane.style.display = "none";
         }
+        return false;
       });
     }
 
@@ -44,6 +45,7 @@ const app = async () => {
     if (menuIcon != undefined ) {
       menuIcon.addEventListener("click", (event) => {
        alert("Someday this may be a login or logout dialog.");
+       return false;
       });
     }
 };

@@ -7,8 +7,8 @@ import { AbstractView } from './abstract-view.mjs';
 
 export class MaterialView extends AbstractView {
 
-    constructor(templateStr) {
-        super(templateStr);
+    constructor(args={}) {
+        super(args);
     }
 
     buildHTML() {

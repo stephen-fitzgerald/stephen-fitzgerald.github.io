@@ -139,6 +139,9 @@ input:hover:enabled {
 input {
   border-style: none;
   margin: 4pt 0pt 4pt 0pt;
+}
+
+input.num {
   width: 7em;
   text-align: right;
 }

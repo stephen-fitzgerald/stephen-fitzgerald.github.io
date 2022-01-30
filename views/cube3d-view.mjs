@@ -32,7 +32,7 @@ export class Cube3dView extends AbstractView {
    */
   buildHTML() {
     // this.request = parseRequestURL();
-    this.html = `<p>Cube 3D</p>
+    this.html = `<h1>Cube 3D</h1>
                 <canvas id="theCanvas" width="${this.W}" height="${this.H}"></canvas>`;
     return this.html;
   }

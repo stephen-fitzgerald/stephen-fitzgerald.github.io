@@ -31,46 +31,46 @@ const templateHTML = `
         <br> <br>
 
         <label for="mat-density">Density:</label>
-        <input type="text" id="mat-density">
+        <input type="text" class="num" id="mat-density">
         <label class="units-density">kg/cu.m</label>
 
         <br> <br>
 
         <label for="mat-E1">E1:</label>
-        <input type="text" id="mat-E1">
+        <input type="text" class="num" id="mat-E1">
         <label class="units-modulus">Pa</label>
 
         <label for="mat-PR12">PR12:</label>
-        <input type="text" id="mat-PR12">
+        <input type="text" class="num" id="mat-PR12">
 
         <label for="mat-G12">G12:</label>
-        <input type="text" id="mat-G12">
+        <input type="text" class="num" id="mat-G12">
         <label class="units-modulus">Pa</label>
 
         <br>
 
         <label for="mat-E2">E2:</label>
-        <input type="text" id="mat-E2">
+        <input type="text" class="num" id="mat-E2">
         <label class="units-modulus">Pa</label>
 
         <label for="mat-PR13">PR13:</label>
-        <input type="text" id="mat-PR13">
+        <input type="text" class="num" id="mat-PR13">
 
         <label for="mat-G13">G13:</label>
-        <input type="text" id="mat-G13">
+        <input type="text" class="num" id="mat-G13">
         <label class="units-modulus">Pa</label>
 
         <br>
 
         <label for="mat-E3">E3:</label>
-        <input type="text" id="mat-E3">
+        <input type="text" class="num" id="mat-E3">
         <label class="units-modulus">Pa</label>
 
         <label for="mat-PR23">PR23:</label>
-        <input type="text" id="mat-PR23">
+        <input type="text" class="num" id="mat-PR23">
 
         <label for="mat-G23">G23:</label>
-        <input type="text" id="mat-G23">
+        <input type="text" class="num" id="mat-G23">
         <label class="units-modulus">Pa</label>
 
         <br>
@@ -83,7 +83,7 @@ const templateHTML = `
             <input type="text" id="mat-resin">
 
             <label for="mat-vf">Vf:</label>
-            <input type="text" id="mat-vf">
+            <input type="text" class="num" id="mat-vf">
         </div>
         <br>
         <div id="div-btns" width="32em">

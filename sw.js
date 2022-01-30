@@ -4,7 +4,7 @@
 //self.importScripts("/data/materialsData.mjs");
 
 // update name whenever an asset changes
-const cacheName = "stratus-lpt-2022-01-24-02";
+const cacheName = "stratus-lpt-2022-01-27-01";
 
 // Files to cache - add everything required for offline use.
 const contentToCache = [
@@ -38,6 +38,7 @@ const contentToCache = [
   "/data/ply-data.mjs",
 
   "/js/ext/vjs-toolkit/clean-html.mjs",
+  "/js/ext/vjs-toolkit/chart.esm.mjs",
 
   "/js/pci/bats/bat-calcs.mjs",
   "/js/pci/bats/molded-tube.mjs",
@@ -68,13 +69,16 @@ const contentToCache = [
   "/views/abstract-view.mjs",
   "/views/barrel-compression.html",
   "/views/barrel-compression.mjs",
+  "/views/chart-view.mjs",
+  "/views/cube3d-view.mjs",
   "/views/home.html",
   "/views/material-edit-view.mjs",
+  "/views/material-view.mjs",
   "/views/materials-create-view.mjs",
   "/views/materials-list-view.mjs",
   "/views/materials-state-view.mjs",
-  "/views/material-view.mjs",
   "/views/static-view.mjs",
+  "/views/uuid-view.mjs",
 ];
 
 // based on: https://stackoverflow.com/questions/33262385/service-worker-force-update-of-new-assets

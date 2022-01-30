@@ -6,7 +6,7 @@
  */
 
 import {getRoutes} from '../routes.mjs';
-import {cleanHTML} from '../js/ext/vjs-toolkit/clean-html.mjs';
+import {cleanHTML} from './ext/vjs-toolkit/clean-html.mjs';
 
 export function parseRequestURL() {
 
