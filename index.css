@@ -1,6 +1,6 @@
 :root {
   --text-clr: rgb(32, 39, 12);
-  
+
   --header-bg-clr: rgb(99, 99, 247);
   --header-hilite-clr: rgb(144, 144, 252);
 
@@ -49,7 +49,6 @@ html {
 }
 
 body {
-
   font-family: Regular;
 
   display: grid;
@@ -108,7 +107,7 @@ main {
   padding: 0.3rem;
 }
 
-header .menu-icon:hover{
+header .menu-icon:hover {
   background-color: var(--header-hilite-clr);
 }
 
@@ -161,7 +160,7 @@ table {
   border-collapse: collapse;
   border-spacing: 0px;
 }
-table thead{
+table thead {
   background-color: var(--table-hdr-clr);
 }
 tbody tr:hover {
@@ -187,5 +186,4 @@ canvas {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr auto;
   }
-
 }
