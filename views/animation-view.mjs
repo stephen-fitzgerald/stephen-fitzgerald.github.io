@@ -13,19 +13,15 @@ export class AnimationView extends AbstractView {
     super(args);
     this.title = args.title || "Animation View";
     this.canvasId = "the-canvas";
-    this.width = 1080;
-    this.height = 1080;
+    this.width = 350;
+    this.height = 150;
     this.canvas = undefined;
     this.agents = [];
     this.numAgents = 45;
   }
 
   buildHTML() {
-    // this.request = parseRequestURL();
-    this.html = `
-    <h1>Animation!</h1>
-    <canvas id="${this.canvasId}" width="${this.width}" height="${this.height}"></canvas>
-    `;
+    this.html = `<canvas id="${this.canvasId}"></canvas>`;
     return this.html;
   }
 
@@ -34,14 +30,37 @@ export class AnimationView extends AbstractView {
     this.canvas = document.getElementById(this.canvasId);
     //@ts-expect-error
     this.context = this.canvas.getContext('2d');
+    // document.getElementById('btn-save').addEventListener("click", this.savePNG.bind(this));
+    this.resize();
+    this.createAgents();
+    window.addEventListener("resize", this.resize.bind(this));
+  }
 
+  createAgents() {
+    this.agents = [];
     for (let i = 0; i < this.numAgents; i++) {
       const r = randRng(8, 22);
       const x = randRng(r, this.width - r);
       const y = randRng(r, this.height - r);
       this.agents.push(new Agent(x, y, r));
     }
+  }
 
+  resize() {
+    //@ts-expect-error
+    var rect = this.canvas.parentNode.getBoundingClientRect();
+    this.width = rect.width - 12;
+    this.height = rect.height - 12;
+    //@ts-expect-error
+    this.canvas.width = this.width;
+    //@ts-expect-error
+    this.canvas.height = this.height;
+    this.agents.forEach(agent => {
+      agent.c.x = Math.min(agent.c.x, this.width - agent.r - 1);
+      agent.c.y = Math.min(agent.c.y, this.height - agent.r - 1);
+      agent.c.x = Math.max(agent.r + 1, agent.c.x);
+      agent.c.y = Math.max(agent.r + 1, agent.c.y);
+    });
   }
 
   modelToView() {
@@ -84,6 +103,17 @@ export class AnimationView extends AbstractView {
 
     requestAnimationFrame(this.modelToView.bind(this));
   }
+
+  savePNG() {
+    //@ts-expect-error
+    let dataURL = this.canvas.toDataURL("image/png", 1.0);
+    let fileName = 'my-canvas.png';
+    var a = document.createElement('a');
+    a.href = dataURL;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+  }
 }
 
 //-----------------------------------------------------------
@@ -97,12 +127,11 @@ class Vector {
 }
 
 class Agent {
-  constructor(x, y, r = 10, cor = 1) {
+  constructor(x, y, r = 10) {
     this.lineWidth = 1;
     this.c = new Vector(x, y);
     this.vel = new Vector(randRng(-4, 4), randRng(-4, 4));
     this.r = r;
-    this.cor = cor;
   }
 
   distanceTo(other) {
@@ -116,10 +145,10 @@ class Agent {
 
   bounce(width, height) {
     if (this.c.x < this.r - 1 || this.c.x > (width - this.r) + 1) {
-      this.vel.x = -this.vel.x * this.cor;
+      this.vel.x = -this.vel.x ;
     }
     if (this.c.y < this.r - 1 || this.c.y > (height - this.r) + 1) {
-      this.vel.y = -this.vel.y * this.cor;
+      this.vel.y = -this.vel.y ;
     }
   }
 
