@@ -96,7 +96,8 @@ export class AnimationView extends AbstractView {
     }
 
     this.agents.forEach(agent => {
-      agent.bounce(width, height);
+      // agent.bounce(width, height);
+      agent.wrap(width, height);
       agent.update();
       agent.draw(context);
     });
@@ -145,10 +146,28 @@ class Agent {
 
   bounce(width, height) {
     if (this.c.x < this.r - 1 || this.c.x > (width - this.r) + 1) {
-      this.vel.x = -this.vel.x ;
+      this.vel.x = -this.vel.x;
     }
     if (this.c.y < this.r - 1 || this.c.y > (height - this.r) + 1) {
-      this.vel.y = -this.vel.y ;
+      this.vel.y = -this.vel.y;
+    }
+  }
+
+  wrap(width, height) {
+    if (this.c.x < (0 - this.r)) {
+      this.c.x = width + this.r;
+    }
+
+    if (this.c.x > (width + this.r)) {
+      this.c.x = (0 - this.r);
+    }
+
+    if (this.c.y < (0 - this.r)) {
+      this.c.y = height + this.r;
+    }
+
+    if (this.c.y > (height + this.r)) {
+      this.c.y = (0 - this.r);
     }
   }
 
