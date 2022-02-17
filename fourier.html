@@ -21,30 +21,6 @@
 
     <script>
 
-        function dft(x) {
-
-            const N = x.length;
-            const pi = Math.PI;
-            let X = [];
-
-            for (let k = 0; k < N; k++) {
-                let re = 0;
-                let im = 0;
-                for (let n = 0; n < N; n++) {
-                    let phi = 2 * pi * k * n / N;
-                    re += x[n] * Math.cos(phi);
-                    im -= x[n] * Math.sin(phi);
-                }
-                re = re / N;
-                im = im / N;
-                amp = Math.sqrt(re * re + im * im);
-                freq = k;
-                phase = Math.atan2(im, re);
-                X[k] = { re, im, amp, freq, phase };
-            }
-            return X;
-        }
-
         function line(ctx, x1, y1, x2, y2, color) {
             ctx.save();
             if (color) {
@@ -57,11 +33,6 @@
             ctx.restore();
         }
 
-        let t = 0;
-        let wave = [];
-
-        let count = 0;
-        let run = true;
 
         function draw() {
 
@@ -161,11 +132,9 @@
             }
         }
 
-        let y = [
-            100, 100, 100, -100, -100, -100, 100, 100, 100, -100, -100, -100
-        ];
-
-        let ft = dft(y);
+        let t = 0;
+        let wave = [];
+        let run = true;
 
         draw();
 
