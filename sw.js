@@ -4,7 +4,7 @@
 //self.importScripts("/data/materialsData.mjs");
 
 // update name whenever an asset changes
-const cacheName = "stratus-lpt-2022-02-09-01";
+const cacheName = "stratus-lpt-2022-03-01-01";
 
 // Files to cache - add everything required for offline use.
 const contentToCache = [
