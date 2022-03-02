@@ -22,6 +22,13 @@ export class BCView extends AbstractView {
     if (this.html == undefined) {
       let response = await fetch(this.path);
       this.html = await response.text();
+
+      //let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      let options = { year: 'numeric', month: 'short', day: '2-digit' };
+      var today  = new Date();
+      //@ts-expect-error
+      let dateStr = today.toLocaleDateString("en-US", options);
+      this.html = this.html.replace("{{date}}", dateStr);
     }
     return this.html;
   }
@@ -233,218 +240,232 @@ function calculateBarrelCompressions(parentElement = document.body) {
 
   printToHTML(
     "555 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5, lam_5, lam_5]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5, lam_5, lam_5]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4445 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_4, lam_4, lam_5]).toFixed(
-        0
-      ),
+    calculateBarrelCompression(batOd, [lam_4, lam_4, lam_4, lam_5]).toFixed(
+      0
+    ),
     undefined,
     parentElement
   );
 
   printToHTML(
     "5L55 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5L, lam_5, lam_5]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5L, lam_5, lam_5]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "45L5L4 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_5L, lam_5L, lam_4]).toFixed(
-        0
-      ),
+    calculateBarrelCompression(batOd, [lam_4, lam_5L, lam_5L, lam_4]).toFixed(
+      0
+    ),
     undefined,
     parentElement
   );
 
   printToHTML(
     "55f4f Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5, lam_5f, lam_4f]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5, lam_5f, lam_4f]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "554gz Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5, lam_5, lam_4gz]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5, lam_5, lam_4gz]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "55f4 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5, lam_5f, lam_4]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5, lam_5f, lam_4]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "554z Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5, lam_5, lam_4z]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5, lam_5, lam_4z]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "554f Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5, lam_5, lam_4f]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5, lam_5, lam_4f]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "5L5L5 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5L, lam_5L, lam_5]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5L, lam_5L, lam_5]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "554 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5, lam_5, lam_4]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5, lam_5, lam_4]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4f4f4f4f Barrel compression = " +
-      calculateBarrelCompression(batOd, [
-        lam_4f,
-        lam_4f,
-        lam_4f,
-        lam_4f,
-      ]).toFixed(0),
+    calculateBarrelCompression(batOd, [
+      lam_4f,
+      lam_4f,
+      lam_4f,
+      lam_4f,
+    ]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4f4f4f4 Barrel compression = " +
-      calculateBarrelCompression(batOd, [
-        lam_4f,
-        lam_4f,
-        lam_4f,
-        lam_4,
-      ]).toFixed(0),
+    calculateBarrelCompression(batOd, [
+      lam_4f,
+      lam_4f,
+      lam_4f,
+      lam_4,
+    ]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4f4f44 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4f, lam_4f, lam_4, lam_4]).toFixed(
-        0
-      ),
+    calculateBarrelCompression(batOd, [lam_4f, lam_4f, lam_4, lam_4]).toFixed(
+      0
+    ),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4f444 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4f, lam_4, lam_4, lam_4]).toFixed(
-        0
-      ),
+    calculateBarrelCompression(batOd, [lam_4f, lam_4, lam_4, lam_4]).toFixed(
+      0
+    ),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4444 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_4, lam_4, lam_4]).toFixed(
-        0
-      ),
+    calculateBarrelCompression(batOd, [lam_4, lam_4, lam_4, lam_4]).toFixed(
+      0
+    ),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4b4b4b4b Barrel compression (8 layer calc)= " +
-      calculateBarrelCompression(batOd, [
-        lam_4b,
-        lam_4b,
-        lam_4b,
-        lam_4b,
-      ]).toFixed(0),
+    calculateBarrelCompression(batOd, [
+      lam_4b,
+      lam_4b,
+      lam_4b,
+      lam_4b,
+    ]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "5L5L5L Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_5L, lam_5L, lam_5L]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_5L, lam_5L, lam_5L]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "45f4f Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_5f, lam_4f]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_4, lam_5f, lam_4f]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "454gz Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_5, lam_4gz]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_4, lam_5, lam_4gz]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "45f4 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_5f, lam_4]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_4, lam_5f, lam_4]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "454z Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_5, lam_4z]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_4, lam_5, lam_4z]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4f54f Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4f, lam_5, lam_4f]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_4f, lam_5, lam_4f]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4L444 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4L, lam_4, lam_4, lam_4]).toFixed(
-        0
-      ),
+    calculateBarrelCompression(batOd, [lam_4L, lam_4, lam_4, lam_4]).toFixed(
+      0
+    ),
     undefined,
     parentElement
   );
 
   printToHTML(
     "454f Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_5, lam_4f]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_4, lam_5, lam_4f]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "454 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4, lam_5, lam_4]).toFixed(0),
+    calculateBarrelCompression(batOd, [lam_4, lam_5, lam_4]).toFixed(0),
+    undefined,
+    parentElement
+  );
+
+  printToHTML(
+    "45L5L Barrel compression = " +
+    calculateBarrelCompression(batOd, [lam_4, lam_5L, lam_5L]).toFixed(0),
+    undefined,
+    parentElement
+  );
+
+  printToHTML(
+    "5L5L4 Barrel compression = " +
+    calculateBarrelCompression(batOd, [lam_5L, lam_5L, lam_4]).toFixed(0),
     undefined,
     parentElement
   );
 
   printToHTML(
     "4L4L44 Barrel compression = " +
-      calculateBarrelCompression(batOd, [lam_4L, lam_4L, lam_4, lam_4]).toFixed(
-        0
-      ),
+    calculateBarrelCompression(batOd, [lam_4L, lam_4L, lam_4, lam_4]).toFixed(
+      0
+    ),
     undefined,
     parentElement
   );
@@ -458,15 +479,15 @@ function calculateBarrelCompressions(parentElement = document.body) {
     parentElement
   );
   */
-/*
-  theLaminate = lam_4b;
-  highlightedText = syntaxHighlight(retrocycle(decycle(theLaminate)));
-  printToHTML(
-    'Laminate "' + theLaminate.name + '": ' + highlightedText,
-    undefined,
-    parentElement
-  );
-  /**/
+  /*
+    theLaminate = lam_4b;
+    highlightedText = syntaxHighlight(retrocycle(decycle(theLaminate)));
+    printToHTML(
+      'Laminate "' + theLaminate.name + '": ' + highlightedText,
+      undefined,
+      parentElement
+    );
+    /**/
 }
 
 /**
