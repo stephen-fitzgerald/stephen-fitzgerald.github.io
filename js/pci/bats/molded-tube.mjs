@@ -7,7 +7,7 @@ import { integrateFunction } from '../util/functions.mjs';
 import { registerClazzConstructor } from '../util/serialize.mjs';
 import { PlySpec } from '../lpt/plyspec.mjs';
 import { Profile } from './profile.mjs';
-import {barrelCompression} from './bat-calcs.mjs';
+import { calculateWallCompression } from './bat-calcs.mjs';
 
 
 /**
@@ -202,7 +202,7 @@ export class MoldedTube {
             Area: A,
             I: I,
             wtPerLen: A * lamProps.rho,
-            barrelCompression: barrelCompression(od, lamProps),
+            barrelCompression: calculateWallCompression(od, lamProps),
 
             //local flexural stiffness Ef(t^3/12)
             ExfT3Div12: lamProps.Exf * lamProps.thickness * lamProps.thickness * lamProps.thickness / 12.0,

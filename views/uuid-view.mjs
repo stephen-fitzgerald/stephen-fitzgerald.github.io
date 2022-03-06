@@ -32,7 +32,6 @@ export class UuidView extends AbstractView {
 
         let uuid;
         for (let i = 1; i <= max; i++) {
-            //@ts-expect-error
             uuid = window.crypto.randomUUID();
             printToHTML(`${i<10?' '+i:i}) ${uuid}`, textColor, myDiv);
         }
