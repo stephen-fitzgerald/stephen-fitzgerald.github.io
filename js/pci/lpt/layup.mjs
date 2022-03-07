@@ -811,6 +811,8 @@ export class FabricLayer extends AbstractLayer {
      * @param {AbstractLayer[]} [options._layers] serialized form is saved with underscores
      * @param {number[]} [options.angles] array of angles for each Layer
      * @param {number[]} [options._angles] serialized form is saved with underscores
+     * @param {string[]} [options.orientations] array of angles for each Layer
+     * @param {string[]} [options._orientations] serialized form is saved with underscores
      * @param {*} [options.weaveType] WEAVETYPE.NONE (default), KNIT, PLAIN, TWILL ..
      * @param {*} [options._weaveType] serialized form is saved with underscores
      */
@@ -818,12 +820,13 @@ export class FabricLayer extends AbstractLayer {
         super(options);
         this._layers = [];
         this._angles = [];
+        this._orientations = [];
         this._weaveType = WEAVETYPE.NONE;
         if (options != undefined) {
             this._layers = options._layers || options.layers || this._layers;
             this._angles = options._angles || options.angles || this._angles;
-            this._weaveType =
-                options._weaveType || options.weaveType || this._weaveType;
+            this._orientations = options._orientations || options.orientations || this._orientations;
+            this._weaveType = options._weaveType || options.weaveType || this._weaveType;
         }
     }
 
@@ -902,7 +905,7 @@ export class FabricLayer extends AbstractLayer {
         for (let i = this._layers.length - 1; i >= 0; i--) {
             let l = this._layers[i].getLaminate(layupContext);
             // use addPlyAt(0, ..) to keep inside to outside order
-            laminate.addPlyAt(0, l, this._angles[i], ORIENTATION.UPRIGHT);
+            laminate.addPlyAt(0, l, this._angles[i], this._orientations[i]);
             d = d - 2 * l.thickness;
         }
         if (this._weaveType !== WEAVETYPE.NONE) {

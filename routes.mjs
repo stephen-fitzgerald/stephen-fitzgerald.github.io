@@ -11,6 +11,7 @@ import { Cube3dView } from "./views/cube3d-view.mjs";
 import { UuidView } from "./views/uuid-view.mjs";
 import { ChartView } from "./views/chart-view.mjs";
 import { AnimationView } from "./views/animation-view.mjs";
+import { LayupTableView } from "./views/layup-table.mjs";
 
 // these routes never get re-initialized
 let staticRoutes = {
@@ -29,6 +30,7 @@ let staticRoutes = {
   "/uuid": new UuidView({ title: "Stratus LPT: UUID Test" }),
   "/chart": new ChartView({ title: "Stratus LPT: Chart.js Test" }),
   "/animation": new AnimationView({ title: "Stratus LPT: Animation!" }),
+  "/layup": new LayupTableView({ title: "Stratus LPT: Layup Table" }),
 
   Error404: new StaticView({ title: "Stratus LPT: File Not Found", path: "/views/404.html" }),
 };
