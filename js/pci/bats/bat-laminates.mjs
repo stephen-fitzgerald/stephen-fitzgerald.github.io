@@ -63,7 +63,7 @@ const carbon75 = new FiberLayer({
 });
 
 const c30 = new FabricLayer({
-    name: "C30",
+    name: "C 150 @ +/-30",
     description: "2 layers of carbon at +/- 30 degrees",
     layers: [carbonUni, carbonUni],
     angles: [30.0, -30.0],
@@ -72,7 +72,7 @@ const c30 = new FabricLayer({
 });
 
 const c30L = new FabricLayer({
-    name: "C30L",
+    name: "C 75 @ +-30",
     description: "2 layers of 75 gsm carbon at +/- 30 degrees",
     layers: [carbon75, carbon75],
     angles: [30.0, -30.0],
@@ -81,7 +81,7 @@ const c30L = new FabricLayer({
 });
 
 const c45 = new FabricLayer({
-    name: "C 45",
+    name: "C 150 @ +-45",
     description: "2 layers of carbon at +/- 45 degrees",
     layers: [carbonUni, carbonUni],
     angles: [45.0, -45.0],
@@ -90,7 +90,7 @@ const c45 = new FabricLayer({
 });
 
 const lam_4 = new FabricLayer({
-    name: "4",
+    name: "C 150 @ +-30 x 4",
     description: "4 layers of carbon +/- 30 degrees",
     layers: [c30, c30, c30, c30],
     angles: [0, 0, 0, 0],

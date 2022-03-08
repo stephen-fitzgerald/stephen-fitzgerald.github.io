@@ -29,20 +29,20 @@ export class MaterialsListView extends AbstractView {
     html += `<br>`;
     html += `<br>`;
     html += `<style>
-                          tr, td {
-                              margin: 4px 8px 4px 8px;
-                              padding: 6px 12px;
-                          }
-                      </style>`;
+                tr, td {
+                    margin: 4px 8px 4px 8px;
+                    padding: 6px 12px;
+                }
+            </style>`;
 
     html += `<table>
-                      <thead>
-                          <tr>
-                              <th>ID</th>
-                              <th>Name</th>
-                              <th colspan="3">Description</th>
-                          </tr>
-                      </thead>`;
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th colspan="3">Description</th>
+                    </tr>
+                </thead>`;
 
     html += `<tbody>`;
     
