@@ -187,3 +187,11 @@ canvas {
     grid-template-rows: auto auto 1fr auto;
   }
 }
+
+.lil-gui .title {
+  color: #2cc9ff;
+}
+
+.lil-gui .name {
+  color: #2cc9ff;
+}
