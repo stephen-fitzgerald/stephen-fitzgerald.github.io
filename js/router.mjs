@@ -13,14 +13,10 @@ export function parseRequestURL() {
     let url = location.hash.slice(1).toLowerCase() || '/';
     let r = url.split("/")
     let request = {
-        resource: null,
-        id: null,
-        verb: null
+        resource: r[1],
+        id: r[2],
+        verb: r[3]
     }
-    request.resource = r[1]
-    request.id = r[2]
-    request.verb = r[3]
-
     return request
 };
 
