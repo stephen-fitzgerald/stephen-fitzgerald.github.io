@@ -13,6 +13,7 @@ import { ChartView } from "./views/chart-view.mjs";
 import { AnimationView } from "./views/animation-view.mjs";
 import { LayupTableView } from "./views/layup-table.mjs";
 import { GlassView } from "./views/glass-view.mjs";
+import { MapView } from "./views/map-view.mjs";
 
 // these routes never get re-initialized
 const staticRoutes = {
@@ -34,6 +35,8 @@ const staticRoutes = {
   "/layup": new LayupTableView({ title: "Stratus LPT: Layup Table" }),
 
   "/3d-glass": new GlassView({ title: "Stratus LPT:3D Glass Configurator", path: "/views/glass-view.html" }),
+
+  "/map": new MapView({ title: "A Map!" }),
 
   Error404: new StaticView({ title: "Stratus LPT: File Not Found", path: "/views/404.html" }),
 };

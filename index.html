@@ -1,68 +1,70 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!--base href="/"-->
 
-<head>
-  <!--base href="/"-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css" />
+    <link rel="manifest" href="manifest.json" />
 
-  <link rel="stylesheet" href="index.css">
-  <link rel="manifest" href="manifest.json">
+    <title>Stratus LPT</title>
+    <meta name="description" content="Composite material calculations" />
+    <meta name="author" content="S.Fitzgerald" />
 
-  <title>Stratus LPT</title>
-  <meta name="description" content="Composite material calculations">
-  <meta name="author" content="S.Fitzgerald">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link rel="icon" type="image/svg" href="assets/lpt-icon.svg" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
+  </head>
 
+  <body>
+    <!-- Header -->
+    <header>
+      <!-- #menu-icon controls visibility of #left-nav-->
+      <div id="hamburger-icon" class="menu-icon">
+        <!-- hamburger menu in .css -->
+        <div></div>
+      </div>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="icon" type="image/svg" href="assets/lpt-icon.svg">
+      <h1>Stratus LPT</h1>
+      <div id="login-icon" class="menu-icon">Login</div>
+    </header>
+    <!-- end of Header -->
 
-</head>
+    <!-- Nav -->
+    <nav id="left-nav">
+      <a href="#/">Home</a>
+      <a href="#/materials">Materials</a>
+      <a href="#/barrel-comp">Barrel Compression</a>
+      <a href="#/cube">3D Cube</a>
+      <a href="#/uuid">UUID Test</a>
+      <a href="#/about">About</a>
+      <a href="#/chart">Chart.js Test</a>
+      <a href="#/animation">Animation</a>
+      <a href="#/layup">Layup</a>
+      <a href="#/3d-glass">3D Glass</a>
+      <a href="#/map">Show a map</a>
+    </nav>
+    <!-- end of Nav -->
 
-<body>
-  <!-- Header -->
-  <header>
-    <!-- #menu-icon controls visibility of #left-nav-->
-    <div id="hamburger-icon" class="menu-icon">
-      <!-- hamburger menu in .css -->
-      <div></div>
-    </div>
+    <!-- Main -->
+    <main id="main-container"></main>
+    <!-- end of Main -->
 
-    <h1>Stratus LPT</h1>
-    <div id="login-icon" class="menu-icon">Login</div>
-  </header>
-  <!-- end of Header -->
+    <!-- Footer -->
+    <footer>
+      (c) 1992-2022
+      <a href="mailto:help@gmail.com" target="_blank">Stephen Fitzgerald</a>.
+    </footer>
+    <!-- end of Footer -->
 
-  <!-- Nav -->
-  <nav id="left-nav">
-    <a href="#/">Home</a>
-    <a href="#/materials">Materials</a>
-    <a href="#/barrel-comp">Barrel Compression</a>
-    <a href="#/cube">3D Cube</a>
-    <a href="#/uuid">UUID Test</a>
-    <a href="#/about">About</a>
-    <a href="#/chart">Chart.js Test</a>
-    <a href="#/animation">Animation</a>
-    <a href="#/layup">Layup</a>
-    <a href="#/3d-glass">3D Glass</a>
-  </nav>
-  <!-- end of Nav -->
-
-  <!-- Main -->
-  <main id="main-container">
-  </main>
-  <!-- end of Main -->
-
-  <!-- Footer -->
-  <footer>
-    (c) 1992-2022 <a href="mailto:help@gmail.com" target="_blank">Stephen Fitzgerald</a>.
-  </footer>
-  <!-- end of Footer -->
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="./index.js"></script>
-
-</body>
-
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="./index.js"></script>
+  </body>
 </html>
