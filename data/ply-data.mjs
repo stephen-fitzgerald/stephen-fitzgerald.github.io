@@ -1,4 +1,4 @@
-// @ts-check
+// @ ts-check
 /*jshint esversion: 6 */
 
 import { ReleaseLayer, SolidLayer, FiberLayer, PrepregLayer, WEAVETYPE, FabricLayer } from '../js/pci/lpt/layup.mjs';

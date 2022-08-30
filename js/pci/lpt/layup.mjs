@@ -1,4 +1,4 @@
-//@ts-check
+//@ ts-check
 /* jshint esversion: 6 */
 
 import { Material } from "./material.mjs";
