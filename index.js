@@ -7,7 +7,7 @@ import { configureDatabase } from "./js/database-config.mjs";
  * Main application entry point
  */
 const app = async () => {
-  
+
   // Listen on hash change:
   window.addEventListener("hashchange", router);
 
@@ -25,29 +25,31 @@ const app = async () => {
   /*
     Set up a menu button to hide/show the navigation pane
   */
-    let menuIcon = document.getElementById("hamburger-icon");
-    let navPane = document.getElementById("left-nav");
-    if (menuIcon != undefined ) {
-      menuIcon.addEventListener("click", (event) => {
+  let menuIcon = document.getElementById("hamburger-icon");
+  let navPane = document.getElementById("left-nav");
+  if (menuIcon != undefined) {
+    menuIcon.addEventListener("click", (event) => {
+      if (navPane) {
         if (navPane.style.display == "none") {
           navPane.style.display = "";
         } else {
           navPane.style.display = "none";
         }
-        return false;
-      });
-    }
+      }
+      return false;
+    });
+  }
 
-    /*
-      Set up a menu button to login/logout 
-    */
-    menuIcon = document.getElementById("login-icon");
-    if (menuIcon != undefined ) {
-      menuIcon.addEventListener("click", (event) => {
-       alert("Someday this may be a login or logout dialog.");
-       return false;
-      });
-    }
+  /*
+    Set up a menu button to login/logout 
+  */
+  menuIcon = document.getElementById("login-icon");
+  if (menuIcon != undefined) {
+    menuIcon.addEventListener("click", (event) => {
+      alert("Someday this may be a login or logout dialog.");
+      return false;
+    });
+  }
 };
 
 document.addEventListener("DOMContentLoaded", app);

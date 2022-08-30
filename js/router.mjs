@@ -23,9 +23,6 @@ export function parseRequestURL() {
 export async function router() {
 
     let routes = getRoutes();
-    
-    // Lazy load view element:
-    const content = null || document.getElementById('main-container');
 
     // Get the parsed URl from the addressbar
     let request = parseRequestURL();
@@ -33,14 +30,23 @@ export async function router() {
     // Parse the URL and if it has an id part, change it with the string ":id"
     let parsedURL = (request.resource ? '/' + request.resource : '/') + (request.id ? '/:id' : '') + (request.verb ? '/' + request.verb : '')
 
-    // Get the page from our hash of supported routes.
-    // If the parsed URL is not in our list of supported routes, select the 404 page instead
+    // Get the page from our hash of supported routes, or the 404 page 
     let page = routes[parsedURL] ? routes[parsedURL] : routes["Error404"];
+
+    // render the html for the page
     let html = await page.buildHTML();
     html = cleanHTML(html);
-    content.innerHTML = html;
+
+    // set the main container elements html
+    const content = null || document.getElementById('main-container');
+    if( content != null ) content.innerHTML = html;
+
     // TODO wait for document to (re-)load
+    
+    // set up any required listeners for the page
     page.addListeners();
+
+    // update the view
     page.modelToView();
 
 }
