@@ -78,6 +78,7 @@ const contentToCache = [
   "/views/glass-view.mjs",
   "/views/home.html",
   "/views/layup-table.mjs",
+  "/views/map-view.mjs",
   "/views/material-edit-view.mjs",
   "/views/material-view.mjs",
   "/views/materials-create-view.mjs",
