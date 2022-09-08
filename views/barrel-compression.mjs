@@ -8,7 +8,7 @@ import { CompositeLamina, Laminate } from "../js/pci/lpt/lpt.mjs";
 import { decycle, retrocycle } from "../js/pci/util/serialize.mjs";
 import { ORIENTATION } from "../js/pci/lpt/orientation.mjs";
 import { AbstractView } from "./abstract-view.mjs";
-import { calculateBarrelCompression } from "../js/pci/bats/bat-calcs.mjs"
+import { calculateBarrelCompression } from "../js/pci/bats/bat-calcs.mjs";
 
 export class BCView extends AbstractView {
   /** @override */
@@ -26,7 +26,7 @@ export class BCView extends AbstractView {
 
       //let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       let options = { year: 'numeric', month: 'short', day: '2-digit' };
-      var today  = new Date();
+      var today = new Date();
       //@ts-expect-error
       let dateStr = today.toLocaleDateString("en-US", options);
       this.html = this.html.replace("{{date}}", dateStr);
@@ -101,6 +101,42 @@ function calculateBarrelCompressions(parentElement = document.body) {
     vf: 0.59,
     faw: 0.075,
     isRandom: false,
+  });
+
+  let g30 = new Laminate({
+    name: "g30",
+    description: "2 layers of glass at +/- 30 degrees",
+    plies: [glassUni, glassUni],
+    angles: [30.0, -30.0],
+    orientations: [UPRIGHT, UPRIGHT],
+    isWoven: false,
+  });
+
+  let g45 = new Laminate({
+    name: "g45",
+    description: "2 layers of glass at +/- 45 degrees",
+    plies: [glassUni, glassUni],
+    angles: [45.0, -45.0],
+    orientations: [UPRIGHT, UPRIGHT],
+    isWoven: false,
+  });
+
+  let c0 = new Laminate({
+    name: "C0",
+    description: "2 layers of carbon at 0 degrees",
+    plies: [carbonUni, carbonUni],
+    angles: [0.0, 0.0],
+    orientations: [UPRIGHT, UPRIGHT],
+    isWoven: false,
+  });
+
+  let c10 = new Laminate({
+    name: "C10",
+    description: "2 layers of carbon at +/- 10 degrees",
+    plies: [carbonUni, carbonUni],
+    angles: [10.0, -10.0],
+    orientations: [UPRIGHT, UPRIGHT],
+    isWoven: false,
   });
 
   let c30 = new Laminate({
@@ -227,6 +263,33 @@ function calculateBarrelCompressions(parentElement = document.body) {
     plies: [c30, c45, c30, c45, c30],
     angles: [0, 0, 0, 0, 0],
     orientations: [UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT],
+    isWoven: false,
+  });
+
+  let lam_545i = new Laminate({
+    name: "545i",
+    description: "545 inner wall",
+    plies: [g30, c10, c0, c10, g30],
+    angles: [0, 0, 0, 0, 0],
+    orientations: [UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT],
+    isWoven: false,
+  });
+
+  let lam_545m = new Laminate({
+    name: "545m",
+    description: "545 middle wall",
+    plies: [g30, c10, c0, c10, g30],
+    angles: [0, 0, 0, 0, 0],
+    orientations: [UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT],
+    isWoven: false,
+  });
+
+  let lam_545o = new Laminate({
+    name: "545o",
+    description: "545 outer wall",
+    plies: [g30, c10, c0, c10, g45, g45],
+    angles: [0, 0, 0, 0, 0, 0],
+    orientations: [UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT],
     isWoven: false,
   });
 
@@ -465,6 +528,15 @@ function calculateBarrelCompressions(parentElement = document.body) {
   printToHTML(
     "4L4L44 Barrel compression = " +
     calculateBarrelCompression(batOd, [lam_4L, lam_4L, lam_4, lam_4]).toFixed(
+      0
+    ),
+    undefined,
+    parentElement
+  );
+
+  printToHTML(
+    "545 LLSR12 Barrel compression = " +
+    calculateBarrelCompression(batOd, [lam_545i, lam_545m, lam_545o]).toFixed(
       0
     ),
     undefined,

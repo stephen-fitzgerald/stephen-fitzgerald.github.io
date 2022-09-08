@@ -570,6 +570,12 @@ export class Laminate extends AbstractLamina {
                     this._orientations.push(ORIENTATION.UPRIGHT);
                 }
             }
+            if(this._angles.length !== numPlies ){
+                throw new Error("The number of angles does not match the number of plies.");
+            }
+            if(this._orientations.length !== numPlies ){
+                throw new Error("The number of orientations does not match the number of plies.");
+            }
         }
     }
     get thickness() {
