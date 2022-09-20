@@ -19,9 +19,11 @@ export class MaterialsStateView extends AbstractView {
 
   /**
    * @override
-   * @returns {String} the html to show for this page
+   * buildHTML() - build the static html for a view
+   *
+   * @return {Promise<string>} the html for the view
    */
-  buildHTML() {
+  async buildHTML() {
     this.html = this.generateTable(this.materialsList);
     return this.html;
   }
@@ -89,7 +91,9 @@ export class MaterialsStateView extends AbstractView {
     let matId = theLink.attributes["mat-id"].value;
     let srcMaterial = this.materialsList[matId];
     let newMaterial = Material.duplicate(srcMaterial);
-    newMaterial.name = `Copy of: ${srcMaterial.name}`;
-    this.state.set("materialsList", this.materialsList.concat(newMaterial));
+    if (newMaterial) {
+      newMaterial.name = `Copy of: ${srcMaterial.name}`;
+      this.state.set("materialsList", this.materialsList.concat(newMaterial));
+    }
   }
 }

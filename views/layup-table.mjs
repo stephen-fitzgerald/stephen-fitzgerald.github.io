@@ -16,7 +16,11 @@ export class LayupTableView extends AbstractView {
         this.tube = buildTube();
     }
 
-    buildHTML() {
+    /**
+     *  
+     * @return {Promise<string>} the html for the view
+     */
+    async buildHTML() {
 
 
         let plySpecs = this.tube.plySpecs;
@@ -219,8 +223,8 @@ function drawProfile(profile, canvas) {
 
     for (let i = 0; i < profile.xPositions.length; i++) {
         nextX = profile.xPositions[i] * scaleX + offsetX;
-        nextY = profile.oDiameters[i]/2.0 * scaleY + offsetY;
-        nextYMirror = -profile.oDiameters[i]/2.0 * scaleY + offsetY;
+        nextY = profile.oDiameters[i] / 2.0 * scaleY + offsetY;
+        nextYMirror = -profile.oDiameters[i] / 2.0 * scaleY + offsetY;
         context.moveTo(curX, curY);
         context.lineTo(nextX, nextY);
 

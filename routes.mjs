@@ -36,7 +36,7 @@ const staticRoutes = {
 
   "/3d-glass": new GlassView({ title: "Stratus LPT:3D Glass Configurator", path: "/views/glass-view.html" }),
 
-  "/map": new MapView({ title: "A Map!" }),
+  "/map": new MapView({ title: "Stratus LPT: A Map!" }),
 
   Error404: new StaticView({ title: "Stratus LPT: File Not Found", path: "/views/404.html" }),
 };

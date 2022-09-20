@@ -20,7 +20,7 @@ let glassConfig = {
     glassFullHeight: 10.5,
     bottomExtraThickness: 3,
     circleSegments: 30,
-    glassPosition: .5,
+    glassPosition: 0.5,
 
     // material parameters (all customizable)
     metalness: .1,
@@ -31,20 +31,20 @@ let glassConfig = {
 };
 
 class Controls {
-    constructor() {
-        const gui = new GUI();
-        if (window.innerWidth < 600) gui.close();
+    constructor(container) {
+        this.gui = new GUI({container: container});
+        if (window.innerWidth < 600) this.gui.close();
 
         let folder;
 
-        folder = gui.addFolder('Background');
+        folder = this.gui.addFolder('Background');
         folder.close();
         folder.add(glassConfig, 'showTexture').onChange(v => {
             visualization.backPlaneMesh.material = visualization.createBackgroundMaterial();
             visualization.bottomPlaneMesh.visible = !v;
         }).name('show background');
 
-        folder = gui.addFolder('Geometry');
+        folder = this.gui.addFolder('Geometry');
         folder.add(glassConfig, 'topRadius', 1, 6).step(.01).onChange(() => {
             visualization.updateGeometry(visualization.glassMeshes.topCylinder, visualization.generateOuterTopCylinder());
             visualization.updateGeometry(visualization.glassMeshes.outerFaces, visualization.generateOuterFacedCylinder());
@@ -76,7 +76,7 @@ class Controls {
         }).name('bottom notch depth');
 
 
-        folder = gui.addFolder('Material');
+        folder = this.gui.addFolder('Material');
         folder.close();
         folder.add(glassConfig, 'metalness', 0, .3).step(.01).onChange((v) => {
             visualization.materals.forEach((m) => {
@@ -103,6 +103,13 @@ class Controls {
                 m.opacity = v;
             });
         });
+    }
+
+    destroy(){
+        if( this.gui ){
+            this.gui.destroy();
+            this.gui = undefined;
+        }
     }
 }
 
@@ -346,10 +353,14 @@ class Visualization {
     }
 
     updateSize() {
-        this.camera.aspect = this.fakeCamera.aspect = window.innerWidth / window.innerHeight;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        width = containerDiv.clientWidth - 1;
+        height = containerDiv.clientHeight - 150;
+        this.camera.aspect = this.fakeCamera.aspect = width / height;
         this.camera.updateProjectionMatrix();
         this.fakeCamera.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(width, height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.updateGeometry(this.backPlaneMesh, this.generateFullWidthPlaneGeometry());
         this.backPlaneMesh.material = this.createBackgroundMaterial();
@@ -363,7 +374,10 @@ export class GlassView extends AbstractView {
         this.path = args ? args.path : undefined;
     }
 
-    /** @override */
+  /** @override
+   * @return {Promise<string>} the html for the view
+   *  
+   */
     async buildHTML() {
         if (this.html == undefined) {
             let response = await fetch(this.path);
@@ -374,16 +388,26 @@ export class GlassView extends AbstractView {
 
     /** @override */
     modelToView() {
-        container = document.querySelector('.container');
-        controls = new Controls();
-        visualization = new Visualization(container);
+
+        containerDiv = document.querySelector('.glass')
+        controlsDiv = document.querySelector('.controls');
+
+        controls = new Controls(controlsDiv);
+        visualization = new Visualization(containerDiv);
         visualization.updateSize();
         window.addEventListener('resize', () => visualization.updateSize());
         visualization.loop();
     }
+
+    destroy(){
+        if( controls ){
+            controls.destroy();
+        }
+    }
 }
 
-let container; // = document.querySelector('.container');
+let containerDiv; // = document.querySelector('.container');
+let controlsDiv; // = document.querySelector('.container');
 let controls; // = new Controls();
 let visualization; // = new Visualization();
 

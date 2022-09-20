@@ -8,7 +8,7 @@ export class Cube3dView extends AbstractView {
   constructor(args = {}) {
     super(args);
 
-
+    this.lastTime = undefined;
     this.points = [];
     this.canvas = undefined;
     this.ctx = undefined;
@@ -23,14 +23,18 @@ export class Cube3dView extends AbstractView {
     this.strokeColor = 'coral';
     this.strokeWidth = 1;
     this.dotSize = 4;
+    this.animationFrameId = undefined;
   }
 
 
   /**
    * @override
-   * @returns 
+   * @returns {Promise<string>}
    */
-  buildHTML() {
+  async buildHTML() {
+    if( this.animationFrameId != undefined ){
+      window.cancelAnimationFrame(this.animationFrameId);
+    }
     // this.request = parseRequestURL();
     this.html = `<h1>Cube 3D</h1>
                 <canvas id="theCanvas" width="${this.W}" height="${this.H}"></canvas>`;
@@ -59,9 +63,11 @@ export class Cube3dView extends AbstractView {
 
   /**
    * @override
+   * @param {number} time
+   * @memberof Cube3dView
    */
-  modelToView() {
-    this.render();
+  modelToView( time ) {
+    this.render(time);
   }
 
 
@@ -95,7 +101,14 @@ export class Cube3dView extends AbstractView {
     }
   }
 
-  render() {
+  render(time) {
+
+    if( this.lastTime == undefined ){
+      this.lastTime = time;
+    }
+
+    let dt = time - this.lastTime;
+    
     this.ctx.clearRect(0, 0, this.W, this.H);
 
     this.theta += this.dtheta;
@@ -107,7 +120,7 @@ export class Cube3dView extends AbstractView {
       this.renderPoint(point);
     });
 
-    requestAnimationFrame(this.render.bind(this));
+    this.animationFrameId = requestAnimationFrame(this.render.bind(this));
   }
 
   rotateY(point, theta) {

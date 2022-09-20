@@ -34,9 +34,15 @@ export class BCView extends AbstractView {
     return this.html;
   }
 
-  /** @override */
-  modelToView() {
+  /**
+   *
+   * @override
+   * @param {number} time
+   * @memberof BCView
+   */
+  modelToView(time) {
     this.parentElement = document.getElementById("bc-div");
+//    if(this.parentElement == null )this.parentElement = undefined;
     calculateBarrelCompressions(this.parentElement);
   }
 }

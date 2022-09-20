@@ -10,10 +10,16 @@ export class MapView extends AbstractView {
         this.title = args.title || "Open Street Map via Leaflet";
     }
 
-    buildHTML() {
-        this.html = `   
-        <h1> Here's a map.</h1>
-        <div style="height: 1024px" id="map" ></div>
+    /**
+     *  
+     * @return {Promise<string>} the html for the view
+     */
+    async buildHTML() {
+        this.html = `
+        <div style="height:100%;  display:flex; flex-direction:column;">
+            <h1> Here's a map.</h1>
+            <div style="height: 100%" id="map" ></div>
+        </div>
         `;
 
         return this.html;

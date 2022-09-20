@@ -18,15 +18,24 @@ export class AnimationView extends AbstractView {
     this.canvas = undefined;
     this.agents = [];
     this.numAgents = 45;
+    this.animationFrameId = undefined;
   }
-
-  buildHTML() {
+  /**
+   *
+   *
+   * @return {Promise<string>} the html for the view
+   * @memberof AnimationView
+   */
+  async buildHTML() {
     this.html = `<canvas id="${this.canvasId}"></canvas>`;
     return this.html;
   }
 
   addListeners() {
     document.title = this.title;
+    if (this.animationFrameId != undefined) {
+      window.cancelAnimationFrame(this.animationFrameId);
+    }
     this.canvas = document.getElementById(this.canvasId);
     //@ts-expect-error
     this.context = this.canvas.getContext('2d');
@@ -63,7 +72,7 @@ export class AnimationView extends AbstractView {
     });
   }
 
-  modelToView() {
+  modelToView(time) {
     // erase / fill background
     let context = this.context;
     let width = this.width;
@@ -102,7 +111,18 @@ export class AnimationView extends AbstractView {
       agent.draw(context);
     });
 
-    requestAnimationFrame(this.modelToView.bind(this));
+    this.animationFrameId = requestAnimationFrame(this.modelToView.bind(this));
+  }
+
+  /**
+   * clean up when we are about to be replaced in the view
+   * @override
+   * @memberof AnimationView
+   */
+  destroy() {
+    if (this.animationFrameId != undefined) {
+      window.cancelAnimationFrame(this.animationFrameId);
+    }
   }
 
   savePNG() {

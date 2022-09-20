@@ -6,7 +6,7 @@ import { AbstractView } from "./abstract-view.mjs";
 import { getMaterial, setMaterial, } from "../data/materials-data.mjs";
 import { Material, Mat_Isotropic, Mat_FRP, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, } from "../js/pci/lpt/material.mjs";
 
-const templateHTML = `
+const templateHTML = /** HTML */`
 
     <style>
     input {
@@ -106,7 +106,7 @@ export class MaterialEditView extends AbstractView {
     this.html = templateHTML;
   }
 
-  buildHTML() {
+  async buildHTML() {
     this.request = parseRequestURL();
     this.errorMessage = undefined;
     this.material = undefined;

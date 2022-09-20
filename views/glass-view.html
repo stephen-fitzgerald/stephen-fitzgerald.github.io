@@ -1,4 +1,4 @@
- <!-- 
+<!-- 
     Big thanks to 
 
     Kelly Milligan for awesome article about the new MeshPhysicalMaterial features
@@ -9,15 +9,36 @@
 
     -->
 
-    <style>
-        body {
-            overflow: hidden;
-            padding: 0;
-            margin: 0;
-        }
-        canvas {
-            display: block;
-        }
-    </style>
+<style>
+    body {
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+    }
 
-    <div class="container"></div>
+    canvas {
+        display: block;
+    }
+
+    .container {
+        display: grid;
+        grid-template-areas:
+            "controls glass";
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto;
+        grid-gap: 5px;
+        height: 100vh;
+    }
+    .glass {
+        grid-area: "glass";
+    }
+    .controls {
+        grid-area: "controls";
+    }
+
+</style>
+
+<div class="container">
+    <div class="controls"></div>
+    <div class="glass"></div>
+</div>

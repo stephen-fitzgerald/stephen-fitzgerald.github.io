@@ -9,7 +9,11 @@ export class ChartView extends AbstractView {
         super(args);
     }
 
-    buildHTML() {
+    /**
+     * 
+     * @return {Promise<string>} the html for the view
+     */
+    async buildHTML() {
         let mat;
         let _html = `
         <h1> Here's a chart.</h1>
@@ -24,8 +28,8 @@ export class ChartView extends AbstractView {
         super.addListeners();
     }
 
-    async modelToView() {
-        super.modelToView();
+    modelToView(time) {
+        super.modelToView(time);
         const labels = [
             'January',
             'February',
