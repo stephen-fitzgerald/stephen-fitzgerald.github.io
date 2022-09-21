@@ -5,6 +5,7 @@ import { AbstractView } from "./abstract-view.mjs";
 import { parseRequestURL } from "../js/router.mjs";
 import { randRng } from "../js/pci/util/randRng.mjs";
 import { interp } from "../js/pci/util/interp.mjs";
+import { getDomRefsById } from "../index.js";
 
 let pi = Math.PI;
 
@@ -12,7 +13,6 @@ export class AnimationView extends AbstractView {
   constructor(args = {}) {
     super(args);
     this.title = args.title || "Animation View";
-    this.canvasId = "the-canvas";
     this.width = 350;
     this.height = 150;
     this.canvas = undefined;
@@ -27,22 +27,40 @@ export class AnimationView extends AbstractView {
    * @memberof AnimationView
    */
   async buildHTML() {
-    this.html = `<canvas id="${this.canvasId}"></canvas>`;
+    this.mainContainer = document.getElementById("main-container");
+    this.savedOverflow = this.mainContainer?.style.overflow;
+    this.mainContainer.style.overflow = "hidden";
+    this.html = `
+        <canvas id="the-canvas"></canvas>
+    `;
+    //  <button id="btn-save">Save Png</button>
     return this.html;
   }
 
   addListeners() {
+    this.domRefs = getDomRefsById();
     document.title = this.title;
     if (this.animationFrameId != undefined) {
       window.cancelAnimationFrame(this.animationFrameId);
     }
-    this.canvas = document.getElementById(this.canvasId);
-    //@ts-expect-error
+    this.canvas = this.domRefs.theCanvas;
     this.context = this.canvas.getContext('2d');
-    // document.getElementById('btn-save').addEventListener("click", this.savePNG.bind(this));
+    //this.domRefs.btnSave.addEventListener("click", this.savePNG.bind(this));
     this.resize();
     this.createAgents();
-    window.addEventListener("resize", this.resize.bind(this));
+
+    this.ro = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const cr = entry.contentRect;
+        this.resize(cr);
+        console.log('Element:', entry.target);
+        console.log(`Element size: ${cr.width}px x ${cr.height}px`);
+        console.log(`Element padding: ${cr.top}px ; ${cr.left}px`);
+      }
+    });
+    
+    // Observe one or multiple elements
+    this.ro.observe(this.domRefs.mainContainer);
   }
 
   createAgents() {
@@ -55,14 +73,13 @@ export class AnimationView extends AbstractView {
     }
   }
 
-  resize() {
-    //@ts-expect-error
-    var rect = this.canvas.parentNode.getBoundingClientRect();
-    this.width = rect.width - 12;
-    this.height = rect.height - 12;
-    //@ts-expect-error
+  resize(rect) {
+    if( rect == undefined ){
+      rect = this.canvas.parentNode.getBoundingClientRect();
+    }
+    this.width = rect.width;
+    this.height = rect.height;
     this.canvas.width = this.width;
-    //@ts-expect-error
     this.canvas.height = this.height;
     this.agents.forEach(agent => {
       agent.c.x = Math.min(agent.c.x, this.width - agent.r - 1);
@@ -123,10 +140,12 @@ export class AnimationView extends AbstractView {
     if (this.animationFrameId != undefined) {
       window.cancelAnimationFrame(this.animationFrameId);
     }
+    this.ro?.unobserve(this.domRefs?.mainContainer);
+    this.ro?.disconnect();
+    this.mainContainer.style.overflow = "" + this.savedOverflow;
   }
 
-  savePNG() {
-    //@ts-expect-error
+  async savePNG() {
     let dataURL = this.canvas.toDataURL("image/png", 1.0);
     let fileName = 'my-canvas.png';
     var a = document.createElement('a');
@@ -134,6 +153,7 @@ export class AnimationView extends AbstractView {
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
+    a.remove();
   }
 }
 

@@ -115,7 +115,8 @@ main {
   /* padding: 0.75rem; */
   grid-area: content;
   background-color: var(--main-bg-clr);
-  overflow: auto;
+  overflow: hidden;
+  overflow: auto; /* scroll bars, if needed, by default */
 }
 
 .menu-icon {
@@ -137,7 +138,7 @@ header .menu-icon:hover {
   display: block;
   height: 5px;
   border-radius: 2px;
-  margin: 5px 0;
+  margin: 3px 0;
   transition: 0.5s;
 }
 

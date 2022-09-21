@@ -100,7 +100,7 @@ export class LayupTableView extends AbstractView {
 
 
         let tableHeader = `
-            <thead>
+            <thead id="layup-table-hdr">
                 <tr>
                     <th rowspan="2">No.</th>
                     <th rowspan="2">Material</th>
@@ -126,12 +126,12 @@ export class LayupTableView extends AbstractView {
         for (let i = 1; i <= plySpecs.length; i++) {
             let plySpec = plySpecs[i - 1];
             let layer = plySpec.layer;
-            let tableRow = `<tr>`;
+            let tableRow = `<tr id="layup-table-row-${i}" data-layer-num="${i - 1}">`;
             tableRow += `<td >${i}`;
             tableRow += `<td style="text-align:left">${layer.name}</td>`;
             tableRow += `<td >${(1000 * plySpec.start).toFixed(0)}</td>`;
-            tableRow += `<td >${plySpec.start.toFixed(1)}</td>`;
-            tableRow += `<td >${plySpec.end.toFixed(1)}</td>`;
+            tableRow += `<td >${(1000 * plySpec.start).toFixed(0)}</td>`;
+            tableRow += `<td >${(1000 * plySpec.end).toFixed(0)}</td>`;
             tableRow += `<td >${(1000 * plySpec.end).toFixed(0)}</td>`;
             tableRow += `<td >${(1000 * plySpec.widthAtStart).toFixed(1)}</td>`;
             tableRow += `<td >${(1000 * plySpec.widthAtEnd).toFixed(1)}</td>`;
@@ -158,7 +158,7 @@ export class LayupTableView extends AbstractView {
         html += "<div>";
         html += style;
         html += "<h1>Layup Table</h1>\n";
-        html += '<table id="layup-table" class="layup-table">';
+        html += '<table id="layup-table" class="layup-table" data-laminate="">';
         html += "<caption>Material layers, axial positions & clocking.</caption>";
         html += tableHeader;
         html += tableBody;
@@ -166,12 +166,13 @@ export class LayupTableView extends AbstractView {
         html += "</table>";
         html += "</div>";
 
-        console.log(html);
+        //console.log(html);
         return html;
 
     }
 
     addListeners() {
+        super.addListeners();
         document.title = this.title;
 
         document.querySelectorAll('#layup-table td')
@@ -251,57 +252,64 @@ function buildTube() {
     const carbonUni = batLaminates.carbonUni;
     const lam4 = batLaminates.lam_4;
 
-    const profile = {
-        xPositions: [0.000, 0.250, 0.500, 0.750, 1.000],
-        oDiameters: [0.050, 0.050, 0.050, 0.050, 0.050],
-    };
-
     const tube = new MoldedTube({
         name: 'Molded Tube',
         description: 'A simple molded tube.  1 meter long x 50 mm OD.',
-        profile: profile,
+        profile: {
+            xPositions: [0.000, 0.250, 0.500, 0.750, 1.000],
+            oDiameters: [0.050, 0.100, 0.150, 0.150, 0.050],
+        },
         resin: epoxyResin,
     });
 
-    let start = 0.0;
-    let end = 1.0;
+    let tubeStart = tube.getXMin();;
+    let tubeEnd = tube.getXMax();
+
+    let plyStart = tubeStart;
+    let plyEnd = tubeEnd;
 
     tube.addLayer(new PlySpec({
         layer: glassUni,
-        start: start,
-        end: end,
-        widthAtStart: 0.157,
-        widthAtEnd: 0.157,
-        taperStart: start,
-        taperEnd: end,
+        start: plyStart,
+        end: plyEnd,
+        widthAtStart: Math.PI * tube.getOD(plyStart),
+        widthAtEnd: Math.PI * tube.getOD(plyEnd),
+        taperStart: plyStart,
+        taperEnd: plyEnd,
         angle: 0.0,
         orientation: ORIENTATION.UPRIGHT,
         numPieces: 1.0,
         clocking: 0.0,
     }));
 
+    plyStart = tubeStart + 0.25;
+    plyEnd = tubeEnd - 0.25;
+
     tube.addLayer(new PlySpec({
         layer: carbonUni,
-        start: start + 0.25,
-        end: end - 0.25,
-        widthAtStart: 0.050 * Math.PI,
-        widthAtEnd: 0.050 * Math.PI,
-        taperStart: start,
-        taperEnd: end,
+        start: plyStart,
+        end: plyEnd,
+        widthAtStart: tube.getOD(plyStart) * Math.PI,
+        widthAtEnd: tube.getOD(plyEnd) * Math.PI,
+        taperStart: plyStart,
+        taperEnd: plyEnd,
         angle: 0.0,
         orientation: ORIENTATION.UPRIGHT,
         numPieces: 1.0,
         clocking: 30.0,
     }));
 
+    plyStart = tubeStart;
+    plyEnd = tubeEnd;
+
     tube.addLayer(new PlySpec({
         layer: lam4,
-        start: start,
-        end: end,
-        widthAtStart: 0.05 * Math.PI / 2.0,
-        widthAtEnd: 0.05 * Math.PI / 2.0,
-        taperStart: start,
-        taperEnd: end,
+        start: plyStart,
+        end: plyEnd,
+        widthAtStart: tube.getOD(plyStart) * Math.PI,
+        widthAtEnd: tube.getOD(plyEnd) * Math.PI,
+        taperStart: plyStart,
+        taperEnd: plyEnd,
         angle: 0.0,
         orientation: ORIENTATION.UPRIGHT,
         numPieces: 2.0,

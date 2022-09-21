@@ -53,3 +53,14 @@ const app = async () => {
 };
 
 document.addEventListener("DOMContentLoaded", app);
+
+
+export function getDomRefsById() {
+  let $refs = {};
+  document.querySelectorAll('[id]').forEach($el => {
+    let key = $el.id.replace(/-(.)/g, (_, s) => s.toUpperCase());
+    $refs[key] = $el;
+  });
+  console.log($refs);
+  return $refs;
+}

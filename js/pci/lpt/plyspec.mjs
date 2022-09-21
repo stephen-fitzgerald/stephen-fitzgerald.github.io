@@ -51,6 +51,7 @@ export class PlySpec {
         this.orientation = ORIENTATION.UPRIGHT;
         this.numPieces = 1.0;
         this.clocking = 0.0;
+        this.epsilon = 0.00001; // eg .01 mm for lengths
 
         if (options) {
             this.layer = options.layer == undefined ? this.layer : options.layer;
@@ -75,7 +76,7 @@ export class PlySpec {
                 console.log("Taper start less than start position.");
                 this.taperStart = this.start;
             }
-            if (this.taperEnd < this.taperStart) {
+            if (this.taperEnd < this.taperStart)  {
                 console.log("Taper end less than taper start.");
                 this.taperEnd = this.end;
             }

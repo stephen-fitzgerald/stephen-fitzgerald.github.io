@@ -4,18 +4,18 @@
 import { parseRequestURL } from "../js/router.mjs";
 
 export class AbstractView {
-   
-   /**
-   * Creates an instance of AbstractView.
-   * @param {Object} [args]
-   * @param {string} [args.title]
-   * @param {string} [args.html]
-   * @memberof AbstractView
-   */
+
+  /**
+  * Creates an instance of AbstractView.
+  * @param {Object} [args]
+  * @param {string} [args.title]
+  * @param {string} [args.html]
+  * @memberof AbstractView
+  */
   constructor(args = {}) {
     this.title = args.title || "Page Title";
     this.html = args.html || "<h1> This template is empty.</h1>";
-    console.log("Constructor called: " + new.target.name);
+    //console.log("Constructor called: " + new.target.name);
   }
 
   /**
@@ -50,6 +50,6 @@ export class AbstractView {
    * destroy() is called just before a new view replaces this view
    * tear down anything that won't automatically get cleaned up.
    */
-  destroy(){
+  destroy() {
   }
 }
