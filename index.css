@@ -1,5 +1,5 @@
 :root {
-  --body-bg-clr: rgb(226, 228, 253);
+  --body-bg-clr: rgb(181, 255, 230);
   --text-clr: rgb(32, 39, 12);
 
   --header-bg-clr: rgb(99, 99, 247);
@@ -17,6 +17,7 @@
   --aside-bg-clr: rgb(174, 247, 255);
 
   --footer-bg-clr: coral;
+  --dflt-border-radius: 10px;
 }
 
 @font-face {
@@ -83,12 +84,13 @@ body {
 
 header {
   grid-area: header;
-  padding: 1rem;
+  padding: 1rem 2rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   background-color: var(--header-bg-clr);
+  border-radius: var(--dflt-border-radius);
 }
 
 nav {
@@ -97,10 +99,12 @@ nav {
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  border-radius: var(--dflt-border-radius);
 }
 
 nav a {
-  padding: 0.35em;
+  padding: 0.5em;
+  border-radius: var(--dflt-border-radius);
   text-decoration: none;
 }
 
@@ -112,6 +116,7 @@ footer {
   grid-area: footer;
   background-color: var(--footer-bg-clr);
   padding: 1rem;
+  border-radius: var(--dflt-border-radius);
 }
 
 main {
@@ -119,7 +124,10 @@ main {
   grid-area: content;
   background-color: var(--main-bg-clr);
   overflow: hidden;
-  overflow: auto; /* scroll bars, if needed, by default */
+  overflow: auto;
+  /* scroll bars, if needed, by default */
+  border-radius: var(--dflt-border-radius);
+  padding: var(--dflt-border-radius);
 }
 
 .menu-icon {
@@ -180,9 +188,11 @@ table {
   border-collapse: collapse;
   border-spacing: 0px;
 }
+
 table thead {
   background-color: var(--table-hdr-clr);
 }
+
 tbody tr:hover {
   background-color: var(--table-hilite-clr);
   /* filter: brightness(50%) saturate(150%); */
@@ -202,7 +212,7 @@ canvas {
   color: #2cc9ff;
 }
 
-.flex-container{
+.flex-container {
   height: 100%;
   display: flex;
   flex-direction: column;
