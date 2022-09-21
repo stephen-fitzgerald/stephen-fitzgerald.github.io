@@ -28,9 +28,12 @@ export class AnimationView extends AbstractView {
    */
   async buildHTML() {
     this.mainContainer = document.getElementById("main-container");
+    if (this.mainContainer == undefined) {
+      throw new Error(`Error, no element with id="main-container" found.`);
+    }
     this.savedOverflow = this.mainContainer?.style.overflow;
     this.mainContainer.style.overflow = "hidden";
-    this.html = `
+    this.html = /* html */`
         <canvas id="the-canvas"></canvas>
     `;
     //  <button id="btn-save">Save Png</button>
@@ -40,7 +43,7 @@ export class AnimationView extends AbstractView {
   addListeners() {
     this.domRefs = getDomRefsById();
     document.title = this.title;
-    if (this.animationFrameId != undefined) {
+    if (this.animationFrameId) {
       window.cancelAnimationFrame(this.animationFrameId);
     }
     this.canvas = this.domRefs.theCanvas;
@@ -51,14 +54,15 @@ export class AnimationView extends AbstractView {
 
     this.ro = new ResizeObserver(entries => {
       for (let entry of entries) {
-        const cr = entry.contentRect;
-        this.resize(cr);
-        console.log('Element:', entry.target);
-        console.log(`Element size: ${cr.width}px x ${cr.height}px`);
-        console.log(`Element padding: ${cr.top}px ; ${cr.left}px`);
+        const bBoxSize = entry.borderBoxSize;
+        const cBoxSize = entry.contentBoxSize;
+        const contentRec = entry.contentRect;
+        const dPixConyBoxSize = entry.devicePixelContentBoxSize;
+        const target = entry.target;
+        this.resize(contentRec);
       }
     });
-    
+
     // Observe one or multiple elements
     this.ro.observe(this.domRefs.mainContainer);
   }
@@ -74,7 +78,7 @@ export class AnimationView extends AbstractView {
   }
 
   resize(rect) {
-    if( rect == undefined ){
+    if (rect == undefined) {
       rect = this.canvas.parentNode.getBoundingClientRect();
     }
     this.width = rect.width;
@@ -142,6 +146,9 @@ export class AnimationView extends AbstractView {
     }
     this.ro?.unobserve(this.domRefs?.mainContainer);
     this.ro?.disconnect();
+    if (this.mainContainer == undefined) {
+      throw new Error(`Error, no element with id="main-container" found.`);
+    }
     this.mainContainer.style.overflow = "" + this.savedOverflow;
   }
 
@@ -168,7 +175,12 @@ class Vector {
 }
 
 class Agent {
+
+  static num = 0;
+
   constructor(x, y, r = 10) {
+    Agent.num += 1;
+    this.name = "" + Agent.num;
     this.lineWidth = 1;
     this.c = new Vector(x, y);
     this.vel = new Vector(randRng(-4, 4), randRng(-4, 4));
@@ -227,6 +239,9 @@ class Agent {
     ctx.fill();
     ctx.stroke();
 
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.strokeText(this.name, 0,0);
     ctx.restore();
   }
 }
