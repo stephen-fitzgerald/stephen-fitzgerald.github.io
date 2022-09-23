@@ -8,20 +8,20 @@ export class AbstractView {
   /**
   * Creates an instance of AbstractView.
   * @param {Object} [args]
-  * @param {string} [args.title]
-  * @param {string} [args.html]
+  * @param {string | undefined} [args.title]
+  * @param {string | undefined} [args.html]
   * @memberof AbstractView
   */
   constructor(args = {}) {
-    this.title = args.title || "Page Title";
-    this.html = args.html || "<h1> This template is empty.</h1>";
+    this.title = args.title;
+    this.html = args.html;
     //console.log("Constructor called: " + new.target.name);
   }
 
   /**
    * buildHTML() - build the static html for a view
    *
-   * @return {Promise<string>} the html for the view
+   * @return {Promise<string | undefined>} the html for the view
    * @memberof AbstractView
    */
   async buildHTML() {
@@ -35,7 +35,7 @@ export class AbstractView {
    * @memberof AbstractView
    */
   addListeners() {
-    document.title = this.title;
+    document.title = this.title || document.title;
   }
 
   /**

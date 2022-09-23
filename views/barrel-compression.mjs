@@ -42,11 +42,15 @@ export class BCView extends AbstractView {
    */
   modelToView(time) {
     this.parentElement = document.getElementById("bc-div");
-//    if(this.parentElement == null )this.parentElement = undefined;
-    calculateBarrelCompressions(this.parentElement);
+    if (this.parentElement) {
+      calculateBarrelCompressions(this.parentElement);
+    }
   }
 }
-
+/**
+ *
+ *
+ */
 function calculateBarrelCompressions(parentElement = document.body) {
   let UPRIGHT = ORIENTATION.UPRIGHT;
 

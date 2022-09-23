@@ -1,0 +1,114 @@
+<canvas id="profile-canvas" height="400" width="600"></canvas>
+<div>
+    <style type="text/css">
+        caption {
+            text-align: left;
+            vertical-align: middle;
+            overflow: hidden;
+            word-break: normal;
+        }
+
+        table {
+            text-align: right;
+            vertical-align: middle;
+            overflow: hidden;
+            word-break: normal;
+
+            border-collapse: collapse;
+            border-style: solid;
+            border-width: 1px;
+            border-spacing: 0;
+            border-color: #9ABAD9;
+        }
+
+        th {
+            font-weight: bold;
+            text-align: center;
+            padding: 2px 20px;
+            background-color: #3166ff;
+            color: #fff;
+
+            border-collapse: collapse;
+            border-style: solid;
+            border-width: 1px;
+            border-spacing: 0;
+            border-color: #9ABAD9;
+        }
+
+        td {
+            padding: 4px 15px;
+
+            border-collapse: collapse;
+            border-style: solid;
+            border-width: 1px;
+            border-spacing: 0;
+            border-color: #9ABAD9;
+        }
+
+        td:hover {
+            background-color: #ffff99;
+        }
+
+        tbody tr:hover {
+            background-color: #fafabd;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #EBF5FF;
+        }
+
+        tr:nth-child(even) {
+            background-color: #D2E4FC;
+        }
+
+        tr[data-selected] {
+            background-color: #fafabd;
+        }
+    </style>
+    <h1>Layup Table</h1>
+    <table id="layup-table" class="layup-table" data-laminate="">
+        <caption>Material layers, axial positions & clocking.</caption>
+        <thead id="layup-table-hdr">
+            <tr>
+                <th rowspan="2">No.</th>
+                <th rowspan="2">Material</th>
+                <th colspan="4">Start/End Pos. (mm)</th>
+                <th colspan="2">Ply Width (mm)</th>
+                <th rowspan="2"># Pc</th>
+                <th rowspan="2">Clck.</th>
+                <th rowspan="2">Thickness</th>
+            </tr>
+            <tr>
+                <th>Start</th>
+                <th>X2</th>
+                <th>X3</th>
+                <th>End</th>
+                <th>@ Start</th>
+                <th>@ End</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr id="layup-table-row-{{i}}" data-layer-num="0">
+                <td>{{i}}
+                <td style="text-align:left">{{layer.name}}</td>
+                <td >{{(1000 * plySpec.start).toFixed(0)}}</td>
+                <td >{{(1000 * plySpec.start).toFixed(0)}}</td>
+                <td >{{(1000 * plySpec.end).toFixed(0)}}</td>
+                <td >{{(1000 * plySpec.end).toFixed(0)}}</td>
+                <td >{{(1000 * plySpec.widthAtStart).toFixed(1)}}</td>
+                <td >{{(1000 * plySpec.widthAtEnd).toFixed(1)}}</td>
+                <td >{{plySpec.numPieces}}</td>
+                <td >{{plySpec.clocking}}</td>
+                <td >{{(1000 * layer.getThickness({ resin: resin })).toFixed(3)}}</td>
+            </tr>
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <th style="text-align:right" scope="row" colspan="10">Total thickness : </th>
+                <th id="total-thickness" style="text-align:right" colspan="1">1.365</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>

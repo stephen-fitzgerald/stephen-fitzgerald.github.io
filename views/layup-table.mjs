@@ -5,6 +5,7 @@ import { batLaminates } from "../js/pci/bats/bat-laminates.mjs";
 import { MoldedTube } from "../js/pci/bats/molded-tube.mjs";
 import { ORIENTATION } from "../js/pci/lpt/orientation.mjs";
 import { PlySpec } from "../js/pci/lpt/plyspec.mjs";
+import { download } from "../index.js";
 
 export class LayupTableView extends AbstractView {
 
@@ -14,6 +15,7 @@ export class LayupTableView extends AbstractView {
         this.canvasHeight = 400;
         this.canvasWidth = 600;
         this.tube = buildTube();
+        this.downloaded = false;
     }
 
     /**
@@ -167,6 +169,11 @@ export class LayupTableView extends AbstractView {
         html += "</div>";
 
         //console.log(html);
+        // Function to download data to a file
+        if (!this.downloaded) {
+            download(html, "layupTable.html", "text/html");
+            this.downloaded = true;
+        }
         return html;
 
     }
