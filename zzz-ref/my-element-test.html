@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!--base href="/"-->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Slim Test</title>
+  <meta name="description" content="Slim tests" />
+  <meta name="author" content="S.Fitzgerald" />
+
+  <link rel="icon" type="image/svg" href="assets/lpt-icon.svg" />
+</head>
+
+<body>
+  <!-- Header -->
+  <header id="header">
+    <h1>Custom elements look cool.</h1>
+  </header>
+  <!-- end of Header -->
+
+  <!-- Main -->
+  <main id="main-container">
+    Long format: 
+    <my-element datetime="2019-12-01" year="numeric" month="long" day="numeric" hour="numeric" minute="numeric"
+      second="numeric" time-zone-name="short">
+    </my-element>
+    <br><br>
+    Now, Long format: 
+    <my-element id="elem" year="numeric" month="long" day="numeric" hour="numeric" minute="numeric"
+      second="numeric" time-zone-name="short">
+    </my-element>
+    <br><br>
+  </main>
+  <!-- end of Main -->
+
+  <!-- Footer -->
+  <footer id="footer">
+    (c) 1992-2022
+  </footer>
+  <!-- end of Footer -->
+
+  <script type="module" src="my-element.mjs"></script>
+</body>
+
+</html>
