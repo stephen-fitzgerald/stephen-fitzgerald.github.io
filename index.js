@@ -62,8 +62,12 @@ const app = async () => {
 document.addEventListener("DOMContentLoaded", app);
 
 function addListenerToNavItems() {
-  let aElements = getLeftNavItems();
-  aElements.forEach((el) => {
+  let navElements = getLeftNavItems();
+  if(!navElements){
+    console.log("No menu items found in left-nav");
+    return;
+  }
+  navElements.forEach((el) => {
     el.addEventListener("click", setActiveNavElement);
   });
 }
@@ -75,6 +79,10 @@ function setActiveNavElement(el) {
 
 function clearActiveNavElement() {
   let navElements = getLeftNavItems();
+  if(!navElements){
+    console.log("No menu items found in left-nav");
+    return;
+  }
   navElements.forEach((el) => {
     el.classList.remove('active');
     if (el.classList.length === 0) {
