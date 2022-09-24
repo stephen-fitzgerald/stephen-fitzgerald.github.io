@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", app);
 
 function addListenerToNavItems() {
   let navElements = getLeftNavItems();
-  if(!navElements){
+  if (!navElements) {
     console.log("No menu items found in left-nav");
     return;
   }
@@ -79,7 +79,7 @@ function setActiveNavElement(el) {
 
 function clearActiveNavElement() {
   let navElements = getLeftNavItems();
-  if(!navElements){
+  if (!navElements) {
     console.log("No menu items found in left-nav");
     return;
   }
@@ -95,9 +95,9 @@ function getLeftNavItems() {
   return document.getElementById(MENU_ID)?.querySelectorAll('a');
 }
 
-export function getDomRefsById() {
+export function getDomRefsById(parentElement = document) {
   let $refs = {};
-  document.querySelectorAll('[id]').forEach($el => {
+  parentElement.querySelectorAll('[id]').forEach($el => {
     let key = $el.id.replace(/-(.)/g, (_, s) => s.toUpperCase());
     $refs[key] = $el;
   });
