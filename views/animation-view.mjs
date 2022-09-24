@@ -52,7 +52,7 @@ export class AnimationView extends AbstractView {
     this.resize();
     this.createAgents();
 
-    this.ro = new ResizeObserver(entries => {
+    this.resizeObserver = new ResizeObserver(entries => {
       for (let entry of entries) {
         const bBoxSize = entry.borderBoxSize;
         const cBoxSize = entry.contentBoxSize;
@@ -64,16 +64,18 @@ export class AnimationView extends AbstractView {
     });
 
     // Observe one or multiple elements
-    this.ro.observe(this.domRefs.mainContainer);
+    this.resizeObserver.observe(this.domRefs.mainContainer);
   }
 
   createAgents() {
-    this.agents = [];
-    for (let i = 0; i < this.numAgents; i++) {
-      const r = randRng(8, 22);
-      const x = randRng(r, this.width - r);
-      const y = randRng(r, this.height - r);
-      this.agents.push(new Agent(x, y, r));
+
+    if (!this.agents || this.agents.length == 0) {
+      for (let i = 0; i < this.numAgents; i++) {
+        const r = randRng(8, 22);
+        const x = randRng(r, this.width - r);
+        const y = randRng(r, this.height - r);
+        this.agents.push(new Agent(x, y, r));
+      }
     }
   }
 
@@ -144,8 +146,8 @@ export class AnimationView extends AbstractView {
     if (this.animationFrameId != undefined) {
       window.cancelAnimationFrame(this.animationFrameId);
     }
-    this.ro?.unobserve(this.domRefs?.mainContainer);
-    this.ro?.disconnect();
+    this.resizeObserver?.unobserve(this.domRefs?.mainContainer);
+    this.resizeObserver?.disconnect();
     if (this.mainContainer == undefined) {
       throw new Error(`Error, no element with id="main-container" found.`);
     }
@@ -241,7 +243,7 @@ class Agent {
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.strokeText(this.name, 0,0);
+    ctx.strokeText(this.name, 0, 0);
     ctx.restore();
   }
 }
