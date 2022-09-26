@@ -169,7 +169,7 @@ export class DataStore {
      * Get the name of the clazz for this object, similar to Class in Java.  
      * 
      * @param {*} obj
-     * @returns {string} the name of the _clazz
+     * @returns {string | undefined} the name of the _clazz
      */
     static getClazzName(obj) {
         if (obj && obj._clazz) {

@@ -21,7 +21,7 @@ function getConstructor(obj) {
  * Get the name of the clazz for this object, similar to Class in Java.  
  * 
  * @param {*} obj
- * @returns {string} the name of the _clazz
+ * @returns {string | undefined} the name of the _clazz
  */
 export function getClazzName(obj) {
     if (obj && obj._clazz) {
@@ -46,7 +46,7 @@ export function getClazzName(obj) {
  */
 function registerObjectClazz(theObject) {
     let classname = getClazzName(theObject);
-    if (false === globalClazzMap.has(classname)) {
+    if (classname && globalClazzMap.has(classname) == false) {
         let konstructor = getConstructor(theObject);
         if (typeof konstructor === 'function') {
             registerClazzConstructor(classname, konstructor);

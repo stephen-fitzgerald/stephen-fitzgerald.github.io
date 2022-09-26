@@ -12,7 +12,7 @@
  *   );
  *   document.getElementById("main").appendChild(frag);
  */
-export function parsePartialHTML(html, allowScripts=false) {
+export function parsePartialHTML(html, allowScripts = false) {
 
     let doc = new DOMParser().parseFromString(html, "text/html");
     let frag = document.createDocumentFragment();
@@ -41,15 +41,19 @@ function fixScriptsSoTheyAreExecuted(el) {
 
     for (i = 0, len = scripts.length; i < len; i++) {
         script = scripts[i];
-        fixedScript = document.createElement("script");
-        fixedScript.type = script.type;
-        if (script.innerHTML) {
-            fixedScript.innerHTML = script.innerHTML;
-        } else {
-            fixedScript.src = script.src;
+        if (script) {
+            fixedScript = document.createElement("script");
+            fixedScript.type = script.type;
+            if (script.innerHTML) {
+                fixedScript.innerHTML = script.innerHTML;
+            } else {
+                fixedScript.src = script.src;
+            }
+            fixedScript.async = false;
+            if (script.parentNode) {
+                script.parentNode.replaceChild(fixedScript, script);
+            }
         }
-        fixedScript.async = false;
-        script.parentNode.replaceChild(fixedScript, script);
     }
     return el;
 }

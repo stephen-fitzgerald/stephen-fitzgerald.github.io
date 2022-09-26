@@ -9,7 +9,7 @@ const psiToPa = 6894.7573;
  * volume fraction.  Pressure usually increases with fiber volume fraction according 
  * to a power law. This implementation just interpolates using pressure & vf arrays.
  */
-class CompactionModel {
+export class CompactionModel {
 
     /**
      * 
