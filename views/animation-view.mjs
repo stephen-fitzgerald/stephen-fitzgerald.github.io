@@ -10,14 +10,23 @@ import { getDomRefsById } from "../index.js";
 let pi = Math.PI;
 
 export class AnimationView extends AbstractView {
+
+  /**
+   * 
+   * @param {object} args
+   * @param {string} [args.title]
+   * @param {number} [args.numAgents]
+   * @param {number} [args.width]
+   * @param {number} [args.height]
+   */
   constructor(args = {}) {
     super(args);
     this.title = args.title || "Animation View";
-    this.width = 350;
-    this.height = 150;
+    this.numAgents = args.numAgents || 45;
+    this.width = args.width || 350;
+    this.height = args.height || 150;
     this.canvas = undefined;
     this.agents = [];
-    this.numAgents = 45;
     this.animationFrameId = undefined;
   }
   /**
@@ -54,12 +63,7 @@ export class AnimationView extends AbstractView {
 
     this.ro = new ResizeObserver(entries => {
       for (let entry of entries) {
-        const bBoxSize = entry.borderBoxSize;
-        const cBoxSize = entry.contentBoxSize;
-        const contentRec = entry.contentRect;
-        const dPixConyBoxSize = entry.devicePixelContentBoxSize;
-        const target = entry.target;
-        this.resize(contentRec);
+        this.resize(entry.contentRect);
       }
     });
 
@@ -77,14 +81,24 @@ export class AnimationView extends AbstractView {
     }
   }
 
+  /**
+   * Resize the canvas to a rectangle or the parent element.
+   * Move agents so all are still in the canvas
+   * @param {object} [rect] 
+   * @param {number} rect.width 
+   * @param {number} rect.height 
+   */
   resize(rect) {
+
+    rect = rect || this.canvas.parentNode.getBoundingClientRect();
+
     if (rect == undefined) {
-      rect = this.canvas.parentNode.getBoundingClientRect();
+      throw new Error("No parent rectangleto resize canvas");
     }
-    this.width = rect.width;
-    this.height = rect.height;
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
+
+    this.canvas.width = this.width = rect.width;
+    this.canvas.height = this.height = rect.height;
+
     this.agents.forEach(agent => {
       agent.c.x = Math.min(agent.c.x, this.width - agent.r - 1);
       agent.c.y = Math.min(agent.c.y, this.height - agent.r - 1);
@@ -93,6 +107,10 @@ export class AnimationView extends AbstractView {
     });
   }
 
+  /**
+   * 
+   * @param {number} time elapsed time in milliseconds
+   */
   modelToView(time) {
     // erase / fill background
     let context = this.context;
@@ -126,7 +144,7 @@ export class AnimationView extends AbstractView {
     }
 
     this.agents.forEach(agent => {
-      // agent.bounce(width, height);
+      agent.bounce(width, height);
       agent.wrap(width, height);
       agent.update();
       agent.draw(context);
@@ -168,6 +186,11 @@ export class AnimationView extends AbstractView {
 // support classes
 
 class Vector {
+  /**
+   * 
+   * @param {number} x 
+   * @param {number} y 
+   */
   constructor(x, y) {
     this.x = x;
     this.y = y;
@@ -178,6 +201,12 @@ class Agent {
 
   static num = 0;
 
+  /**
+   * 
+   * @param {number} x 
+   * @param {number} y 
+   * @param {number} r 
+   */
   constructor(x, y, r = 10) {
     Agent.num += 1;
     this.name = "" + Agent.num;
@@ -187,6 +216,11 @@ class Agent {
     this.r = r;
   }
 
+  /**
+   * 
+   * @param {Agent} other 
+   * @returns {number} distance between two agents
+   */
   distanceTo(other) {
     return (
       Math.sqrt(
@@ -196,6 +230,11 @@ class Agent {
     );
   }
 
+  /**
+   * Make agents bounce of the edges of the canvas
+   * @param {number} width 
+   * @param {number} height 
+   */
   bounce(width, height) {
     if (this.c.x < this.r - 1 || this.c.x > (width - this.r) + 1) {
       this.vel.x = -this.vel.x;
@@ -205,6 +244,11 @@ class Agent {
     }
   }
 
+  /**
+   * Wrap agents so the reappear on the opposite side of the canvas.
+   * @param {number} width 
+   * @param {number} height 
+   */
   wrap(width, height) {
     if (this.c.x < (0 - this.r)) {
       this.c.x = width + this.r;
@@ -223,11 +267,18 @@ class Agent {
     }
   }
 
+  /**
+   * updates the current position
+   */
   update() {
     this.c.x += this.vel.x;
     this.c.y += this.vel.y;
   }
 
+  /**
+   * 
+   * @param {CanvasRenderingContext2D} ctx 
+   */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.c.x, this.c.y);
@@ -241,7 +292,7 @@ class Agent {
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.strokeText(this.name, 0,0);
+    ctx.strokeText(this.name, 0, 0);
     ctx.restore();
   }
 }

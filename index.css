@@ -108,7 +108,7 @@ nav {
 }
 
 nav a {
-  padding: 0.25em 0.25em 0.25em 0.75em;
+  padding: 0.25em 0.75em 0.25em 0.75em;
   border-radius: var(--dflt-border-radius);
   text-decoration: none;
   margin: 3px;
