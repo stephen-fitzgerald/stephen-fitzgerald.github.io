@@ -62,8 +62,12 @@ const app = async () => {
 document.addEventListener("DOMContentLoaded", app);
 
 function addListenerToNavItems() {
-  let aElements = getLeftNavItems();
-  aElements.forEach((el) => {
+  let navElements = getLeftNavItems();
+  if (!navElements) {
+    console.log("No menu items found in left-nav");
+    return;
+  }
+  navElements.forEach((el) => {
     el.addEventListener("click", setActiveNavElement);
   });
 }
@@ -75,6 +79,10 @@ function setActiveNavElement(el) {
 
 function clearActiveNavElement() {
   let navElements = getLeftNavItems();
+  if (!navElements) {
+    console.log("No menu items found in left-nav");
+    return;
+  }
   navElements.forEach((el) => {
     el.classList.remove('active');
     if (el.classList.length === 0) {
@@ -87,9 +95,9 @@ function getLeftNavItems() {
   return document.getElementById(MENU_ID)?.querySelectorAll('a');
 }
 
-export function getDomRefsById() {
+export function getDomRefsById(parentElement = document) {
   let $refs = {};
-  document.querySelectorAll('[id]').forEach($el => {
+  parentElement.querySelectorAll('[id]').forEach($el => {
     let key = $el.id.replace(/-(.)/g, (_, s) => s.toUpperCase());
     $refs[key] = $el;
   });
