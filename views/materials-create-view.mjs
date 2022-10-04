@@ -1,7 +1,7 @@
 // @ts-check
 /* jshint esversion: 6 */
 
-import { Mat_Isotropic, Mat_Orthotropic, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23 } from "../js/pci/lpt/material.mjs";
+import { Material, Mat_Isotropic, Mat_Orthotropic, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23 } from "../js/pci/lpt/material.mjs";
 import { addMaterial } from "../data/materials-data.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 
@@ -27,7 +27,7 @@ export class MaterialsCreateView extends AbstractView {
   }
 
   /** override */
-  buildHTML() {
+  async buildHTML() {
     return this.html;
   }
 
@@ -35,7 +35,7 @@ export class MaterialsCreateView extends AbstractView {
   addListeners() {
     super.addListeners();
     let matCreateBtn = document.getElementById("mat-create-btn");
-    matCreateBtn.addEventListener("click", this.createMaterial.bind(this));
+    matCreateBtn?.addEventListener("click", this.createMaterial.bind(this));
   }
 
   createMaterial(e) {
@@ -66,8 +66,10 @@ export class MaterialsCreateView extends AbstractView {
           m = new Mat_Orthotropic();
           break;
       }
-      let id = addMaterial(m);
-      document.location.hash = `#/material/${id}/edit`;
+      if (m instanceof Material) {
+        let id = addMaterial(m);
+        document.location.hash = `#/material/${id}/edit`;
+      }
     }
   }
 }

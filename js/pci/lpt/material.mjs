@@ -863,12 +863,12 @@ export class Mat_FRP extends Material {
     /**
      * Checks for valid volume fraction arguments
      *
-     * @param {number} arg
+     * @param {number | undefined} arg
      * @param {string} argName
      */
     static checkVfArg(arg, argName = "Vf") {
-        if (isNumeric(arg) && arg < 0.0) { throw new Error(argName + " can not be less than 0.0."); }
-        if (isNumeric(arg) && arg > 1.0) { throw new Error(argName + " can not be greater than 1.0."); }
+        if (isNumeric(arg) && arg && arg < 0.0) { throw new Error(argName + " can not be less than 0.0."); }
+        if (isNumeric(arg) && arg && arg > 1.0) { throw new Error(argName + " can not be greater than 1.0."); }
         return arg;
     }
 
@@ -902,22 +902,22 @@ export class Mat_FRP extends Material {
      */
     get properties() {
         let props = super.properties;
-        props.fiber = this.fiber.properties;
-        props.resin = this.resin.properties;
+        props.fiber = this.fiber ? this.fiber.properties : undefined;
+        props.resin = this.resin ? this.resin.properties : undefined;
         props.vf = this.vf;
         return props;
     }
 
     /**
      * Fiber part of a composite material
-     * @type Material
+     * @type Material | undefined
      * @memberof Mat_FRP
      */
     get fiber() {
         return this._fiber;
     }
     set fiber(theMaterial) {
-        if (theMaterial.contains(this)) {
+        if (theMaterial && theMaterial.contains(this)) {
             throw new Error("A material cannot be composed itself.");
         }
         this._fiber = theMaterial;
@@ -925,14 +925,14 @@ export class Mat_FRP extends Material {
 
     /**
      * Resin part of a composite material
-     * @type Material
+     * @type Material | undefined
      * @memberof Mat_FRP
      */
     get resin() {
         return this._resin;
     }
     set resin(theMaterial) {
-        if (theMaterial.contains(this)) {
+        if (theMaterial && theMaterial.contains(this)) {
             throw new Error("A material cannot be composed itself.");
         }
         this._resin = theMaterial;
@@ -940,7 +940,7 @@ export class Mat_FRP extends Material {
 
     /**
      * Volume fraction of fiber [0.0 - 1.0]
-     * @type number
+     * @type number | undefined
      * @memberof Mat_FRP
      */
     get vf() { return this._vf; }
@@ -948,85 +948,133 @@ export class Mat_FRP extends Material {
 
     // ------------ 10 required getter overrides -------------------
 
-    get density() { return this._vf * this.fiber.density + (1 - this.vf) * this.resin.density; }
+    /**
+     * 
+     * @returns the value to show when micromechanics properties are not defined
+     */
+    static MM_ERROR() {
+        return NaN;
+    };
 
-    get E1() { return this.vf * this.fiber.E1 + (1 - this.vf) * this.resin.E1; }
+
+    get density() {
+        if (this.vf && this.fiber && this.resin && this.fiber.density && this.resin.density) {
+            return (
+                this.vf * this.fiber.density + (1 - this.vf) * this.resin.density
+            );
+        }
+        else { return Mat_FRP.MM_ERROR(); }
+    }
+
+    get E1() {
+        if (this.vf && this.fiber && this.resin && this.fiber.E1 && this.resin.E1) {
+            return (
+                this.vf * this.fiber.E1 + (1 - this.vf) * this.resin.E1
+            );
+        }
+        else { return Mat_FRP.MM_ERROR(); }
+    }
 
     get E2() {
-        let vf = this.vf;
-        let fE2 = this.fiber.E2;
-        let rE2 = this.resin.E2;
-        if (vf === 1.0) {
-            return fE2;
-        } else if (vf === 0.0) {
-            return rE2;
-        } else {
-            return rE2 / (1.0 - Math.sqrt(vf) * (1 - rE2 / fE2));
+        if (this.vf && this.fiber && this.resin && this.fiber.E2 && this.resin.E2) {
+            let vf = this.vf;
+            let fE2 = this.fiber.E2;
+            let rE2 = this.resin.E2;
+            if (vf === 1.0) {
+                return fE2;
+            } else if (vf === 0.0) {
+                return rE2;
+            } else {
+                return (rE2 / (1.0 - Math.sqrt(vf) * (1 - rE2 / fE2)));
+            }
         }
+        else { return Mat_FRP.MM_ERROR(); }
     }
 
     get E3() {
-        let vf = this.vf;
-        let fE3 = this.fiber.E3;
-        let rE3 = this.resin.E3;
-        if (vf === 1.0) {
-            return fE3;
-        } else if (vf === 0.0) {
-            return rE3;
-        } else {
-            return rE3 / (1.0 - Math.sqrt(vf) * (1 - rE3 / fE3));
+        if (this.vf && this.fiber && this.resin && this.fiber.E3 && this.resin.E3) {
+            let vf = this.vf;
+            let fE3 = this.fiber.E3;
+            let rE3 = this.resin.E3;
+            if (vf === 1.0) {
+                return fE3;
+            } else if (vf === 0.0) {
+                return rE3;
+            } else {
+                return rE3 / (1.0 - Math.sqrt(vf) * (1 - rE3 / fE3));
+            }
         }
+        else { return Mat_FRP.MM_ERROR(); }
     }
 
     get G12() {
-        let vf = this.vf;
-        let fprop = this.fiber.G12;
-        let rprop = this.resin.G12;
-        if (vf === 1.0) {
-            return fprop;
-        } else if (vf === 0.0) {
-            return rprop;
-        } else {
-            return rprop / (1.0 - Math.sqrt(vf) * (1 - rprop / fprop));
+        if (this.vf && this.fiber && this.resin && this.fiber.G12 && this.resin.G12) {
+            let vf = this.vf;
+            let fprop = this.fiber.G12;
+            let rprop = this.resin.G12;
+            if (vf === 1.0) {
+                return fprop;
+            } else if (vf === 0.0) {
+                return rprop;
+            } else {
+                return rprop / (1.0 - Math.sqrt(vf) * (1 - rprop / fprop));
+            }
         }
+        else { return Mat_FRP.MM_ERROR(); }
     }
 
+
     get G13() {
-        let vf = this.vf;
-        let fprop = this.fiber.G13;
-        let rprop = this.resin.G13;
-        if (vf === 1.0) {
-            return fprop;
-        } else if (vf === 0.0) {
-            return rprop;
-        } else {
-            return rprop / (1.0 - Math.sqrt(vf) * (1 - rprop / fprop));
+        if (this.vf && this.fiber && this.resin && this.fiber.G13 && this.resin.G13) {
+            let vf = this.vf;
+            let fprop = this.fiber.G13;
+            let rprop = this.resin.G13;
+            if (vf === 1.0) {
+                return fprop;
+            } else if (vf === 0.0) {
+                return rprop;
+            } else {
+                return rprop / (1.0 - Math.sqrt(vf) * (1 - rprop / fprop));
+            }
         }
+        else { return Mat_FRP.MM_ERROR(); }
     }
 
     get G23() {
-        let vf = this.vf;
-        let fprop = this.fiber.G23;
-        let rprop = this.resin.G23;
-        if (vf === 1.0) {
-            return fprop;
-        } else if (vf === 0.0) {
-            return rprop;
-        } else {
-            return rprop / (1.0 - Math.sqrt(vf) * (1 - rprop / fprop));
+        if (this.vf && this.fiber && this.resin && this.fiber.G23 && this.resin.G23) {
+            let vf = this.vf;
+            let fprop = this.fiber.G23;
+            let rprop = this.resin.G23;
+            if (vf === 1.0) {
+                return fprop;
+            } else if (vf === 0.0) {
+                return rprop;
+            } else {
+                return rprop / (1.0 - Math.sqrt(vf) * (1 - rprop / fprop));
+            }
         }
+        else { return Mat_FRP.MM_ERROR(); }
     }
 
     get PR12() {
-        return this.vf * this.fiber.PR12 + (1 - this.vf) * this.resin.PR12;
+        if (this.vf && this.fiber && this.resin && this.fiber.PR12 && this.resin.PR12) {
+            return this.vf * this.fiber.PR12 + (1 - this.vf) * this.resin.PR12;
+        }
+        else { return Mat_FRP.MM_ERROR(); }
     }
 
     get PR13() {
-        return this.vf * this.fiber.PR13 + (1 - this.vf) * this.resin.PR13;
+        if (this.vf && this.fiber && this.resin && this.fiber.PR13 && this.resin.PR13) {
+            return this.vf * this.fiber.PR13 + (1 - this.vf) * this.resin.PR13;
+        }
+        else { return Mat_FRP.MM_ERROR(); }
     }
 
     get PR23() {
-        return this.vf * this.fiber.PR23 + (1 - this.vf) * this.resin.PR23;
+        if (this.vf && this.fiber && this.resin && this.fiber.PR23 && this.resin.PR23) {
+            return this.vf * this.fiber.PR23 + (1 - this.vf) * this.resin.PR23;
+        }
+        else { return Mat_FRP.MM_ERROR(); }
     }
 
 }

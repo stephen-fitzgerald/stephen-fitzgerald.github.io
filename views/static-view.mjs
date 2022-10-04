@@ -12,7 +12,7 @@ export class StaticView extends AbstractView {
 
   /** override */
   async buildHTML() {
-    if (this.html == undefined) {
+    if (this.html == undefined  && this.path) {
       let response = await fetch(this.path);
       let html = await response.text();
       this.html = cleanHTML(html);
