@@ -2,8 +2,7 @@
 
 import { router } from "./js/router.mjs";
 import { configureDatabase } from "./js/database-config.mjs";
-
-const MENU_ID = "left-nav";
+import { addListenerToNavItems, toggleNavPane } from "./js/leftNav.mjs";
 
 /**
  * Main application entry point
@@ -25,21 +24,11 @@ const app = async () => {
   let idb = await configureDatabase();
 
   /*
-    Set up a menu button to hide/show the navigation pane
+    Set up a hamburger button to hide/show the navigation pane
   */
   let menuIcon = document.getElementById("hamburger-icon");
-  let navPane = document.getElementById(MENU_ID);
-  if (menuIcon != undefined) {
-    menuIcon.addEventListener("click", (event) => {
-      if (navPane) {
-        if (navPane.style.display == "none") {
-          navPane.style.display = "";
-        } else {
-          navPane.style.display = "none";
-        }
-      }
-      return false;
-    });
+  if (menuIcon !== null) {
+    menuIcon.addEventListener("click", toggleNavPane );
   }
 
   /*
@@ -60,67 +49,3 @@ const app = async () => {
 };
 
 document.addEventListener("DOMContentLoaded", app);
-
-function addListenerToNavItems() {
-  let navElements = getLeftNavItems();
-  if (!navElements) {
-    console.log("No menu items found in left-nav");
-    return;
-  }
-  navElements.forEach((el) => {
-    el.addEventListener("click", setActiveNavElement);
-  });
-}
-
-function setActiveNavElement(el) {
-  clearActiveNavElement();
-  el.target.classList.add('active');
-}
-
-function clearActiveNavElement() {
-  let navElements = getLeftNavItems();
-  if (!navElements) {
-    console.log("No menu items found in left-nav");
-    return;
-  }
-  navElements.forEach((el) => {
-    el.classList.remove('active');
-    if (el.classList.length === 0) {
-      el.removeAttribute("class");
-    }
-  });
-}
-
-function getLeftNavItems() {
-  return document.getElementById(MENU_ID)?.querySelectorAll('a');
-}
-
-export function getDomRefsById(parentElement = document) {
-  let $refs = {};
-  parentElement.querySelectorAll('[id]').forEach($el => {
-    let key = $el.id.replace(/-(.)/g, (_, s) => s.toUpperCase());
-    $refs[key] = $el;
-  });
-  console.log($refs);
-  return $refs;
-}
-
-/**
- *
- * @param {*} data
- * @param {string} filename
- * @param {string} type
- */
-export function download(data, filename, type) {
-  var file = new Blob([data], { type: type });
-  var a = document.createElement("a"),
-    url = URL.createObjectURL(file);
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(function () {
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  }, 0);
-}
