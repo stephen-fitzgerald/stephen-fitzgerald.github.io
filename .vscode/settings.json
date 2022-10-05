@@ -1,4 +1,5 @@
 {
     "javascript.format.semicolons": "insert",
-    "typescript.format.semicolons": "insert"
+    "typescript.format.semicolons": "insert",
+    "liveServer.settings.port": 5501
 }

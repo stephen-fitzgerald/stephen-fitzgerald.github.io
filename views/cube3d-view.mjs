@@ -45,7 +45,7 @@ export class Cube3dView extends AbstractView {
    * @override
    */
   addListeners() {
-    document.title = this.title;
+    document.title = this.title || "untitled";
 
     let bodyStyles = window.getComputedStyle(document.body);
     this.strokeColor = bodyStyles.getPropertyValue('--text-clr');

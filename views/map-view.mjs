@@ -2,6 +2,7 @@
 /* jshint esversion: 6 */
 
 import { AbstractView } from "./abstract-view.mjs";
+import * as L from "../js/ext/leaflet/leaflet-src.esm.js";
 
 export class MapView extends AbstractView {
 
@@ -33,8 +34,8 @@ export class MapView extends AbstractView {
         let myMap = L.map('map');
         myMap.setView([44.629924, -64.055627], 13);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          maxZoom: 19,
-          attribution: "© OpenStreetMap",
+            maxZoom: 19,
+            attribution: "© OpenStreetMap",
         }).addTo(myMap);
     }
 
