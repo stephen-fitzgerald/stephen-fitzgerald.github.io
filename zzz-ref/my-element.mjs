@@ -20,7 +20,7 @@ class MyElement extends HTMLElement {
   connectedCallback() {
     // browser calls this method when the element is added to the document
     // (can be called many times if an element is repeatedly added/removed)
-    if( !this.rendered){
+    if (!this.rendered) {
       this.render();
       this.rendered = true;
     }
@@ -41,9 +41,13 @@ class MyElement extends HTMLElement {
     this.render();
   }
 
+  /**
+   * called when the element is moved to a new document
+   * (happens in document.adoptNode, very rarely used)
+   *
+   * @memberof MyElement
+   */
   adoptedCallback() {
-    // called when the element is moved to a new document
-    // (happens in document.adoptNode, very rarely used)
   }
 
   // there can be other element methods and properties

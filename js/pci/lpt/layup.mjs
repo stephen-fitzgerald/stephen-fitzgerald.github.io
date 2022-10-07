@@ -5,6 +5,11 @@ import { Material } from "./material.mjs";
 import { SolidLamina, CompositeLamina, Laminate } from "./lpt.mjs";
 import { ORIENTATION } from "./orientation.mjs";
 
+/**
+ * 
+ * @param {any} obj 
+ * @returns {boolean} true if the argument represents a valid number
+ */
 function isNumeric(obj) {
     return !!(!isNaN(parseFloat(obj)) && isFinite(obj));
 }

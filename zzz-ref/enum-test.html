@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Update this title</title>
+    <meta name="description" content="Update the description">
+    <meta name="author" content="S.Fitzgerald">
+</head>
+
+<body>
+    <!-- Main -->
+    <main id="main">
+        Hello World!
+    </main>
+    <!-- end of Main -->
+
+    <script type="module">
+        import { Enum } from '../js/pci/util/enum.mjs';
+
+        const MONTHS = new Enum(
+            "January",
+            "FEbruary",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        );
+
+        const DAYS = new Enum(
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        );
+
+        let monday = DAYS.Monday;
+        console.log("monday = " + monday);
+
+        let daysArray = [...DAYS];
+        console.log("[...DAYS] = ");
+        console.log(daysArray);
+
+        console.log("DAYS.forEach(day) = ");
+        DAYS.forEach((day) => { console.log(day); });
+
+        let keys = DAYS.getKeys();
+        console.log("DAYS.getKeys() = ");
+        console.log(keys);
+
+        let values = DAYS.getValues();
+        console.log("DAYS.getValues() = ");
+        console.log(values);
+
+        let keyValues = DAYS.getKeyValues();
+        console.log("getKeyValues() = ");
+        console.log(keyValues);
+
+        let keyOrdinals = DAYS.getKeyOrdinals();
+        console.log("getKeyOrdinals() = ");
+        console.log(keyOrdinals);
+
+        console.log( JSON.stringify(DAYS));
+    </script>
+
+</body>
+
+</html>

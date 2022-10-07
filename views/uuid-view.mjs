@@ -9,7 +9,7 @@ export class UuidView extends AbstractView {
         super(args);
     }
 
-    buildHTML() {
+    async buildHTML() {
         this.html = `
             <div id="uuid" style="padding:2rem"></div>
         `;
@@ -25,15 +25,17 @@ export class UuidView extends AbstractView {
         let textColor = bodyStyles.getPropertyValue('--text-clr');
         let myDiv = document.getElementById("uuid");
 
-        let max = 24000;
+        if (myDiv) {
+            let max = 24000;
 
-        printToHTML(`Here are ${max} UUIDs:`, 'black', myDiv);
-        printToHTML(` `, 'black', myDiv);
+            printToHTML(`Here are ${max} UUIDs:`, 'black', myDiv);
+            printToHTML(` `, 'black', myDiv);
 
-        let uuid;
-        for (let i = 1; i <= max; i++) {
-            uuid = window.crypto.randomUUID();
-            printToHTML(`${i<10?' '+i:i}) ${uuid}`, textColor, myDiv);
+            let uuid;
+            for (let i = 1; i <= max; i++) {
+                uuid = window.crypto.randomUUID();
+                printToHTML(`${i < 10 ? ' ' + i : i}) ${uuid}`, textColor, myDiv);
+            }
         }
     }
 }

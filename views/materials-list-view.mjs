@@ -6,15 +6,15 @@ import { AbstractView } from "./abstract-view.mjs";
 export class MaterialsListView extends AbstractView {
 
 
-  constructor(args={}) {
+  constructor(args = {}) {
     super(args);
   }
 
   /**
    * @override
-   * @returns {String} the html to show for this page
+   * @returns {Promise<String>} the html to show for this page
    */
-  buildHTML() {
+  async buildHTML() {
     this.materials = getMaterials();
     this.html = this.generateTable(this.materials);
     return this.html;
@@ -44,13 +44,11 @@ export class MaterialsListView extends AbstractView {
                     </tr>
                 </thead>`;
 
-    html += `<tbody>`;
-    
+    html += `<tbody id="mat-tbl-body">`;
+
     for (let row = 0; row < mats.length; row++) {
-      html += `<tr `;
-      html += `mat-id="${row}"`;
-      html += row % 2 == 0 ? `class="even-row"` : `class="odd-row"`;
-      html += `>`;
+      html += `<tr mat-id="${row}"`;
+      html += row % 2 == 0 ? `class="even-row">` : `class="odd-row">`;
 
       html += `<td>${row + 1}</td>`;
       html += `<td>${mats[row].name}</td>`;
@@ -76,16 +74,28 @@ export class MaterialsListView extends AbstractView {
     copyLinks.forEach((element) => {
       element.addEventListener("click", this.copyMaterialAndEdit.bind(this));
     });
+    let rowEls = document.getElementById("mat-tbl-body")?.querySelectorAll("tr");
+    rowEls?.forEach((el) => {
+      el.addEventListener("dblclick", this.editMaterial.bind(this));
+    });
+  }
+
+  editMaterial(e) {
+    e.preventDefault();
+    let matId = e.currentTarget.attributes["mat-id"].value;
+    document.location.hash = `#/material/${matId}/edit`;
   }
 
   copyMaterialAndEdit(e) {
     e.preventDefault();
-    let theLink = e.target;
+    let theLink = e.currentTarget;
     let matId = theLink.attributes["mat-id"].value;
     let srcMaterial = getMaterial(matId);
     let newMaterial = Material.duplicate(srcMaterial);
-    newMaterial.name = `Copy of: ${srcMaterial.name}`;
-    let newId = addMaterial(newMaterial);
-    document.location.hash = `#/material/${newId}/edit`;
+    if (newMaterial) {
+      newMaterial.name = `Copy of: ${srcMaterial.name}`;
+      let newId = addMaterial(newMaterial);
+      document.location.hash = `#/material/${newId}/edit`;
+    }
   }
 }
