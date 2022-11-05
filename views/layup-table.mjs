@@ -7,6 +7,9 @@ import { ORIENTATION } from "../js/pci/lpt/orientation.mjs";
 import { PlySpec } from "../js/pci/lpt/plyspec.mjs";
 // import { download } from "../js/pci/util/download.mjs";
 
+
+const html = String.raw;
+
 export class LayupTableView extends AbstractView {
 
     constructor(args) {
@@ -30,8 +33,9 @@ export class LayupTableView extends AbstractView {
         let end = this.tube.getXMax();
         let laminateProperties = this.tube.getSectionProperties(start + 0.5 * (end - start));
         let resin = this.tube.resin;
+        let scale = 1000;
 
-        let style = `
+        let ret = html`
             <style type="text/css">
                 
                 caption {
@@ -98,13 +102,17 @@ export class LayupTableView extends AbstractView {
                     background-color: #fafabd;
                 }
             </style>
-        `;
 
+            <canvas id="profile-canvas" height="${this.canvasHeight}" width="${this.canvasWidth}"></canvas>
 
-        let tableHeader = `
+            <h1>Layup Table</h1>
+
+            <table id="layup-table" class="layup-table" data-laminate="">
+            <caption>Material layers, axial positions & clocking.</caption>
+
             <thead id="layup-table-hdr">
                 <tr>
-                    <th rowspan="2">No.</th>
+                    <th rowspan="2" colspan="2">No.</th>
                     <th rowspan="2">Material</th>
                     <th colspan="4">Start/End Pos. (mm)</th>
                     <th colspan="2">Ply Width (mm)</th>
@@ -121,71 +129,64 @@ export class LayupTableView extends AbstractView {
                     <th>@ End</th>
                 </tr>
             </thead>
-        `;
+       
+            <tbody>
 
-        let tableBody = "<tbody>";
+                ${plySpecs.map(
+                    (plySpec, index, theArray) => html`
+                        <tr id="layup-table-row-${index+1}" data-layer-num="${index}">
+                        <td ><input type="checkbox"></td>
+                        <td >${index+1} of ${theArray.length}</td>
+                        <td style="text-align:left">${plySpec.layer.name}</td>
+                        <td >${(scale * plySpec.start).toFixed(0)}</td>
+                        <td >${(scale * plySpec.start).toFixed(0)}</td>
+                        <td >${(1000 * plySpec.end).toFixed(0)}</td>
+                        <td >${(1000 * plySpec.end).toFixed(0)}</td>
+                        <td >${(1000 * plySpec.widthAtStart).toFixed(1)}</td>
+                        <td >${(1000 * plySpec.widthAtEnd).toFixed(1)}</td>
+                        <td >${plySpec.numPieces}</td>
+                        <td >${plySpec.clocking}</td>
+                        <td >${(1000 * plySpec.layer.getThickness({ resin: resin })).toFixed(3)}</td>
+                        </tr>
+                        `.trim()
+                    ).join('')
+                }
 
-        for (let i = 1; i <= plySpecs.length; i++) {
-            let plySpec = plySpecs[i - 1];
-            let layer = plySpec.layer;
-            let tableRow = `<tr id="layup-table-row-${i}" data-layer-num="${i - 1}">`;
-            tableRow += `<td >${i}`;
-            tableRow += `<td style="text-align:left">${layer.name}</td>`;
-            tableRow += `<td >${(1000 * plySpec.start).toFixed(0)}</td>`;
-            tableRow += `<td >${(1000 * plySpec.start).toFixed(0)}</td>`;
-            tableRow += `<td >${(1000 * plySpec.end).toFixed(0)}</td>`;
-            tableRow += `<td >${(1000 * plySpec.end).toFixed(0)}</td>`;
-            tableRow += `<td >${(1000 * plySpec.widthAtStart).toFixed(1)}</td>`;
-            tableRow += `<td >${(1000 * plySpec.widthAtEnd).toFixed(1)}</td>`;
-            tableRow += `<td >${plySpec.numPieces}</td>`;
-            tableRow += `<td >${plySpec.clocking}</td>`;
-            tableRow += `<td >${(1000 * layer.getThickness({ resin: resin })).toFixed(3)}</td>`;
-            tableRow += `</tr>`;
-            tableBody += tableRow;
-        }
-        tableBody += "</tbody>";
+            </tbody>
 
-        let tableFooter = `
             <tfoot>
                 <tr>
-                    <th style="text-align:right" scope="row" colspan="10">Total thickness : </th>
+                    <th style="text-align:right" scope="row" colspan="11">Total thickness : </th>
                     <th style="text-align:right" colspan="1">${(laminateProperties.thickness * 1000.0).toFixed(3)}</th>
                 </tr>
             </tfoot>
-        `;
 
+            </table>`;
 
-        let html = "";
-        html += `<canvas id="profile-canvas" height="${this.canvasHeight}" width="${this.canvasWidth}"></canvas>`;
-        html += "<div>";
-        html += style;
-        html += "<h1>Layup Table</h1>\n";
-        html += '<table id="layup-table" class="layup-table" data-laminate="">';
-        html += "<caption>Material layers, axial positions & clocking.</caption>";
-        html += tableHeader;
-        html += tableBody;
-        html += tableFooter;
-        html += "</table>";
-        html += "</div>";
+        return ret;
 
-        //console.log(html);
-        // Function to download data to a file
-        // if (!this.downloaded) {
-        //     download(html, "layupTable.html", "text/html");
-        //     this.downloaded = true;
-        // }
-        return html;
+    }
 
+    moveRowUp(rowIndex){
+        if(rowIndex <= 0)return;
+        let plySpecs = this.tube.plySpecs;
+        let temp = plySpecs[rowIndex-1];
+        plySpecs[rowIndex-1] = plySpecs[rowIndex];
+        plySpecs[rowIndex] = temp;
+        location.reload();
     }
 
     addListeners() {
         super.addListeners();
         document.title = this.title || "untitled";
-
-        document.querySelectorAll('#layup-table td')
+        const self=this;
+        document.querySelectorAll('#layup-table tr')
             .forEach(e => e.addEventListener("click", function (e) {
                 //@ts-expect-error
-                let tr = e.target.parentElement;
+                let tr = e.target.closest("tr");
+                self.moveRowUp(tr.rowIndex-2);
+                // let cb = tr.querySelectorAll("input[type=checkbox]")[0];
+                // cb.checked = !cb.checked;
                 // this table has 2 header rows
                 console.log("clicked row: " + (tr.rowIndex - 1));
             }));
