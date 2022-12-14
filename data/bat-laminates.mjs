@@ -152,7 +152,7 @@ export function getBatLaminates() {
         carbonUni,
       ],
       angles: [30, -30, 30, -30, 30, -30, 30, -30],
-      orientations: [UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT],
+      orientations: [UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT],
       isWoven: false,
     });
   
