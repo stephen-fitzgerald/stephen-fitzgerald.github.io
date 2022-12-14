@@ -179,14 +179,12 @@ export class LayupTableView extends AbstractView {
     addListeners() {
         super.addListeners();
         document.title = this.title || "untitled";
-        const self=this;
         document.querySelectorAll('#layup-table tr')
             .forEach(e => e.addEventListener("click", function (e) {
                 //@ts-expect-error
                 let tr = e.target.closest("tr");
-                self.moveRowUp(tr.rowIndex-2);
-                // let cb = tr.querySelectorAll("input[type=checkbox]")[0];
-                // cb.checked = !cb.checked;
+                let cb = tr.querySelectorAll("input[type=checkbox]")[0];
+                cb.checked = !cb.checked;
                 // this table has 2 header rows
                 console.log("clicked row: " + (tr.rowIndex - 1));
             }));
