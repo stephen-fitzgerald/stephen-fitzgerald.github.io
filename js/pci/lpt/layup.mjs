@@ -4,7 +4,7 @@
 import { Material } from "./material.mjs";
 import { SolidLamina, CompositeLamina, Laminate } from "./lpt.mjs";
 import { ORIENTATION } from "./orientation.mjs";
-import { isNumeric } from "./isNumeric.mjs";
+import { isNumeric } from "../util/isNumeric.mjs";
 
 let _nextLayerNumber = 1;
 

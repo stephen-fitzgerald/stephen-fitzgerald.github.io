@@ -1,7 +1,7 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { isNumeric } from './isNumeric.mjs';
+import { isNumeric } from '../util/isNumeric.mjs';
 
 let _nextMaterialNumber = 1;
 

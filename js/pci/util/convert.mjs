@@ -1,5 +1,6 @@
 // @ts-check
 /*jshint esversion: 6 */
+import {isNumeric} from '../util/isNumeric.mjs';
 
 export const CONVERT = function () {
 
@@ -22,10 +23,6 @@ export const CONVERT = function () {
       cleanName = cleanName.replace(' ', '');
       cleanName = cleanName.replace('-', '');
       return cleanName;
-    }
-  
-    function isNumeric(n) {
-      return !isNaN(parseFloat(n)) && isFinite(n);
     }
   
     function init() {

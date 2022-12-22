@@ -5,7 +5,7 @@
 import { Material, Mat_FRP } from './material.mjs';
 import { ORIENTATION } from './orientation.mjs';
 import { matrixCreate, matrixCopy, matrixInvert, matrixMultiply, matrixAdd, matrixScale } from './matrix.mjs';
-import { isNumeric } from './isNumeric.mjs';
+import { isNumeric } from '../util/isNumeric.mjs';
 
 let _laminaNumber = 1;
 

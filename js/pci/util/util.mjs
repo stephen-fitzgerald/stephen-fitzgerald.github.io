@@ -26,10 +26,6 @@ export function hasProperty(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-export function isNumeric(obj) {
-    return !!(!isNaN(parseFloat(obj)) && isFinite(obj));
-}
-
 export function isString(str) {
     return !!(typeof str === 'string' || str instanceof String);
 }
@@ -70,7 +66,7 @@ export function getConstructor(obj) {
  * Get the name of the clazz for this object, similar to Class in Java.  
  * 
  * @param {*} obj
- * @returns {string} the name of the _clazz
+ * @returns {string | undefined} the name of the _clazz
  */
 export function getClazzName(obj) {
     if (obj && obj._clazz) {
