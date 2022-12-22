@@ -3,6 +3,7 @@
 
 import { interpolateY, interpolateX } from '../util/functions.mjs';
 import { registerClazzConstructor } from '../util/serialize.mjs';
+import { isNumeric } from '../util/isNumeric.mjs';
 
 
 export class Profile {
@@ -11,8 +12,8 @@ export class Profile {
      * The Profile object handles interpolation of OD vs x position.
      *
      * @param {object} [options]
-     * @param {number[]} options.xPositions x positions, in meters
-     * @param {number[]} options.oDiameters corrisponding outer diameters, in meters
+     * @param {number[] | null} options.xPositions x positions, in meters
+     * @param {number[] | null} options.oDiameters corrisponding outer diameters, in meters
      */
     constructor(options) {
         this._clazz = 'Profile';
@@ -28,11 +29,17 @@ export class Profile {
         }
     }
 
-    getXMin() {
+    get xMin() {
+        if (!(this.xPositions) || !isNumeric(this.xPositions[0])) {
+            throw new Error("No x data in the profile.");
+        }
         return this.xPositions[0];
     }
 
     getXMax() {
+        if (!(this.xPositions) || !isNumeric(this.xPositions[0])) {
+            throw new Error("No x data in the profile.");
+        }
         return this.xPositions[this.xPositions.length - 1];
     }
     /**
@@ -42,6 +49,12 @@ export class Profile {
      * @returns {number} the outer diameter of the part at x, in meters
      */
     getOdForPos(x) {
+        if (!(this.xPositions) || !isNumeric(this.xPositions[0])) {
+            throw new Error("No x data in the profile.");
+        }
+        if (!(this.oDiameters)) {
+            throw new Error("No diameter data in the profile.");
+        }
         return interpolateY(x, this.xPositions, this.oDiameters, undefined);
     }
     /**
@@ -55,6 +68,12 @@ export class Profile {
     getPosForOd(od, xMin, xMax) {
         let xArray = [];
         let yArray = [];
+        if (!(this.xPositions) || !isNumeric(this.xPositions[0])) {
+            throw new Error("No x data in the profile.");
+        }
+        if (!(this.oDiameters)) {
+            throw new Error("No diameter data in the profile.");
+        }
         let len = this.xPositions.length;
         for (let i = 0; i < len; i++) {
             if ((xMin == undefined || xMin <= this.xPositions[i]) &&
@@ -63,9 +82,14 @@ export class Profile {
                 yArray.push(this.oDiameters[i]);
             }
         }
-        let ret;
-        if (xArray.length > 1) {
-            ret = interpolateX(od, xArray, yArray);
+        if (xArray.length < 2) {
+            throw new Error("Need at least two points to define a profile.");
+        }
+
+        let ret = interpolateX(od, xArray, yArray);
+
+        if( ret == undefined ){
+            throw new Error(`Can't determine position for diameter = ${od}`);
         }
         return ret;
     }

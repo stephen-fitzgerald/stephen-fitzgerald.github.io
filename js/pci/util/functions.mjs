@@ -70,7 +70,7 @@ function simpsonsMultiplier(i, n) {
  * @param {number} x
  * @param {number[]} xArray sorted array of x values
  * @param {number[]} yArray corisponding array of y values
- * @param {boolean} extrapolate if true: extrapolate for x out of range, if undefined: return nearest 
+ * @param {boolean | undefined} extrapolate if true: extrapolate for x out of range, if undefined: return nearest 
  * value for x out of range, if false: x out of range causes an Error
  * @returns interpolated value for y = f(x)
  */
@@ -120,7 +120,7 @@ function simpsonsMultiplier(i, n) {
  * @param {number} y the y value we want to interpolate an x value for
  * @param {number[]} xVals x values array
  * @param {number[]} yVals y values array
- * @returns {number} the interpolated x-value
+ * @returns {number | undefined} the interpolated x-value
  */
 
 export function interpolateX(y, xVals, yVals) {
