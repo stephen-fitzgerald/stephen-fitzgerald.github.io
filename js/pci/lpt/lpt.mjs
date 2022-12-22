@@ -5,6 +5,7 @@
 import { Material, Mat_FRP } from './material.mjs';
 import { ORIENTATION } from './orientation.mjs';
 import { matrixCreate, matrixCopy, matrixInvert, matrixMultiply, matrixAdd, matrixScale } from './matrix.mjs';
+import { isNumeric } from './isNumeric.mjs';
 
 let _laminaNumber = 1;
 
@@ -425,18 +426,24 @@ export class CompositeLamina extends AbstractLamina {
 
     /**
      * Calculate the fiber mass fraction, given the fiber, resin and volume fraction
-     * @param {Material} theFiber
+     * @param {Material | null } theFiber
      * @param {Material} theResin
      * @param {number} vf the fiber volume fraction, vf in 0 - 1.0
      * @returns {number} the fiber mass fraction, mf
      */
     static mfFromVf(theFiber, theResin, vf) {
+        if( !(theFiber) || !isNumeric(theFiber.density)){
+            throw new Error("No valid fiber or fiber density.");
+        }
+        if( !(theResin) || !isNumeric(theResin.density)){
+            throw new Error("No valid resin or resin density.");
+        }
         return vf * theFiber.density / (theFiber.density * vf + theResin.density * (1 - vf));
     }
 
     /**
      * The fiber
-     * @type {Material}
+     * @type {null | Material}
      * @memberof CompositeLamina
      */
     get fiber() { return this._fiber; }
@@ -448,7 +455,7 @@ export class CompositeLamina extends AbstractLamina {
 
     /**
      * The resin
-     * @type {Material}
+     * @type {Material | null}
      * @memberof CompositeLamina
      */
     get resin() { return this._resin; }
@@ -494,12 +501,20 @@ export class CompositeLamina extends AbstractLamina {
 
     //---------------- required getter overrides ---------------------
 
-    get thickness() { return this.faw / (this.fiber.density * this.vf); }
+    get thickness() { 
+        if( !(this.fiber) || !(this.fiber.density)){
+            throw new Error("No fiber or zero fiber density.");
+        }
+        return this.faw / (this.fiber.density * this.vf); 
+    }
     get density() { return this.material.density; }
 
     // solid lamina have no fiber or resin components
     get faw() { return this._faw; }
     get raw() {
+        if( !(this.resin) || !(this.resin.density)){
+            throw new Error("No resin or zero resin density.");
+        }
         let mf = CompositeLamina.mfFromVf(this.fiber, this.resin, this.vf);
         return this.faw * (1.0 / mf - 1.0);
     }
@@ -570,10 +585,10 @@ export class Laminate extends AbstractLamina {
                     this._orientations.push(ORIENTATION.UPRIGHT);
                 }
             }
-            if(this._angles.length !== numPlies ){
+            if (this._angles.length !== numPlies) {
                 throw new Error("The number of angles does not match the number of plies.");
             }
-            if(this._orientations.length !== numPlies ){
+            if (this._orientations.length !== numPlies) {
                 throw new Error("The number of orientations does not match the number of plies.");
             }
         }

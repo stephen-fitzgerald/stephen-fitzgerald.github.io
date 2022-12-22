@@ -9,9 +9,9 @@
  *
  * @param {number} rows
  * @param {number} cols
- * @returns an initialized array of size [rows][cols]
+ * @returns {number[][]} an initialized array of size [rows][cols]
  */
- export function matrixCreate(rows, cols) {
+export function matrixCreate(rows, cols) {
     let m = new Array(rows);
     for (let r = 0; r < rows; ++r) {
         m[r] = new Array(cols); // initialize the current row
@@ -177,8 +177,12 @@ export function matrixInvert(M) {
         dim = M.length,
         e = 0,
         t = 0;
-    let I = [],
-        C = [];
+
+    /** @type {number[][]} */
+    let I = [];
+    /** @type {number[][]} */
+    let C = [];
+
     for (i = 0; i < dim; i += 1) {
         // Create the row
         I[I.length] = [];
@@ -225,7 +229,8 @@ export function matrixInvert(M) {
             e = C[i][i];
             //if it's still 0, not invertable (error)
             if (e == 0) {
-                return;
+                throw new Error("Matrix is singular.");
+                //return;
             }
         }
 

@@ -1,11 +1,9 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-let _nextMaterialNumber = 1;
+import { isNumeric } from './isNumeric.mjs';
 
-function isNumeric(obj) {
-    return !!(!isNaN(parseFloat(obj)) && isFinite(obj));
-}
+let _nextMaterialNumber = 1;
 
 /**
  * Material is an abstract super class for specific material types.
@@ -817,8 +815,8 @@ export class Mat_FRP extends Material {
      * @param {object} [options] optional, but must have valid fiber, resin and vf if used
      * @param {string} [options.name]
      * @param {string} [options.description]
-     * @param {Material} [options.fiber]
-     * @param {Material} [options.resin]
+     * @param {Material | null | undefined} [options.fiber]
+     * @param {Material | null | undefined} [options.resin]
      * @param {number} [options.vf] volume fraction [0.0 - 1.0]
      * @memberof Mat_FRP
      */
@@ -910,7 +908,7 @@ export class Mat_FRP extends Material {
 
     /**
      * Fiber part of a composite material
-     * @type Material | undefined
+     * @type Material | null | undefined
      * @memberof Mat_FRP
      */
     get fiber() {
@@ -925,7 +923,7 @@ export class Mat_FRP extends Material {
 
     /**
      * Resin part of a composite material
-     * @type Material | undefined
+     * @type Material | null | undefined
      * @memberof Mat_FRP
      */
     get resin() {

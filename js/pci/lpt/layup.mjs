@@ -1,18 +1,10 @@
-//@ ts-check
+//@ts-check
 /* jshint esversion: 6 */
 
 import { Material } from "./material.mjs";
 import { SolidLamina, CompositeLamina, Laminate } from "./lpt.mjs";
 import { ORIENTATION } from "./orientation.mjs";
-
-/**
- * 
- * @param {any} obj 
- * @returns {boolean} true if the argument represents a valid number
- */
-function isNumeric(obj) {
-    return !!(!isNaN(parseFloat(obj)) && isFinite(obj));
-}
+import { isNumeric } from "./isNumeric.mjs";
 
 let _nextLayerNumber = 1;
 
@@ -51,12 +43,12 @@ let _nextLayerNumber = 1;
 export class AbstractLayer {
     /**
      * Check for a valid AbstractLayer argument.  Used by sub-classes that contain sub-layers.
-     * @param layer {AbstractLayer} the argument being checked
+     * @param {null | AbstractLayer} layer {AbstractLayer} the argument being checked
      * @param name {string} used in error message
      * @returns {AbstractLayer} the argument, if valid, undefined otherwise
      */
     static _checkLayerArg(layer, name) {
-        if (!(layer instanceof AbstractLayer)) {
+        if (layer == null || !(layer instanceof AbstractLayer)) {
             throw new TypeError(name + " must be an instance of AbstractLayer.");
         }
         return layer;
@@ -64,12 +56,12 @@ export class AbstractLayer {
 
     /**
      * Check for a valid material argument.  Used by sub-classes.
-     * @param arg {Material}
+     * @param {null | Material } arg {Material}
      * @param name {string}
      * @returns {Material} the argument, if valid, undefined otherwise
      */
     static _checkMaterialArg(arg, name) {
-        if (!(arg instanceof Material)) {
+        if (arg == null || !(arg instanceof Material)) {
             throw new TypeError(name + " must be an instance of Material.");
         }
         return arg;
@@ -77,12 +69,12 @@ export class AbstractLayer {
 
     /**
      * Check for a valid resin argument.  Used by sub-classes.
-     * @param resin {Material}
+     * @param {null | Material} resin {Material}
      * @param name {string}
      * @returns {Material} the argument, if valid, undefined otherwise
      */
     static _checkResinArg(resin, name) {
-        if (!(resin instanceof Material)) {
+        if (resin == null || !(resin instanceof Material)) {
             throw new TypeError(name + " must be an instance of Material.");
         }
         return resin;
@@ -90,34 +82,34 @@ export class AbstractLayer {
 
     /**
      * Checks that an argument is numeric and in the range 0.0 - 1.0 inclusive
-     * @param arg the argument to check
+     * @param { number | null } arg the argument to check
      * @param name the name of the argument, for error messages
-     * @returns {number} the argument, if valid, undefined otherwise
+     * @returns {number } the argument, if valid, undefined otherwise
      */
     static _checkZeroToOneArg(arg, name) {
-        if (!isNumeric(arg)) {
+        if (arg == null || !isNumeric(arg)) {
             throw new TypeError(name + " must be numeric.");
-        }
-        if (arg < 0.0 || arg > 1.0) {
+        } else if (arg && (arg < 0.0 || arg > 1.0)) {
             throw new Error(name + " must be in the range 0-1, found: " + arg);
+        } else {
+            return arg;
         }
-        return arg;
     }
 
     /**
      * Checks that an argument is numeric and greater than or equal to zero
-     * @param arg the argument to check
+     * @param {null | number } arg the argument to check
      * @param name the name of the argument, for error messages
      * @returns {number} the argument, if valid, undefined otherwise
      */
     static _checkThicknessArg(arg, name) {
-        if (!isNumeric(arg)) {
+        if (arg == null || !isNumeric(arg)) {
             throw new TypeError(name + " must be numeric.");
-        }
-        if (arg < 0.0) {
+        } else if (arg < 0.0) {
             throw new Error(name + " must be greater than zero, found: " + arg);
+        } else {
+            return arg;
         }
-        return arg;
     }
 
     /**
@@ -188,7 +180,7 @@ export class AbstractLayer {
      * The average density of the resin in this layer, in kg/cu.m.
      * @readonly
      * @memberof AbstractLayer
-     * @type {number}
+     * @type {undefined | number}
      */
     get resinDensity() {
         throw new Error("Sub classes must override getter for fiberDensity.");
@@ -198,7 +190,7 @@ export class AbstractLayer {
      * The average density of the solids in this layer, in kg/cu.m.
      * @readonly
      * @memberof AbstractLayer
-     * @type {number}
+     * @type {undefined | number}
      */
     get solidDensity() {
         throw new Error("Sub classes must override getter for fiberDensity.");
@@ -304,7 +296,7 @@ export class PrepregLayer extends AbstractLayer {
      * @param {object} [options] can call with no options, but must be valid if present
      * @param {string} [options.name]
      * @param {string} [options.description]
-     * @param {AbstractLayer} [options.layer] the fiber layer, can be any AbstractLayer
+     * @param {undefined | AbstractLayer} [options.layer] the fiber layer, can be any AbstractLayer
      * @param {Material} [options.resin] the prepreg resin
      * @param {number} [options.resinContent] resin fraction (0-1) of total as-purchased wt
      * @param {number} [options.resinFlow] resin flow, as % of total wt
@@ -369,12 +361,15 @@ export class PrepregLayer extends AbstractLayer {
     }
 
     get fiberDensity() {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.fiberDensity;
     }
     get solidDensity() {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.solidDensity;
     }
     get resinDensity() {
+        if (this.resin == undefined) throw new Error("No layer set.");
         return this.resin.density;
     }
 
@@ -397,6 +392,7 @@ export class PrepregLayer extends AbstractLayer {
      * @override
      */
     getFiberArealWt(layupContext) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.getFiberArealWt(layupContext);
     }
 
@@ -405,6 +401,7 @@ export class PrepregLayer extends AbstractLayer {
      * @override
      */
     getSolidArealWt(layupContext) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.getSolidArealWt(layupContext);
     }
 
@@ -425,6 +422,9 @@ export class PrepregLayer extends AbstractLayer {
      * @override
      */
     getThickness(layupContext) {
+        if( this.solidDensity == undefined ){
+            throw new Error("Solid density is undefined.")
+        }
         let vf = this.getVf(layupContext);
         let compositeThickness =
             this.getFiberArealWt(layupContext) / (this.fiberDensity * vf);
@@ -437,6 +437,7 @@ export class PrepregLayer extends AbstractLayer {
      * @return {boolean}
      */
     contains(target) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return target === this || this.layer.contains(target);
     }
 
@@ -448,6 +449,7 @@ export class PrepregLayer extends AbstractLayer {
     getLaminate(layupContext) {
         const prepregContext = new LayupContext(layupContext);
         prepregContext.resin = this.resin;
+        if (this.layer == undefined) throw new Error("No layer set.");
         let ret = this.layer.getLaminate(prepregContext);
         return ret;
     }
@@ -484,7 +486,7 @@ export class ReleaseLayer extends AbstractLayer {
 
         if (options) {
             //@ts-ignore
-            let arg = options._layer || options.layer;
+            let arg = options._layer || options.layer || null;
             this._layer = ReleaseLayer._checkLayerArg(arg, "layer") || this._layer;
         }
     }
@@ -497,41 +499,52 @@ export class ReleaseLayer extends AbstractLayer {
     }
 
     get fiberDensity() {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.fiberDensity;
     }
     get solidDensity() {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.solidDensity;
     }
     get resinDensity() {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.resinDensity;
     }
 
     get isCompressible() {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.isCompressible;
     }
 
     getResinArealWt(layupContext) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.getResinArealWt(layupContext);
     }
     getFiberArealWt(layupContext) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.getFiberArealWt(layupContext);
     }
     getSolidArealWt(layupContext) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.getSolidArealWt(layupContext);
     }
 
     getVf(layupContext) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.getVf(layupContext);
     }
     getThickness(layupContext) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return this.layer.getThickness(layupContext);
     }
 
     contains(target) {
+        if (this.layer == undefined) throw new Error("No layer set.");
         return target === this || this.layer.contains(target);
     }
 
     getLaminate(layupContext) {
+        if (this._layer == undefined) throw new Error("No _Layer set.");
         return this._layer.getLaminate(layupContext);
     }
 } // ReleaseLayer
@@ -665,7 +678,7 @@ export class FiberLayer extends AbstractLayer {
         this._compactionModel = undefined;
 
         if (options) {
-            let arg = options._fiber || options.fiber;
+            let arg = options._fiber || options.fiber || null;
             arg = FiberLayer._checkMaterialArg(arg, "fiber");
             this._fiber = arg || this._fiber;
 
@@ -720,6 +733,7 @@ export class FiberLayer extends AbstractLayer {
     }
 
     get fiberDensity() {
+        if (this.fiber == undefined) throw new Error("No fiber set.");
         return this.fiber.density;
     }
     get resinDensity() {
