@@ -83,10 +83,10 @@ export class MoldedTube {
         return this.addLayerAt(this.plySpecs.length, plySpec);
     }
     getXMin() {
-        return (this.profile.getXMin());
+        return (this.profile.xMin);
     }
     getXMax() {
-        return (this.profile.getXMax());
+        return (this.profile.xMax);
     }
     /**
      * Positions of interest are start & end of material layers,

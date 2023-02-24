@@ -36,7 +36,7 @@ export class Profile {
         return this.xPositions[0];
     }
 
-    getXMax() {
+    get xMax() {
         if (!(this.xPositions) || !isNumeric(this.xPositions[0])) {
             throw new Error("No x data in the profile.");
         }
