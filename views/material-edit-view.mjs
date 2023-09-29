@@ -4,7 +4,7 @@
 import { parseRequestURL } from "../js/router.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 import { getMaterial, setMaterial, } from "../data/materials-data.mjs";
-import { Material, Mat_Isotropic, Mat_FRP, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, } from "../js/pci/lpt/material.mjs";
+import { Material, Mat_Isotropic, Mat_FRP, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, Mat_Orthotropic } from "../js/pci/lpt/material.mjs";
 
 const templateHTML = /** HTML */`
 
@@ -109,6 +109,7 @@ export class MaterialEditView extends AbstractView {
   async buildHTML() {
     this.request = parseRequestURL();
     this.errorMessage = undefined;
+    /** @type {Mat_PlanarIso12 | Mat_Isotropic | Mat_FRP | Mat_PlanarIso23 | Mat_Orthotropic | Mat_PlanarIso13 | undefined} */
     this.material = undefined;
     let m = getMaterial(this.request.id);
     if (m) {
@@ -121,7 +122,7 @@ export class MaterialEditView extends AbstractView {
 
   /**
    *
-   * @param {Material} theMaterial
+   * @param {any} theMaterial
    */
   setMaterial(theMaterial) {
     this.targetMaterial = theMaterial;
@@ -131,56 +132,74 @@ export class MaterialEditView extends AbstractView {
   // Wire up UI select options and event handlers
   addListeners() {
     super.addListeners();
-    this.title = `Material editing: ${this.material.name}`;
+    this.title = `Material editing: ${this.material?.name}`;
     // imports
     let doc = document;
     // references to HTML elements
+    /** @type HTMLInputElement | null */
     this.nameFld = doc.querySelector("#mat-name");
+    /** @type HTMLElement | null */
     this.matTypeLbl = doc.querySelector("#mat-type");
+    /** @type HTMLInputElement | null */
     this.descriptionFld = doc.querySelector("#mat-description");
+    /** @type HTMLInputElement | null */
     this.densityFld = doc.querySelector("#mat-density");
+    /** @type HTMLInputElement | null */
     this.e1Fld = doc.querySelector("#mat-E1");
+    /** @type HTMLInputElement | null */
     this.e2Fld = doc.querySelector("#mat-E2");
+    /** @type HTMLInputElement | null */
     this.e3Fld = doc.querySelector("#mat-E3");
+    /** @type HTMLInputElement | null */
     this.pr12Fld = doc.querySelector("#mat-PR12");
+    /** @type HTMLInputElement | null */
     this.pr13Fld = doc.querySelector("#mat-PR13");
+    /** @type HTMLInputElement | null */
     this.pr23Fld = doc.querySelector("#mat-PR23");
+    /** @type HTMLInputElement | null */
     this.g12Fld = doc.querySelector("#mat-G12");
+    /** @type HTMLInputElement | null */
     this.g13Fld = doc.querySelector("#mat-G13");
+    /** @type HTMLInputElement | null */
     this.g23Fld = doc.querySelector("#mat-G23");
+    /** @type HTMLElement | null */
     this.compositeDiv = doc.getElementById("mat-composite");
+    /** @type HTMLInputElement | null */
     this.fiberFld = doc.querySelector("#mat-fiber");
+    /** @type HTMLInputElement | null */
     this.resinFld = doc.querySelector("#mat-resin");
+    /** @type HTMLInputElement | null */
     this.vfFld = doc.querySelector("#mat-vf");
+    /** @type HTMLElement | null */
     this.errMsgLbl = doc.querySelector("#error-message");
+    /** @type HTMLElement | null */
     this.cancelBtn = doc.querySelector("#btn-cancel");
+    /** @type HTMLElement | null */
     this.resetBtn = doc.querySelector("#btn-reset");
+    /** @type HTMLElement | null */
     this.saveBtn = doc.querySelector("#btn-save");
 
     let handleChangeEvent = this.handleChangeEvent;
     // load select with material types
-    this.nameFld.addEventListener("change", handleChangeEvent, false);
-    this.descriptionFld.addEventListener("change", handleChangeEvent, false);
-    this.densityFld.addEventListener("change", handleChangeEvent, false);
-    this.e1Fld.addEventListener("change", handleChangeEvent, false);
-    this.e2Fld.addEventListener("change", handleChangeEvent, false);
-    this.e3Fld.addEventListener("change", handleChangeEvent, false);
-    this.pr12Fld.addEventListener("change", handleChangeEvent, false);
-    this.pr13Fld.addEventListener("change", handleChangeEvent, false);
-    this.pr23Fld.addEventListener("change", handleChangeEvent, false);
-    this.g12Fld.addEventListener("change", handleChangeEvent, false);
-    this.g13Fld.addEventListener("change", handleChangeEvent, false);
-    this.g23Fld.addEventListener("change", handleChangeEvent, false);
-    this.fiberFld.addEventListener("change", handleChangeEvent, false);
-    this.resinFld.addEventListener("change", handleChangeEvent, false);
-    this.vfFld.addEventListener("change", handleChangeEvent, false);
+    this.nameFld?.addEventListener("change", handleChangeEvent, false);
+    this.descriptionFld?.addEventListener("change", handleChangeEvent, false);
+    this.densityFld?.addEventListener("change", handleChangeEvent, false);
+    this.e1Fld?.addEventListener("change", handleChangeEvent, false);
+    this.e2Fld?.addEventListener("change", handleChangeEvent, false);
+    this.e3Fld?.addEventListener("change", handleChangeEvent, false);
+    this.pr12Fld?.addEventListener("change", handleChangeEvent, false);
+    this.pr13Fld?.addEventListener("change", handleChangeEvent, false);
+    this.pr23Fld?.addEventListener("change", handleChangeEvent, false);
+    this.g12Fld?.addEventListener("change", handleChangeEvent, false);
+    this.g13Fld?.addEventListener("change", handleChangeEvent, false);
+    this.g23Fld?.addEventListener("change", handleChangeEvent, false);
+    this.fiberFld?.addEventListener("change", handleChangeEvent, false);
+    this.resinFld?.addEventListener("change", handleChangeEvent, false);
+    this.vfFld?.addEventListener("change", handleChangeEvent, false);
 
-    //@ts-expect-error
-    this.cancelBtn.onclick = handleChangeEvent;
-    //@ts-expect-error
-    this.resetBtn.onclick = handleChangeEvent;
-    //@ts-expect-error
-    this.saveBtn.onclick = handleChangeEvent;
+    if( this.cancelBtn ) this.cancelBtn.onclick = handleChangeEvent;
+    if( this.resetBtn) this.resetBtn.onclick = handleChangeEvent;
+    if( this.saveBtn) this.saveBtn.onclick = handleChangeEvent;
 
     this.modelToView();
   }
@@ -189,112 +208,83 @@ export class MaterialEditView extends AbstractView {
   modelToView() {
     this.disableReadOnlyElements();
     let theMaterial = this.material;
-    //@ts-expect-error
-    this.nameFld.value = theMaterial.name;
-    //@ts-expect-error
-    this.descriptionFld.value = theMaterial.description;
-    this.matTypeLbl.innerHTML = theMaterial.constructor.name;
-    //@ts-expect-error
-    this.densityFld.value = theMaterial.density.toPrecision(4);
-    //@ts-expect-error
-    this.e1Fld.value = theMaterial.E1.toPrecision(4);
-    //@ts-expect-error
-    this.e2Fld.value = theMaterial.E2.toPrecision(4);
-    //@ts-expect-error
-    this.e3Fld.value = theMaterial.E3.toPrecision(4);
-    //@ts-expect-error
-    this.pr12Fld.value = theMaterial.PR12.toPrecision(2);
-    //@ts-expect-error
-    this.pr13Fld.value = theMaterial.PR13.toPrecision(2);
-    //@ts-expect-error
-    this.pr23Fld.value = theMaterial.PR23.toPrecision(2);
-    //@ts-expect-error
-    this.g12Fld.value = theMaterial.G12.toPrecision(4);
-    //@ts-expect-error
-    this.g13Fld.value = theMaterial.G13.toPrecision(4);
-    //@ts-expect-error
-    this.g23Fld.value = theMaterial.G23.toPrecision(4);
+    if(!theMaterial)return;
+
+    if (this.nameFld ) this.nameFld.value = theMaterial.name;
+    if (this.descriptionFld ) this.descriptionFld.value = theMaterial.description;
+    if (this.matTypeLbl ) this.matTypeLbl.innerHTML = theMaterial.constructor.name;
+    if (this.densityFld ) this.densityFld.value = theMaterial.density.toPrecision(4);
+    if (this.e1Fld ) this.e1Fld.value = theMaterial.E1.toPrecision(4);
+    if (this.e2Fld ) this.e2Fld.value = theMaterial.E2.toPrecision(4);
+    if (this.e3Fld ) this.e3Fld.value = theMaterial?.E3.toPrecision(4);
+    if (this.pr12Fld ) this.pr12Fld.value = theMaterial.PR12.toPrecision(2);
+    if (this.pr13Fld ) this.pr13Fld.value = theMaterial.PR13.toPrecision(2);
+    if (this.pr23Fld ) this.pr23Fld.value = theMaterial.PR23.toPrecision(2);
+    if (this.g12Fld ) this.g12Fld.value = theMaterial.G12.toPrecision(4);
+    if (this.g13Fld ) this.g13Fld.value = theMaterial.G13.toPrecision(4);
+    if (this.g23Fld ) this.g23Fld.value = theMaterial.G23.toPrecision(4);
     // show the fiber, resin and vf for composite materials
-    this.compositeDiv.style.display = "none";
-    if (theMaterial.constructor === Mat_FRP) {
-      this.compositeDiv.style.display = "block";
-      //@ts-expect-error
-      this.fiberFld.value = theMaterial.fiber.name || "Fiber";
-      //@ts-expect-error
-      this.resinFld.value = theMaterial.resin.name || "Resin";
-      //@ts-expect-error
-      this.vfFld.value = theMaterial.vf.toPrecision(2) || "Vf";
+    if (this.compositeDiv ) this.compositeDiv.style.display = "none";
+    if (theMaterial && theMaterial.constructor === Mat_FRP) {
+      if( this.compositeDiv) this.compositeDiv.style.display = "block";
+      if( this.fiberFld) this.fiberFld.value = theMaterial.fiber?.name || "Fiber";
+      if (this.resinFld ) this.resinFld.value = theMaterial.resin?.name || "Resin";
+      if (this.vfFld ) this.vfFld.value = theMaterial.vf?.toPrecision(2) || "Vf";
     }
-    this.errMsgLbl.innerHTML = this.errorMessage ? this.errorMessage : "";
+    if (this.errMsgLbl ) this.errMsgLbl.innerHTML = this.errorMessage ? this.errorMessage : "";
     this.errorMessage = undefined;
   }
 
   disableReadOnlyElements() {
     // selects elements whose IDs start with 'mat-'
+    /** @type NodeListOf<HTMLInputElement> */
     let elements = document.querySelectorAll("[id^=mat-]");
     elements.forEach((el) => {
-      //@ts-expect-error
       el.disabled = false;
     });
 
     // disable inputs for read-only properties by material type
-    switch (this.material.constructor) {
+    switch (this.material?.constructor) {
       case Mat_Isotropic:
         elements.forEach((el) => {
-          //@ts-expect-error
           el.disabled = true;
         });
-        //@ts-expect-error
-        this.densityFld.disabled = false;
-        //@ts-expect-error
-        this.e1Fld.disabled = false;
-        //@ts-expect-error
-        this.pr12Fld.disabled = false;
+        if( this.densityFld) this.densityFld.disabled = false;
+        if( this.e1Fld) this.e1Fld.disabled = false;
+        if( this.pr12Fld) this.pr12Fld.disabled = false;
         break;
       case Mat_PlanarIso12:
-        //@ts-expect-error
-        this.e2Fld.disabled = true;
-        //@ts-expect-error
-        this.g12Fld.disabled = true;
-        //@ts-expect-error
-        this.g23Fld.disabled = true;
-        //@ts-expect-error
-        this.pr23Fld.disabled = true;
+        if( this.e2Fld) this.e2Fld.disabled = true;
+        if( this.g12Fld) this.g12Fld.disabled = true;
+        if( this.g23Fld) this.g23Fld.disabled = true;
+        if( this.pr23Fld) this.pr23Fld.disabled = true;
         break;
       case Mat_PlanarIso13:
-        //@ts-expect-error
-        this.e3Fld.disabled = true;
-        //@ts-expect-error
-        this.g13Fld.disabled = true;
-        //@ts-expect-error
-        this.g23Fld.disabled = true;
-        //@ts-expect-error
-        this.pr23Fld.disabled = true;
+        if( this.e3Fld) this.e3Fld.disabled = true;
+        if( this.g13Fld) this.g13Fld.disabled = true;
+        if( this.g23Fld) this.g23Fld.disabled = true;
+        if( this.pr23Fld) this.pr23Fld.disabled = true;
         break;
       case Mat_PlanarIso23:
-        //@ts-expect-error
-        this.e3Fld.disabled = true;
-        //@ts-expect-error
-        this.g13Fld.disabled = true;
-        //@ts-expect-error
-        this.g23Fld.disabled = true;
-        //@ts-expect-error
-        this.pr13Fld.disabled = true;
+        if( this.e3Fld) this.e3Fld.disabled = true;
+        if( this.g13Fld) this.g13Fld.disabled = true;
+        if( this.g23Fld) this.g23Fld.disabled = true;
+        if( this.pr13Fld) this.pr13Fld.disabled = true;
         break;
       case Mat_FRP:
         elements.forEach((el) => {
-          //@ts-expect-error
           el.disabled = true;
         });
-        //@ts-expect-error
-        this.vfFld.disabled = false;
+        if( this.vfFld) this.vfFld.disabled = false;
         break;
     }
     // Basic info is read/write for all types
-    //@ts-expect-error
-    this.nameFld.disabled = false;
-    //@ts-expect-error
-    this.descriptionFld.disabled = false;
+    if( this.nameFld) this.nameFld.disabled = false;
+    if( this.descriptionFld) this.descriptionFld.disabled = false;
+  }
+
+  setElementValue( elementName, fieldName, value){
+    if( this[elementName] ) this[elementName][fieldName] = value;
   }
 
   // updates to state data come from the UI via events
@@ -305,7 +295,20 @@ export class MaterialEditView extends AbstractView {
     this.errorMessage = undefined;
     let mat = this.material;
 
+    if(!mat) return;
     // UI must prevent writing to read-only material properties
+    /* 
+    * Material is an abstract super class for specific material types.
+    * 
+    * The writable properties for different sub-types are:    
+    * Mat_Isotropic: density, E1, PR12;   
+    * Mat_Orthotropic: density, E1, E2, E3, G12, G13, G23, PR12, PR13, PR23;    
+    * Mat_PlanarIso12: density, E1, E3, G13, PR12, PR13;    
+    * Mat_PlanarIso13: density, E1, E2, G12, PR12, PR13;    
+    * Mat_PlanarIso23: density, E1, E2, G12, PR12, PR23;    
+    * Mat_FRP: fiber, resin, vf.     
+    * All units are basic kg/m/s/degC, ie moduli are in (kg-m/s^2)/m^2 = N/m^2 = Pa). 
+    */
     try {
       switch (target) {
         case this.nameFld:
@@ -315,43 +318,62 @@ export class MaterialEditView extends AbstractView {
           mat.description = target.value;
           break;
         case this.densityFld:
-          //@ts-expect-error
+          if(!(mat instanceof Mat_FRP))
           mat.density = numberValue;
           break;
         case this.e1Fld:
-          //@ts-expect-error
+          if(!(mat instanceof Mat_FRP ))
           mat.E1 = numberValue;
           break;
         case this.e2Fld:
-          //@ts-expect-error
+          if(!(mat instanceof Mat_FRP 
+            || mat instanceof Mat_Isotropic 
+            || mat instanceof Mat_PlanarIso12 ))
           mat.E2 = numberValue;
           break;
         case this.e3Fld:
-          //@ts-expect-error
+          if(!(mat instanceof Mat_FRP 
+            || mat instanceof Mat_Isotropic 
+            || mat instanceof Mat_PlanarIso13
+            || mat instanceof Mat_PlanarIso23 ))
           mat.E3 = numberValue;
           break;
         case this.pr12Fld:
-          //@ts-expect-error
+          if(!(mat instanceof Mat_FRP))
           mat.PR12 = numberValue;
           break;
         case this.pr13Fld:
-          //@ts-expect-error
+          if(!(mat instanceof Mat_FRP 
+            || mat instanceof Mat_Isotropic 
+            || mat instanceof Mat_PlanarIso23 ))
           mat.PR13 = numberValue;
           break;
         case this.pr23Fld:
-          //@ts-expect-error
+          if(!( mat instanceof Mat_Isotropic 
+            || mat instanceof Mat_PlanarIso12 
+            || mat instanceof Mat_PlanarIso13 
+            || mat instanceof Mat_FRP ))
           mat.PR23 = numberValue;
           break;
         case this.g12Fld:
-          //@ts-expect-error
+          if(!( mat instanceof Mat_Isotropic 
+            || mat instanceof Mat_PlanarIso12 
+            || mat instanceof Mat_FRP ))
           mat.G12 = numberValue;
           break;
         case this.g13Fld:
-          //@ts-expect-error
+          if(!( mat instanceof Mat_Isotropic 
+            || mat instanceof Mat_PlanarIso13
+            || mat instanceof Mat_PlanarIso23
+            || mat instanceof Mat_FRP ))
           mat.G13 = numberValue;
           break;
         case this.g23Fld:
-          //@ts-expect-error
+          if(!( mat instanceof Mat_Isotropic 
+            || mat instanceof Mat_PlanarIso12
+            || mat instanceof Mat_PlanarIso13 
+            || mat instanceof Mat_PlanarIso23
+            || mat instanceof Mat_FRP ))
           mat.G23 = numberValue;
           break;
         case this.cancelBtn:
@@ -361,7 +383,7 @@ export class MaterialEditView extends AbstractView {
           this.setMaterial(this.targetMaterial);
           break;
         case this.saveBtn:
-          setMaterial(this.request.id, this.material);
+          setMaterial(this.request?.id, this.material);
           this.setMaterial(this.material);
           document.location.hash = "#/materials";
           break;

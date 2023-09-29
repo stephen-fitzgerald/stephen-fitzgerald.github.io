@@ -30,7 +30,7 @@ export function addMaterial(m){
 /**
  * 
  * @param {*} id 
- * @param {Material} theMaterial 
+ * @param {?Material} [theMaterial]
  * @returns {Material} any existing material using id
  */
 export function setMaterial(id, theMaterial) {
