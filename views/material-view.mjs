@@ -19,11 +19,11 @@ export class MaterialView extends AbstractView {
             mat = getMaterial(request.id);
             _html = `
             <section class="section">
-                <h1 class="M"> Material </h1>
-                <span> Id : ${request.id}, </span>
-                <span> Name : ${mat.name}, </span>
-                <span> Description : ${mat.description}, </span>
-                <span> Density : ${mat.density} (kg/cu.m)</span>
+                <h1> Material </h1>
+                <span class="M"> Id : ${request.id}, </span>
+                <span class="M"> Name : ${mat.name}, </span>
+                <span class="M"> Description : ${mat.description}, </span>
+                <span class="M"> Density : ${mat.density} (kg/cu.m)</span>
             </section>
         `;
         } catch (e) {
@@ -36,10 +36,17 @@ export class MaterialView extends AbstractView {
 
     async addListeners() {
         super.addListeners();
-        document?.querySelector('.M')?.addEventListener(
-            'click',
-            () => alert('You have clicked on the material!')
-        );
+        let elements = document?.querySelectorAll('.M');
+        elements.forEach((el)=>{
+            el.addEventListener(
+                'click',
+                () => alert('You have clicked on the material!')
+            );
+        })
+        // document?.querySelector('.M')?.addEventListener(
+        //     'click',
+        //     () => alert('You have clicked on the material!')
+        // );
     }
 
     async modelToView() {
