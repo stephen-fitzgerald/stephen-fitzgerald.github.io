@@ -325,54 +325,43 @@ export class MaterialEditView extends AbstractView {
           if(!(mat instanceof Mat_FRP ))
           mat.E1 = numberValue;
           break;
+        case this.pr12Fld:
+            if(!(mat instanceof Mat_FRP))
+            mat.PR12 = numberValue;
+            break;
         case this.e2Fld:
           if(!(mat instanceof Mat_FRP 
-            || mat instanceof Mat_Isotropic 
-            || mat instanceof Mat_PlanarIso12 ))
+            || mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso12 ))
           mat.E2 = numberValue;
           break;
         case this.e3Fld:
-          if(!(mat instanceof Mat_FRP 
-            || mat instanceof Mat_Isotropic 
-            || mat instanceof Mat_PlanarIso13
-            || mat instanceof Mat_PlanarIso23 ))
+          if(!(mat instanceof Mat_FRP || mat instanceof Mat_Isotropic 
+            || mat instanceof Mat_PlanarIso13 || mat instanceof Mat_PlanarIso23 ))
           mat.E3 = numberValue;
           break;
-        case this.pr12Fld:
-          if(!(mat instanceof Mat_FRP))
-          mat.PR12 = numberValue;
-          break;
         case this.pr13Fld:
-          if(!(mat instanceof Mat_FRP 
-            || mat instanceof Mat_Isotropic 
+          if(!(mat instanceof Mat_FRP || mat instanceof Mat_Isotropic 
             || mat instanceof Mat_PlanarIso23 ))
           mat.PR13 = numberValue;
           break;
         case this.pr23Fld:
-          if(!( mat instanceof Mat_Isotropic 
-            || mat instanceof Mat_PlanarIso12 
-            || mat instanceof Mat_PlanarIso13 
-            || mat instanceof Mat_FRP ))
+          if(!( mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso12 
+            || mat instanceof Mat_PlanarIso13 || mat instanceof Mat_FRP ))
           mat.PR23 = numberValue;
           break;
         case this.g12Fld:
-          if(!( mat instanceof Mat_Isotropic 
-            || mat instanceof Mat_PlanarIso12 
+          if(!( mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso12 
             || mat instanceof Mat_FRP ))
           mat.G12 = numberValue;
           break;
         case this.g13Fld:
-          if(!( mat instanceof Mat_Isotropic 
-            || mat instanceof Mat_PlanarIso13
-            || mat instanceof Mat_PlanarIso23
-            || mat instanceof Mat_FRP ))
+          if(!( mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso13
+            || mat instanceof Mat_PlanarIso23|| mat instanceof Mat_FRP ))
           mat.G13 = numberValue;
           break;
         case this.g23Fld:
-          if(!( mat instanceof Mat_Isotropic 
-            || mat instanceof Mat_PlanarIso12
-            || mat instanceof Mat_PlanarIso13 
-            || mat instanceof Mat_PlanarIso23
+          if(!( mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso12
+            || mat instanceof Mat_PlanarIso13 || mat instanceof Mat_PlanarIso23
             || mat instanceof Mat_FRP ))
           mat.G23 = numberValue;
           break;
