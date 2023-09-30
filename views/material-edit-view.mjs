@@ -16,7 +16,7 @@ const templateHTML = /** HTML */`
 
     <h1>Material Entry UI</h1>
 
-    <form id="materialForm">
+    <div id="materialForm">
 
         <label for="mat-name">Name:</label>
         <input type="text" id="mat-name" style="width: 22em">
@@ -87,13 +87,13 @@ const templateHTML = /** HTML */`
         </div>
         <br>
         <div id="div-btns" width="32em">
-            <button id="btn-cancel" class="btn-cancel" display="inline-block">Cancel</button>
-            <button id="btn-reset" class="btn-reset" display="inline-block">Reset</button>
-            <button id="btn-save" class="btn-save" display="inline-block">Save</button>
+          <button id="btn-reset" type="submit" class="btn-reset" display="inline-block">Reset</button>
+          <button id="btn-cancel" type="submit" class="btn-cancel" display="inline-block">Cancel</button>
+          <button id="btn-save" type="submit" class="btn-save" display="inline-block">Save</button>
         </div>
 
         <label id="error-message"></label>
-    </form>
+    </div>
     `;
 
 export class MaterialEditView extends AbstractView {
@@ -109,7 +109,7 @@ export class MaterialEditView extends AbstractView {
   async buildHTML() {
     this.request = parseRequestURL();
     this.errorMessage = undefined;
-    /** @type {Mat_PlanarIso12 | Mat_Isotropic | Mat_FRP | Mat_PlanarIso23 | Mat_Orthotropic | Mat_PlanarIso13 | undefined} */
+    /** @type {Mat_PlanarIso12 | Mat_Isotropic | Mat_FRP | Mat_PlanarIso23 |  Mat_Orthotropic | Mat_PlanarIso13 | undefined} */
     this.material = undefined;
     let m = getMaterial(this.request.id);
     if (m) {
@@ -135,6 +135,7 @@ export class MaterialEditView extends AbstractView {
     this.title = `Material editing: ${this.material?.name}`;
     // imports
     let doc = document;
+
     // references to HTML elements
     /** @type HTMLInputElement | null */
     this.nameFld = doc.querySelector("#mat-name");
@@ -172,11 +173,11 @@ export class MaterialEditView extends AbstractView {
     this.vfFld = doc.querySelector("#mat-vf");
     /** @type HTMLElement | null */
     this.errMsgLbl = doc.querySelector("#error-message");
-    /** @type HTMLElement | null */
+    /** @type HTMLButtonElement | null */
     this.cancelBtn = doc.querySelector("#btn-cancel");
-    /** @type HTMLElement | null */
+    /** @type HTMLButtonElement | null */
     this.resetBtn = doc.querySelector("#btn-reset");
-    /** @type HTMLElement | null */
+    /** @type HTMLButtonElement | null */
     this.saveBtn = doc.querySelector("#btn-save");
 
     let handleChangeEvent = this.handleChangeEvent;
@@ -197,9 +198,9 @@ export class MaterialEditView extends AbstractView {
     this.resinFld?.addEventListener("change", handleChangeEvent, false);
     this.vfFld?.addEventListener("change", handleChangeEvent, false);
 
-    if( this.cancelBtn ) this.cancelBtn.onclick = handleChangeEvent;
-    if( this.resetBtn) this.resetBtn.onclick = handleChangeEvent;
-    if( this.saveBtn) this.saveBtn.onclick = handleChangeEvent;
+    if (this.cancelBtn) this.cancelBtn.onclick = handleChangeEvent;
+    if (this.resetBtn) this.resetBtn.onclick = handleChangeEvent;
+    if (this.saveBtn) this.saveBtn.onclick = handleChangeEvent;
 
     this.modelToView();
   }
@@ -208,30 +209,30 @@ export class MaterialEditView extends AbstractView {
   modelToView() {
     this.disableReadOnlyElements();
     let theMaterial = this.material;
-    if(!theMaterial)return;
+    if (!theMaterial) return;
 
-    if (this.nameFld ) this.nameFld.value = theMaterial.name;
-    if (this.descriptionFld ) this.descriptionFld.value = theMaterial.description;
-    if (this.matTypeLbl ) this.matTypeLbl.innerHTML = theMaterial.constructor.name;
-    if (this.densityFld ) this.densityFld.value = theMaterial.density.toPrecision(4);
-    if (this.e1Fld ) this.e1Fld.value = theMaterial.E1.toPrecision(4);
-    if (this.e2Fld ) this.e2Fld.value = theMaterial.E2.toPrecision(4);
-    if (this.e3Fld ) this.e3Fld.value = theMaterial?.E3.toPrecision(4);
-    if (this.pr12Fld ) this.pr12Fld.value = theMaterial.PR12.toPrecision(2);
-    if (this.pr13Fld ) this.pr13Fld.value = theMaterial.PR13.toPrecision(2);
-    if (this.pr23Fld ) this.pr23Fld.value = theMaterial.PR23.toPrecision(2);
-    if (this.g12Fld ) this.g12Fld.value = theMaterial.G12.toPrecision(4);
-    if (this.g13Fld ) this.g13Fld.value = theMaterial.G13.toPrecision(4);
-    if (this.g23Fld ) this.g23Fld.value = theMaterial.G23.toPrecision(4);
+    if (this.nameFld) this.nameFld.value = theMaterial.name;
+    if (this.descriptionFld) this.descriptionFld.value = theMaterial.description;
+    if (this.matTypeLbl) this.matTypeLbl.innerHTML = theMaterial.constructor.name;
+    if (this.densityFld) this.densityFld.value = theMaterial.density.toPrecision(4);
+    if (this.e1Fld) this.e1Fld.value = theMaterial.E1.toPrecision(4);
+    if (this.e2Fld) this.e2Fld.value = theMaterial.E2.toPrecision(4);
+    if (this.e3Fld) this.e3Fld.value = theMaterial?.E3.toPrecision(4);
+    if (this.pr12Fld) this.pr12Fld.value = theMaterial.PR12.toPrecision(2);
+    if (this.pr13Fld) this.pr13Fld.value = theMaterial.PR13.toPrecision(2);
+    if (this.pr23Fld) this.pr23Fld.value = theMaterial.PR23.toPrecision(2);
+    if (this.g12Fld) this.g12Fld.value = theMaterial.G12.toPrecision(4);
+    if (this.g13Fld) this.g13Fld.value = theMaterial.G13.toPrecision(4);
+    if (this.g23Fld) this.g23Fld.value = theMaterial.G23.toPrecision(4);
     // show the fiber, resin and vf for composite materials
-    if (this.compositeDiv ) this.compositeDiv.style.display = "none";
+    if (this.compositeDiv) this.compositeDiv.style.display = "none";
     if (theMaterial && theMaterial.constructor === Mat_FRP) {
-      if( this.compositeDiv) this.compositeDiv.style.display = "block";
-      if( this.fiberFld) this.fiberFld.value = theMaterial.fiber?.name || "Fiber";
-      if (this.resinFld ) this.resinFld.value = theMaterial.resin?.name || "Resin";
-      if (this.vfFld ) this.vfFld.value = theMaterial.vf?.toPrecision(2) || "Vf";
+      if (this.compositeDiv) this.compositeDiv.style.display = "block";
+      if (this.fiberFld) this.fiberFld.value = theMaterial.fiber?.name || "Fiber";
+      if (this.resinFld) this.resinFld.value = theMaterial.resin?.name || "Resin";
+      if (this.vfFld) this.vfFld.value = theMaterial.vf?.toPrecision(2) || "Vf";
     }
-    if (this.errMsgLbl ) this.errMsgLbl.innerHTML = this.errorMessage ? this.errorMessage : "";
+    if (this.errMsgLbl) this.errMsgLbl.innerHTML = this.errorMessage ? this.errorMessage : "";
     this.errorMessage = undefined;
   }
 
@@ -239,52 +240,42 @@ export class MaterialEditView extends AbstractView {
     // selects elements whose IDs start with 'mat-'
     /** @type NodeListOf<HTMLInputElement> */
     let elements = document.querySelectorAll("[id^=mat-]");
-    elements.forEach((el) => {
-      el.disabled = false;
-    });
+    elements.forEach((el) => { el.disabled = false; });
 
     // disable inputs for read-only properties by material type
     switch (this.material?.constructor) {
       case Mat_Isotropic:
-        elements.forEach((el) => {
-          el.disabled = true;
-        });
-        if( this.densityFld) this.densityFld.disabled = false;
-        if( this.e1Fld) this.e1Fld.disabled = false;
-        if( this.pr12Fld) this.pr12Fld.disabled = false;
+        elements.forEach((el) => { el.disabled = true; });
+        if (this.densityFld) this.densityFld.disabled = false;
+        if (this.e1Fld) this.e1Fld.disabled = false;
+        if (this.pr12Fld) this.pr12Fld.disabled = false;
         break;
       case Mat_PlanarIso12:
-        if( this.e2Fld) this.e2Fld.disabled = true;
-        if( this.g12Fld) this.g12Fld.disabled = true;
-        if( this.g23Fld) this.g23Fld.disabled = true;
-        if( this.pr23Fld) this.pr23Fld.disabled = true;
+        if (this.e2Fld) this.e2Fld.disabled = true;
+        if (this.g12Fld) this.g12Fld.disabled = true;
+        if (this.g23Fld) this.g23Fld.disabled = true;
+        if (this.pr23Fld) this.pr23Fld.disabled = true;
         break;
       case Mat_PlanarIso13:
-        if( this.e3Fld) this.e3Fld.disabled = true;
-        if( this.g13Fld) this.g13Fld.disabled = true;
-        if( this.g23Fld) this.g23Fld.disabled = true;
-        if( this.pr23Fld) this.pr23Fld.disabled = true;
+        if (this.e3Fld) this.e3Fld.disabled = true;
+        if (this.g13Fld) this.g13Fld.disabled = true;
+        if (this.g23Fld) this.g23Fld.disabled = true;
+        if (this.pr23Fld) this.pr23Fld.disabled = true;
         break;
       case Mat_PlanarIso23:
-        if( this.e3Fld) this.e3Fld.disabled = true;
-        if( this.g13Fld) this.g13Fld.disabled = true;
-        if( this.g23Fld) this.g23Fld.disabled = true;
-        if( this.pr13Fld) this.pr13Fld.disabled = true;
+        if (this.e3Fld) this.e3Fld.disabled = true;
+        if (this.g13Fld) this.g13Fld.disabled = true;
+        if (this.g23Fld) this.g23Fld.disabled = true;
+        if (this.pr13Fld) this.pr13Fld.disabled = true;
         break;
       case Mat_FRP:
-        elements.forEach((el) => {
-          el.disabled = true;
-        });
-        if( this.vfFld) this.vfFld.disabled = false;
+        elements.forEach((el) => { el.disabled = true; });
+        if (this.vfFld) this.vfFld.disabled = false;
         break;
     }
     // Basic info is read/write for all types
-    if( this.nameFld) this.nameFld.disabled = false;
-    if( this.descriptionFld) this.descriptionFld.disabled = false;
-  }
-
-  setElementValue( elementName, fieldName, value){
-    if( this[elementName] ) this[elementName][fieldName] = value;
+    if (this.nameFld) this.nameFld.disabled = false;
+    if (this.descriptionFld) this.descriptionFld.disabled = false;
   }
 
   // updates to state data come from the UI via events
@@ -292,78 +283,75 @@ export class MaterialEditView extends AbstractView {
     e.preventDefault();
     let target = e.target;
     let numberValue = parseFloat(target.value);
+    let strValue = "" + target.value;
     this.errorMessage = undefined;
     let mat = this.material;
-
-    if(!mat) return;
-    // UI must prevent writing to read-only material properties
-    /* 
-    * Material is an abstract super class for specific material types.
-    * 
-    * The writable properties for different sub-types are:    
-    * Mat_Isotropic: density, E1, PR12;   
+    if (!mat) return;
+    console.log("change event");
+    /*  
+    * The writable properties for the 6 different Material sub-types are:    
+    * Mat_Isotropic:   density, E1,                        PR12            ;   
     * Mat_Orthotropic: density, E1, E2, E3, G12, G13, G23, PR12, PR13, PR23;    
-    * Mat_PlanarIso12: density, E1, E3, G13, PR12, PR13;    
-    * Mat_PlanarIso13: density, E1, E2, G12, PR12, PR13;    
-    * Mat_PlanarIso23: density, E1, E2, G12, PR12, PR23;    
+    * Mat_PlanarIso12: density, E1,     E3,      G13,      PR12, PR13      ;    
+    * Mat_PlanarIso13: density, E1, E2,     G12,           PR12, PR13      ;    
+    * Mat_PlanarIso23: density, E1, E2,     G12,           PR12,       PR23;    
     * Mat_FRP: fiber, resin, vf.     
     * All units are basic kg/m/s/degC, ie moduli are in (kg-m/s^2)/m^2 = N/m^2 = Pa). 
     */
     try {
       switch (target) {
         case this.nameFld:
-          mat.name = target.value;
+          mat.name = strValue;
           break;
         case this.descriptionFld:
-          mat.description = target.value;
+          mat.description = strValue;
           break;
         case this.densityFld:
-          if(!(mat instanceof Mat_FRP))
-          mat.density = numberValue;
+          if (!(mat instanceof Mat_FRP))
+            mat.density = numberValue;
           break;
         case this.e1Fld:
-          if(!(mat instanceof Mat_FRP ))
-          mat.E1 = numberValue;
+          if (!(mat instanceof Mat_FRP))
+            mat.E1 = numberValue;
           break;
         case this.pr12Fld:
-            if(!(mat instanceof Mat_FRP))
+          if (!(mat instanceof Mat_FRP))
             mat.PR12 = numberValue;
-            break;
+          break;
         case this.e2Fld:
-          if(!(mat instanceof Mat_FRP 
-            || mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso12 ))
-          mat.E2 = numberValue;
+          if (mat instanceof Mat_Orthotropic
+            || mat instanceof Mat_PlanarIso13 || mat instanceof Mat_PlanarIso23)
+            mat.E2 = numberValue;
           break;
         case this.e3Fld:
-          if(!(mat instanceof Mat_FRP || mat instanceof Mat_Isotropic 
-            || mat instanceof Mat_PlanarIso13 || mat instanceof Mat_PlanarIso23 ))
-          mat.E3 = numberValue;
+          if (mat instanceof Mat_Orthotropic || mat instanceof Mat_PlanarIso12)
+            mat.E3 = numberValue;
           break;
         case this.pr13Fld:
-          if(!(mat instanceof Mat_FRP || mat instanceof Mat_Isotropic 
-            || mat instanceof Mat_PlanarIso23 ))
-          mat.PR13 = numberValue;
+          if (mat instanceof Mat_Orthotropic || mat instanceof Mat_PlanarIso12
+            || mat instanceof Mat_PlanarIso13)
+            mat.PR13 = numberValue;
           break;
         case this.pr23Fld:
-          if(!( mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso12 
-            || mat instanceof Mat_PlanarIso13 || mat instanceof Mat_FRP ))
-          mat.PR23 = numberValue;
+          if (mat instanceof Mat_Orthotropic || mat instanceof Mat_PlanarIso23)
+            mat.PR23 = numberValue;
           break;
         case this.g12Fld:
-          if(!( mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso12 
-            || mat instanceof Mat_FRP ))
-          mat.G12 = numberValue;
+          if (mat instanceof Mat_Orthotropic || mat instanceof Mat_PlanarIso13
+            || mat instanceof Mat_PlanarIso23)
+            mat.G12 = numberValue;
           break;
         case this.g13Fld:
-          if(!( mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso13
-            || mat instanceof Mat_PlanarIso23|| mat instanceof Mat_FRP ))
-          mat.G13 = numberValue;
+          if (mat instanceof Mat_Orthotropic || mat instanceof Mat_PlanarIso12)
+            mat.G13 = numberValue;
           break;
         case this.g23Fld:
-          if(!( mat instanceof Mat_Isotropic || mat instanceof Mat_PlanarIso12
-            || mat instanceof Mat_PlanarIso13 || mat instanceof Mat_PlanarIso23
-            || mat instanceof Mat_FRP ))
-          mat.G23 = numberValue;
+          if (mat instanceof Mat_Orthotropic)
+            mat.G23 = numberValue;
+          break;
+        case this.vfFld:
+          if (mat instanceof Mat_FRP && numberValue <= 1.0 && numberValue >= 0.0)
+            mat.vf = numberValue;
           break;
         case this.cancelBtn:
           history.back();

@@ -1,5 +1,5 @@
 //@ts-check
-import { addMaterial, getMaterial, getMaterials, } from "../data/materials-data.mjs";
+import { addMaterial, getMaterial, deleteMaterial, getMaterials, } from "../data/materials-data.mjs";
 import { Material } from "../js/pci/lpt/material.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 
@@ -40,7 +40,7 @@ export class MaterialsListView extends AbstractView {
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th colspan="3">Description</th>
+                        <th colspan="4">Description</th>
                     </tr>
                 </thead>`;
 
@@ -53,8 +53,9 @@ export class MaterialsListView extends AbstractView {
       html += `<td>${row + 1}</td>`;
       html += `<td>${mats[row].name}</td>`;
       html += `<td>${mats[row].description}</td>`;
-      html += `<td><a href='#/material/${row}/edit'>edit..</a></td>`;
-      html += `<td><a href='' class='copy-link' mat-id='${row}'>copy..</a></td>`;
+      html += `<td><a href='#/material/${row}/edit'>Edit..</a></td>`;
+      html += `<td><a href='' class='copy-link' mat-id='${row}'>Copy..</a></td>`;
+      html += `<td><a href='' class='delete-link' mat-id='${row}'>Delete..</a></td>`;
 
       html += `</tr>`;
     }
@@ -73,6 +74,11 @@ export class MaterialsListView extends AbstractView {
     let copyLinks = Array.from(document.getElementsByClassName("copy-link"));
     copyLinks.forEach((element) => {
       element.addEventListener("click", this.copyMaterialAndEdit.bind(this));
+    });
+    // add listeners for links to delet each material
+    let delLinks = Array.from(document.getElementsByClassName("delete-link"));
+    delLinks.forEach((element) => {
+      element.addEventListener("click", this.deleteMaterial.bind(this));
     });
     let rowEls = document.getElementById("mat-tbl-body")?.querySelectorAll("tr");
     rowEls?.forEach((el) => {
@@ -97,5 +103,18 @@ export class MaterialsListView extends AbstractView {
       let newId = addMaterial(newMaterial);
       document.location.hash = `#/material/${newId}/edit`;
     }
+  }
+
+  deleteMaterial(e) {
+    e.preventDefault();
+    let theLink = e.currentTarget;
+    let matId = theLink.attributes["mat-id"].value;
+    let srcMaterial = getMaterial(matId);
+    let resp = confirm(`Are you sure you want to delete ${srcMaterial.name}?`);
+    if (resp ==true) {
+      deleteMaterial(matId);
+      document.location.hash = `#/`;
+      document.location.hash = `#/materials`;
+    } 
   }
 }

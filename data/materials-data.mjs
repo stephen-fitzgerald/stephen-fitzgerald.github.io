@@ -29,6 +29,21 @@ export function addMaterial(m){
 
 /**
  * 
+ * @param {any} id 
+ * @returns {Material | undefined} the deleted material, or undefined if not found
+ */
+export function deleteMaterial(id){
+    let m = getMaterials();
+    let ret;
+    if(id>=0 && id<m.length){
+        ret = m[id];
+        m.splice(id,1);
+    }
+    return ret;
+}
+
+/**
+ * 
  * @param {*} id 
  * @param {?Material} [theMaterial]
  * @returns {Material} any existing material using id
