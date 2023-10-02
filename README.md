@@ -6,6 +6,12 @@ Deploy:  git push github-pages main
 
 Development Repo: git push origin main
 
+Update to latest: Solution 1: no conflicts with new-online version
+        git fetch origin
+        git status, will report something like: Your branch is behind 'origin/master' by 1 commit, and can be fast-forwarded.
+        Then get the latest version
+        git pull
+
 Uses:
 - a dead-simple hash based router
 - string template literals for html templating
