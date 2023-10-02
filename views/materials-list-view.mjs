@@ -3,6 +3,8 @@ import { addMaterial, getMaterial, deleteMaterial, getMaterials, } from "../data
 import { Material } from "../js/pci/lpt/material.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 
+const html = String.raw;
+
 export class MaterialsListView extends AbstractView {
 
 
@@ -16,53 +18,43 @@ export class MaterialsListView extends AbstractView {
    */
   async buildHTML() {
     this.materials = getMaterials();
-    this.html = this.generateTable(this.materials);
-    return this.html;
-  }
+    let mats = this.materials;
 
-  generateTable(mats) {
-    let html = ``;
+    let ret = html`
+      <a href='#/materials-create' align="right">New Material..</a>
+      <br><br>
 
-    html += `<a href='#/materials-create' align="right">New Material..</a>`;
-    html += `<br>`;
-    html += `<br>`;
-    html += `<br>`;
-    html += `<br>`;
-    html += `<style>
-                tr, td {
-                    margin: 4px 8px 4px 8px;
-                    padding: 6px 12px;
-                }
-            </style>`;
+      <style>
+        tr, td {
+            margin: 4px 8px 4px 8px;
+            padding: 4px 8px;
+        }
+      </style>
 
-    html += `<table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th colspan="4">Description</th>
-                    </tr>
-                </thead>`;
+      <table onselectstart=”return false” ondragstart=”return false”>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th colspan="4">Description</th>
+            </tr>
+        </thead>
 
-    html += `<tbody id="mat-tbl-body">`;
-
-    for (let row = 0; row < mats.length; row++) {
-      html += `<tr mat-id="${row}"`;
-      html += row % 2 == 0 ? `class="even-row">` : `class="odd-row">`;
-
-      html += `<td>${row + 1}</td>`;
-      html += `<td>${mats[row].name}</td>`;
-      html += `<td>${mats[row].description}</td>`;
-      html += `<td><a href='#/material/${row}/edit'>Edit..</a></td>`;
-      html += `<td><a href='' class='copy-link' mat-id='${row}'>Copy..</a></td>`;
-      html += `<td><a href='' class='delete-link' mat-id='${row}'>Delete..</a></td>`;
-
-      html += `</tr>`;
-    }
-    html += "</tbody>";
-    html += "</table>";
-
-    return html.trim();
+        <tbody id="mat-tbl-body">
+          ${mats.map((mat, row, theArray) => html`
+            <tr mat-id="${row}" class=${row % 2 ? "odd-row" : "even-row"}>
+              <td>${row}</td>
+              <td>${mat.name}</td>
+              <td>${mat.description}</td>
+              <td><a href="#/material/${row}/edit">Edit..</a></td>
+              <td><a href='' class='copy-link' mat-id='${row}'>Copy..</a></td>
+              <td><a href='' class='delete-link' mat-id='${row}'>Delete..</a></td>
+            </tr>
+          `.trim()).join('')}
+        </tbody>
+      </table>
+    `;
+    return ret;
   }
 
   /**
@@ -111,10 +103,10 @@ export class MaterialsListView extends AbstractView {
     let matId = theLink.attributes["mat-id"].value;
     let srcMaterial = getMaterial(matId);
     let resp = confirm(`Are you sure you want to delete ${srcMaterial.name}?`);
-    if (resp ==true) {
+    if (resp == true) {
       deleteMaterial(matId);
       document.location.hash = `#/`;
       document.location.hash = `#/materials`;
-    } 
+    }
   }
 }
