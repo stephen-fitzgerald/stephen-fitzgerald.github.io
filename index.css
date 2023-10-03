@@ -389,6 +389,13 @@ tbody tr:hover {
   /* filter: brightness(50%) saturate(150%); */
 }
 
+/* prevents text selection */
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
 /* The only canvas right now is in Cube 3D page */
 canvas {
   background-color: blue;

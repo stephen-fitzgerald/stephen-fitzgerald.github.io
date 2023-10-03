@@ -107,7 +107,7 @@ export class LayupTableView extends AbstractView {
 
             <h1>Layup Table</h1>
 
-            <table id="layup-table" class="layup-table" data-laminate="">
+            <table id="layup-table" class="n0-select" data-laminate="">
             <caption>Material layers, axial positions & clocking.</caption>
 
             <thead id="layup-table-hdr">
