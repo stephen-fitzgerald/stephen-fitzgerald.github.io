@@ -8,6 +8,7 @@ import { interp } from "../js/pci/util/interp.mjs";
 import { getDomRefsById } from "../js/pci/util/dom.mjs";
 
 let pi = Math.PI;
+const html = String.raw;
 
 export class AnimationView extends AbstractView {
 
@@ -42,7 +43,7 @@ export class AnimationView extends AbstractView {
     }
     this.savedOverflow = this.mainContainer?.style.overflow;
     this.mainContainer.style.overflow = "hidden";
-    this.html = /* html */`
+    this.html = html`
         <canvas id="the-canvas"></canvas>
     `;
     //  <button id="btn-save">Save Png</button>

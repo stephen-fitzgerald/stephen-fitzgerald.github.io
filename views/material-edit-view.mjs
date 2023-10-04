@@ -5,14 +5,11 @@ import { parseRequestURL } from "../js/router.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 import { getMaterial, setMaterial, } from "../data/materials-data.mjs";
 import { Material, Mat_Isotropic, Mat_FRP, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, Mat_Orthotropic } from "../js/pci/lpt/material.mjs";
+import isEqual from "../js/ext/lodash/esm/isEqual.js";
 
-const templateHTML = /** HTML */`
+const html = String.raw;
 
-    <style>
-    input {
-        width: 6em;
-    }
-    </style>
+const templateHTML = html`
 
     <h1>Material Entry UI</h1>
 
@@ -234,6 +231,11 @@ export class MaterialEditView extends AbstractView {
     }
     if (this.errMsgLbl) this.errMsgLbl.innerHTML = this.errorMessage ? this.errorMessage : "";
     this.errorMessage = undefined;
+
+    let editsPending = !isEqual(this.material, this.targetMaterial);
+    if (this.resetBtn) this.resetBtn.disabled = editsPending ? false : true;
+    if (this.saveBtn) this.saveBtn.disabled = editsPending ? false : true;
+
   }
 
   disableReadOnlyElements() {
