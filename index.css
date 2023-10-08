@@ -374,6 +374,12 @@ select:hover {
   filter: brightness(110%) saturate(110%);
 }
 
+.no-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
 table {
   background-color: var(--table-clr);
   border-collapse: collapse;

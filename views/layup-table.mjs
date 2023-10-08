@@ -134,7 +134,7 @@ export class LayupTableView extends AbstractView {
 
                 ${plySpecs.map(
                     (plySpec, index, theArray) => html`
-                        <tr id="layup-table-row-${index+1}" data-layer-num="${index}">
+                        <tr id="layup-table-row-${index+1}" data-layer-num="${index}" class="no-select">
                         <td ><input type="checkbox"></td>
                         <td >${index+1} of ${theArray.length}</td>
                         <td style="text-align:left">${plySpec.layer.name}</td>

@@ -31,7 +31,7 @@ export class MaterialsListView extends AbstractView {
         }
       </style>
 
-      <table onselectstart=”return false” ondragstart=”return false”>
+      <table class="no-select">
         <thead>
             <tr>
                 <th>ID</th>
@@ -42,7 +42,7 @@ export class MaterialsListView extends AbstractView {
 
         <tbody id="mat-tbl-body">
           ${mats.map((mat, row, theArray) => html`
-            <tr mat-id="${row}" class=${row % 2 ? "odd-row" : "even-row"}>
+            <tr mat-id="${row}" class=${row % 2 ? "no-select odd-row" : "no-select even-row"}>
               <td>${row}</td>
               <td>${mat.name}</td>
               <td>${mat.description}</td>
