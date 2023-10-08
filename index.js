@@ -46,6 +46,9 @@ const app = async () => {
       return false;
     });
   }
+
+  //--nav-hilite-clr: rgb(181, 255, 230);--body-bg-clr
+  //document.documentElement.style.setProperty('--nav-hilite-clr', 'white');
 };
 
 document.addEventListener("DOMContentLoaded", app);

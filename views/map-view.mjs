@@ -32,7 +32,7 @@ export class MapView extends AbstractView {
 
     modelToView() {
         let myMap = L.map('map');
-        myMap.setView([44.629924, -64.055627], 13);
+        myMap.setView([44.629924, -64.055627], 15);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             attribution: "© OpenStreetMap",

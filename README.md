@@ -19,6 +19,8 @@ Uses:
 
 cleanHTML.js - Sanitize an HTML string:  * (c) 2021 Chris Ferdinandi, MIT License, https://gomakethings.com
 
+normalize.css - v8.0.1 | MIT License | https://github.com/necolas/normalize.css
+
 Lodash https://lodash.com/
 Copyright JS Foundation and other contributors <https://js.foundation/>
 Released under MIT license <https://lodash.com/license>

@@ -21,17 +21,78 @@ export class MaterialsListView extends AbstractView {
     let mats = this.materials;
 
     let ret = html`
+       <style type="text/css">
+          
+          caption {
+              text-align: left;
+              vertical-align: middle;
+              overflow: hidden;
+              word-break: normal;
+          }
+
+          table {
+              text-align: left;
+              vertical-align: middle;
+              overflow: hidden;
+              word-break: normal;
+
+              border-collapse: collapse;
+              border-style: solid;
+              border-width: 1px;
+              border-spacing: 0;
+              border-color: #9ABAD9;
+          }
+
+          th {
+              font-weight: bold;
+              text-align: center;
+              padding: 6px 20px;
+              background-color: #3166ff;
+              color: #fff;
+
+              border-collapse: collapse;
+              border-style: solid;
+              border-width: 1px;
+              border-spacing: 0;
+              border-color: #9ABAD9;
+          }
+
+          td {
+              padding: 4px 15px;
+
+              border-collapse: collapse;
+              border-style: solid;
+              border-width: 1px;
+              border-spacing: 0;
+              border-color: #9ABAD9;
+          }
+
+          td:hover {
+              background-color: #ffff99;
+          }
+
+          tbody tr:hover {
+              background-color: #fafabd;
+          }
+
+          tr:nth-child(odd) {
+              background-color: #EBF5FF;
+          }
+
+          tr:nth-child(even) {
+              background-color: #D2E4FC;
+          }
+
+          tr[data-selected] {
+              background-color: #fafabd;
+          }
+      </style>
+
       <a href='#/materials-create' align="right">New Material..</a>
       <br><br>
 
-      <style>
-        tr, td {
-            margin: 4px 8px 4px 8px;
-            padding: 4px 8px;
-        }
-      </style>
-
-      <table class="no-select">
+      <table class="prevent-select">
+      <caption>Available Materials.</caption>
         <thead>
             <tr>
                 <th>ID</th>
@@ -40,9 +101,9 @@ export class MaterialsListView extends AbstractView {
             </tr>
         </thead>
 
-        <tbody id="mat-tbl-body">
+        <tbody id="mat-tbl-body" >
           ${mats.map((mat, row, theArray) => html`
-            <tr mat-id="${row}" class=${row % 2 ? "no-select odd-row" : "no-select even-row"}>
+            <tr mat-id="${row}" >
               <td>${row}</td>
               <td>${mat.name}</td>
               <td>${mat.description}</td>

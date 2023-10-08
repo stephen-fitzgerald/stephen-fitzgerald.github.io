@@ -5,94 +5,94 @@ import { parseRequestURL } from "../js/router.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 import { getMaterial, setMaterial, } from "../data/materials-data.mjs";
 import { Material, Mat_Isotropic, Mat_FRP, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, Mat_Orthotropic } from "../js/pci/lpt/material.mjs";
+import isEqual from "../js/ext/lodash/esm/isEqual.js";
 
-const templateHTML = /** HTML */`
+const html = String.raw;
 
-    <style>
-    input {
-        width: 6em;
-    }
-    </style>
+const templateHTML = html`
 
     <h1>Material Entry UI</h1>
 
     <div id="materialForm">
 
+      <div class="tooltip">
+        <span class="tooltiptext">The name should be unique to this material.</span>
         <label for="mat-name">Name:</label>
         <input type="text" id="mat-name" style="width: 22em">
-        <br>
+      </div>
+      <br>
 
-        <label for="mat-description">Description:</label>
-        <input type="text" size="80" id="mat-description" style="width: 20em">
-        <br>
+      <label for="mat-description">Description:</label>
+      <input type="text" size="80" id="mat-description" style="width: 20em">
+      <br>
 
-        <label>Material Type: </label>
-        <label id="mat-type" style="width: 20em"> </label>
-        <br> <br>
+      <label>Material Type: </label>
+      <label id="mat-type" style="width: 20em"> </label>
+      <br> <br>
 
-        <label for="mat-density">Density:</label>
-        <input type="text" class="num" id="mat-density">
-        <label class="units-density">kg/cu.m</label>
+      <label for="mat-density">Density:</label>
+      <input type="text" class="num" id="mat-density">
+      <label class="units-density">kg/cu.m</label>
 
-        <br> <br>
+      <br> <br>
 
-        <label for="mat-E1">E1:</label>
-        <input type="text" class="num" id="mat-E1">
-        <label class="units-modulus">Pa</label>
+      <label for="mat-E1">E1:</label>
+      <input type="text" class="num" id="mat-E1">
+      <label class="units-modulus">Pa</label>
 
-        <label for="mat-PR12">PR12:</label>
-        <input type="text" class="num" id="mat-PR12">
+      <label for="mat-PR12">PR12:</label>
+      <input type="text" class="num" id="mat-PR12">
 
-        <label for="mat-G12">G12:</label>
-        <input type="text" class="num" id="mat-G12">
-        <label class="units-modulus">Pa</label>
+      <label for="mat-G12">G12:</label>
+      <input type="text" class="num" id="mat-G12">
+      <label class="units-modulus">Pa</label>
 
-        <br>
+      <br>
 
-        <label for="mat-E2">E2:</label>
-        <input type="text" class="num" id="mat-E2">
-        <label class="units-modulus">Pa</label>
+      <label for="mat-E2">E2:</label>
+      <input type="text" class="num" id="mat-E2">
+      <label class="units-modulus">Pa</label>
 
-        <label for="mat-PR13">PR13:</label>
-        <input type="text" class="num" id="mat-PR13">
+      <label for="mat-PR13">PR13:</label>
+      <input type="text" class="num" id="mat-PR13">
 
-        <label for="mat-G13">G13:</label>
-        <input type="text" class="num" id="mat-G13">
-        <label class="units-modulus">Pa</label>
+      <label for="mat-G13">G13:</label>
+      <input type="text" class="num" id="mat-G13">
+      <label class="units-modulus">Pa</label>
 
-        <br>
+      <br>
 
-        <label for="mat-E3">E3:</label>
-        <input type="text" class="num" id="mat-E3">
-        <label class="units-modulus">Pa</label>
+      <label for="mat-E3">E3:</label>
+      <input type="text" class="num" id="mat-E3">
+      <label class="units-modulus">Pa</label>
 
-        <label for="mat-PR23">PR23:</label>
-        <input type="text" class="num" id="mat-PR23">
+      <label for="mat-PR23">PR23:</label>
+      <input type="text" class="num" id="mat-PR23">
 
-        <label for="mat-G23">G23:</label>
-        <input type="text" class="num" id="mat-G23">
-        <label class="units-modulus">Pa</label>
+      <label for="mat-G23">G23:</label>
+      <input type="text" class="num" id="mat-G23">
+      <label class="units-modulus">Pa</label>
 
-        <br>
-        <div id="mat-composite">
-            <br>
-            <label for="mat-fiber">Fiber:</label>
-            <input type="text" id="mat-fiber">
+      <br>
+      <div id="mat-composite">
+          <br>
+          <label for="mat-fiber">Fiber:</label>
+          <input type="text" id="mat-fiber">
 
-            <label for="mat-resin">Resin:</label>
-            <input type="text" id="mat-resin">
+          <label for="mat-resin">Resin:</label>
+          <input type="text" id="mat-resin">
 
-            <label for="mat-vf">Vf:</label>
-            <input type="text" class="num" id="mat-vf">
-        </div>
-        <br>
-        <div id="div-btns" width="32em">
-          <button id="btn-reset" type="submit" class="btn-reset" display="inline-block">Reset</button>
-          <button id="btn-cancel" type="submit" class="btn-cancel" display="inline-block">Cancel</button>
-          <button id="btn-save" type="submit" class="btn-save" display="inline-block">Save</button>
-        </div>
+          <label for="mat-vf">Vf:</label>
+          <input type="text" class="num" id="mat-vf">
+      </div>
+      <br>
+      <div id="div-btns" width="32em">
+        <button id="btn-reset" type="submit" class="btn-reset" display="inline-block">Reset</button>
+        <button id="btn-cancel" type="submit" class="btn-cancel" display="inline-block">Cancel</button>
+        <button id="btn-save" type="submit" class="btn-save" display="inline-block">Save</button>
+      </div>
 
-        <label id="error-message"></label>
+      <label id="error-message"></label>
     </div>
     `;
 
@@ -234,6 +234,11 @@ export class MaterialEditView extends AbstractView {
     }
     if (this.errMsgLbl) this.errMsgLbl.innerHTML = this.errorMessage ? this.errorMessage : "";
     this.errorMessage = undefined;
+
+    let editsPending = !isEqual(this.material, this.targetMaterial);
+    if (this.resetBtn) this.resetBtn.disabled = editsPending ? false : true;
+    if (this.saveBtn) this.saveBtn.disabled = editsPending ? false : true;
+
   }
 
   disableReadOnlyElements() {

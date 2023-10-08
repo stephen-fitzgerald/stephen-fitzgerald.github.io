@@ -5,6 +5,6 @@ export function getDomRefsById(parentElement = document) {
         let key = $el.id.replace(/-(.)/g, (_, s) => s.toUpperCase());
         $refs[key] = $el;
     });
-    console.log($refs);
+    //console.log($refs);
     return $refs;
 }
