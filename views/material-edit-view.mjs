@@ -23,7 +23,7 @@ const templateHTML = html`
       <br>
 
       <label for="mat-description">Description:</label>
-      <input type="text" size="80" id="mat-description" style="width: 20em">
+      <input  type="text" size="80" id="mat-description" style="width: 20em">
       <br>
 
       <label>Material Type: </label>

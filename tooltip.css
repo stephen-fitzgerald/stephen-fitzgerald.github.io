@@ -5,6 +5,7 @@
 
 .tooltip .tooltiptext {
     visibility: hidden;
+
     background-color: #d2d2d2;
     color: rgb(37, 37, 37);
     text-align: center;
@@ -15,14 +16,93 @@
     opacity: 0;
     transition: opacity 0.7s;
     text-decoration: none;
-    font-size:small;
-    font-weight:lighter;
-    width:fit-content;
-    top: 100%; /* below element */
-    left: 10%; /* centered on element */
+    font-size: small;
+    font-weight: lighter;
+    width: fit-content;
+    top: 100%;
+    /* below element */
+    left: 10%;
+    /* centered on element */
 }
 
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+
+/*---*/
+
+.t-tip {
+    position: relative;
+    /* making the .tooltip span a container for the tooltip text */
+    border-bottom: 1px dashed #000;
+    /* little indicater to indicate it's hoverable */
+}
+
+.t-tip::before {
+    content: attr(data-tool-tip);
+    position: absolute;
+
+    /* below */
+    top: 105%;
+    left: 50%;
+
+    /* basic styles */
+    background-color: #d2d2d2;
+    color: rgb(37, 37, 37);
+    text-align: left;
+    border-radius: 3px;
+    padding: 0.3em 0.5em;
+    text-decoration: none;
+    font-size: small;
+    font-weight: lighter;
+    width: 16em;
+    height:fit-content;
+
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.7s;
+    visibility: hidden;
+}
+
+.t-tip:hover::before {
+    display:block;
+    visibility: visible;
+    opacity: 1;
+}
+
+.t-tip.bottom::before {
+    /* center vertically */
+    top: 100%;
+    /* center horizontally */
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 15px;
+}
+
+.t-tip.right::before {
+    /* center vertically */
+    bottom: initial;
+    top: 50%;
+    transform: translateY(-50%);
+    /* slide to the right */
+    right: initial;
+    margin-right: initial;
+    left: 100%;
+    transform: translateX(0%);
+    margin-left: 15px;
+}
+
+.t-tip.left::before {
+    /* center vertically */
+    top: 50%;
+    bottom: initial;
+    transform: translateY(-50%);
+
+    /* slide to the left */
+    left: initial;
+    right: 100%;
+    transform: translateX(0%);
+    margin-left: initial;
+    margin-right: 15px;
 }
