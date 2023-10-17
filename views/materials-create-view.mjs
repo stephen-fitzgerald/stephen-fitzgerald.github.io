@@ -5,9 +5,11 @@ import { Material, Mat_Isotropic, Mat_Orthotropic, Mat_PlanarIso12, Mat_PlanarIs
 import { addMaterial } from "../data/materials-data.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 
-const matTypeHTML = `
+const html = String.raw;
+
+const matTypeHTML = html`
     <div id="mat-type-div">
-        <label for="mat-type">Material Type: </label>
+        <label for="mat-type-sel">Material Type: </label>
         <select id="mat-type-sel">
             <option value="Mat_Isotropic">Isotropic</option>
             <option value="Mat_PlanarIso12">Planar Isotropic 1-2</option>

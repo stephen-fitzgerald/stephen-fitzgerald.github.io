@@ -60,12 +60,28 @@
         }
 
         .dropdown-check-list.visible .anchor:after {
-            border-left: 2px solid rgb(232, 255, 25);
-            border-top: 2px solid rgb(24, 16, 183);
+            border-left: 2px solid #0094ff;
+            border-top: 2px solid #0094ff;
+            -moz-transform: rotate(225deg);
+            -ms-transform: rotate(225deg);
+            -o-transform: rotate(225deg);
+            -webkit-transform: rotate(225deg);
+            transform: rotate(225deg);
         }
 
         .dropdown-check-list.visible .items {
             display: block;
+        }
+
+        input[type=checkbox],
+        input[type=radio] {
+            vertical-align: middle;
+            position: relative;
+            bottom: 1px;
+        }
+
+        input[type=radio] {
+            bottom: 2px;
         }
     </style>
 </head>
@@ -76,13 +92,13 @@
         <div id="list1" class="dropdown-check-list" tabindex="100">
             <span class="anchor">Select Fruits</span>
             <ul class="items">
-                <li><input type="checkbox" />Apple </li>
-                <li><input type="checkbox" />Orange</li>
-                <li><input type="checkbox" />Grapes </li>
-                <li><input type="checkbox" />Berry </li>
-                <li><input type="checkbox" />Mango </li>
-                <li><input type="checkbox" />Banana </li>
-                <li><input type="checkbox" />Tomato</li>
+                <li><label><input type="checkbox" value="" />Apple</label></li>
+                <li><label><input type="checkbox" value="" />Orange</label></li>
+                <li><label><input type="checkbox" value="" />Grapes</label></li>
+                <li><label><input type="checkbox" value="" />Berry</label></li>
+                <li><label><input type="checkbox" value="" />Mango</label></li>
+                <li><label><input type="checkbox" value="" />Banana</label></li>
+                <li><label><input type="checkbox" value="" />Tomato</label></li>
             </ul>
         </div>
     </main>

@@ -86,9 +86,13 @@ export class MaterialsListView extends AbstractView {
           tr[data-selected] {
               background-color: #fafabd;
           }
-      </style>
 
-      <a href='#/materials-create' align="right">New Material..</a>
+          .align-right {
+            align:right;
+          }
+      </style>
+      
+      <div class=align-right><a href="#/materials-create" class="align-right">New Material..</a></div>
       <br><br>
 
       <table class="prevent-select">
