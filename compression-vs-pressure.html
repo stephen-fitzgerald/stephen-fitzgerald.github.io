@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Barrel combatComp</title>
+  <meta name="description" content="Calculate barrel combatComp from field tester pressure.">
+  <meta name="author" content="S.Fitzgerald">
+
+  <style>
+    div {
+      margin: 1em 0 0 1em;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Barel combatComp vs On-field pressure readings</h1>
+
+  <div>
+    <label for="asa-pressure">ASA Field Tester:</label>
+    <input type="text" class="num" id="asa-pressure">
+    <label>psi</label>
+  </div>
+
+  <div>
+    <label for="combat-compression">Combat Compression:</label>
+    <input type="text" class="num" id="combat-compression">
+    <label>lbs / 0.05"</label>
+  </div>
+
+  <div>
+    <label for="wsu-compression">WSU Compression:</label>
+    <input type="text" class="num" id="wsu-compression">
+    <label>lbs / 0.05"</label>
+  </div>
+
+  <label id="error-message"></label>
+
+  <script type="module">
+
+    import { getDomRefsById } from "../js/pci/util/dom.mjs";
+
+    let doc;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      doc = getDomRefsById();
+      wireUpInput(doc.combatCompression);
+      wireUpInput(doc.asaPressure);
+      wireUpInput(doc.wsuCompression);
+      doc.asaPressure.value = "1350";
+      viewToModel(doc.asaPressure);
+    });
+
+    function wireUpInput(el) {
+      el.addEventListener("blur", (e) => {
+        viewToModel(el);
+      });
+      el.addEventListener("keyup", ({ key }) => {
+        if (key === "Enter") viewToModel(el);
+      });
+    }
+
+    function viewToModel(element) {
+      let val = parseFloat(element.value);
+      if (val === NaN) return;
+      switch (element) {
+        case doc.combatCompression:
+          doc.asaPressure.value = "" + (217 + val) / 0.32;
+          doc.wsuCompression.value = "" + 0.26 * (217 + val) / 0.32 - 130;
+          break;
+        case doc.asaPressure:
+          doc.combatCompression.value = "" + 0.32 * val - 217;
+          doc.wsuCompression.value = "" + 0.26 * val - 130;
+          break;
+        case doc.wsuCompression:
+          doc.combatCompression.value = "" + 0.32 * (130 + val) / 0.26 - 217;
+          doc.asaPressure.value = "" + (130 + val) / 0.26 ;
+          break;
+      }
+    }
+  </script>
+
+</body>
+
+</html>
