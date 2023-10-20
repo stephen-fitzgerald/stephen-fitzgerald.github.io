@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Barrel combatComp</title>
+  <title>Barrel Compression</title>
   <meta name="description" content="Calculate barrel combatComp from field tester pressure.">
   <meta name="author" content="S.Fitzgerald">
 
@@ -17,7 +17,7 @@
 </head>
 
 <body>
-  <h1>Barel combatComp vs On-field pressure readings</h1>
+  <h1>Barel Compression vs On-field pressure readings</h1>
 
   <div>
     <label for="asa-pressure">ASA Field Tester:</label>
@@ -26,14 +26,14 @@
   </div>
 
   <div>
-    <label for="combat-compression">Combat Compression:</label>
-    <input type="text" class="num" id="combat-compression">
+    <label for="wsu-compression">WSU Compression:</label>
+    <input type="text" class="num" id="wsu-compression">
     <label>lbs / 0.05"</label>
   </div>
 
   <div>
-    <label for="wsu-compression">WSU Compression:</label>
-    <input type="text" class="num" id="wsu-compression">
+    <label for="combat-compression">Combat Compression:</label>
+    <input type="text" class="num" id="combat-compression">
     <label>lbs / 0.05"</label>
   </div>
 
@@ -68,19 +68,44 @@
       if (val === NaN) return;
       switch (element) {
         case doc.combatCompression:
-          doc.asaPressure.value = "" + (217 + val) / 0.32;
-          doc.wsuCompression.value = "" + 0.26 * (217 + val) / 0.32 - 130;
+          doc.asaPressure.value = combatCompressionToPressure(val);
+          doc.wsuCompression.value = combatToWsuCompression(val);
           break;
         case doc.asaPressure:
-          doc.combatCompression.value = "" + 0.32 * val - 217;
-          doc.wsuCompression.value = "" + 0.26 * val - 130;
+          doc.combatCompression.value = pressureToCombatCompression(val);
+          doc.wsuCompression.value = pressureToWSUCompression(val);
           break;
         case doc.wsuCompression:
-          doc.combatCompression.value = "" + 0.32 * (130 + val) / 0.26 - 217;
-          doc.asaPressure.value = "" + (130 + val) / 0.26 ;
+          doc.combatCompression.value = wsuToCombatCompression(val);
+          doc.asaPressure.value = wsuCompressionToPressure(val);
           break;
       }
     }
+
+    function pressureToWSUCompression(pressure) {
+      return (0.26 * pressure - 130);
+    }
+
+    function pressureToCombatCompression(pressure) {
+      return (0.32 * pressure - 217);
+    }
+
+    function combatCompressionToPressure(compression) {
+      return ((217 + compression) / .32);
+    }
+
+    function combatToWsuCompression(compression) {
+      return (0.26 * (217 + compression) / 0.32 - 130);
+    }
+
+    function wsuCompressionToPressure(compression) {
+      return ((130 + compression) / .26);
+    }
+
+    function wsuToCombatCompression(compression) {
+      return (0.32 * (130 + val) / 0.26 - 217);
+    }
+
   </script>
 
 </body>
