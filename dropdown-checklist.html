@@ -1,121 +1,188 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Dropdown Checklist</title>
-    <meta name="description" content="Update the description">
-    <meta name="author" content="S.Fitzgerald">
+    <meta name="description" content="Update the description" />
+    <meta name="author" content="S.Fitzgerald" />
 
     <style>
-        .dropdown-check-list {
-            display: inline-block;
-        }
+      .dropdown-check-list {
+        display: inline-block;
+      }
 
-        .dropdown-check-list .anchor {
-            position: relative;
-            cursor: pointer;
-            display: inline-block;
-            padding: 5px 50px 5px 10px;
-            border: 1px solid #ccc;
-        }
+      .dropdown-check-list .anchor {
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+        padding: 5px 50px 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
 
-        .dropdown-check-list .anchor:after {
-            position: absolute;
-            content: "";
-            border-left: 2px solid black;
-            border-top: 2px solid black;
-            padding: 5px;
-            right: 10px;
-            top: 25%;
-            -moz-transform: rotate(135deg);
-            -ms-transform: rotate(135deg);
-            -o-transform: rotate(135deg);
-            -webkit-transform: rotate(135deg);
-            transform: rotate(135deg);
-        }
+      .dropdown-check-list .anchor:after {
+        position: absolute;
+        content: "";
+        border-right: 2px solid black;
+        border-bottom: 2px solid black;
+        padding: 5px;
+        right: 10px;
+        top: 25%;
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      }
 
-        /* wiggles the arrow during slection
+      /* wiggles the arrow during slection
     .dropdown-check-list .anchor:active:after {
         right: 8px;
         top: 21%;
     }
 */
-        .dropdown-check-list ul.items {
-            padding: 2px;
-            display: none;
-            margin: 0;
-            border: 1px solid #ccc;
-            border-top: none;
-        }
+      .dropdown-check-list ul.items {
+        padding: 2px;
+        display: none;
+        margin: 0;
+        border: 1px solid #ccc;
+        border-top: none;
+      }
 
-        .dropdown-check-list ul.items li {
-            list-style: none;
-        }
+      .dropdown-check-list ul.items li {
+        list-style: none;
+      }
 
-        .dropdown-check-list.visible .anchor {
-            color: #0094ff;
-        }
+      .dropdown-check-list.visible .anchor {
+        color: #0094ff;
+      }
 
-        .dropdown-check-list.visible .anchor:after {
-            border-left: 2px solid #0094ff;
-            border-top: 2px solid #0094ff;
-            -moz-transform: rotate(225deg);
-            -ms-transform: rotate(225deg);
-            -o-transform: rotate(225deg);
-            -webkit-transform: rotate(225deg);
-            transform: rotate(225deg);
-        }
+      .dropdown-check-list.visible .anchor:after {
+        border-right: 2px solid #0094ff;
+        border-bottom: 2px solid #0094ff;
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+      }
 
-        .dropdown-check-list.visible .items {
-            display: block;
-        }
+      .dropdown-check-list.visible .items {
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(255, 249, 241, 1);
+        z-index: 2;
+      }
 
-        input[type=checkbox],
-        input[type=radio] {
-            vertical-align: middle;
-            position: relative;
-            bottom: 1px;
-        }
+      input[type="checkbox"],
+      input[type="radio"] {
+        vertical-align: middle;
+        position: relative;
+        bottom: 1px;
+      }
 
-        input[type=radio] {
-            bottom: 2px;
-        }
+      input[type="radio"] {
+        bottom: 2px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- Main -->
-    <main id="main">
-        <div id="list1" class="dropdown-check-list" tabindex="100">
-            <span class="anchor">Select Fruits</span>
-            <ul class="items">
-                <li><label><input type="checkbox" value="" />Apple</label></li>
-                <li><label><input type="checkbox" value="" />Orange</label></li>
-                <li><label><input type="checkbox" value="" />Grapes</label></li>
-                <li><label><input type="checkbox" value="" />Berry</label></li>
-                <li><label><input type="checkbox" value="" />Mango</label></li>
-                <li><label><input type="checkbox" value="" />Banana</label></li>
-                <li><label><input type="checkbox" value="" />Tomato</label></li>
-            </ul>
-        </div>
+    <main id="main" style="display: flex; flex-direction: column">
+      <div id="list1" class="dropdown-check-list" tabindex="100">
+        <span class="anchor">Select Fruits</span>
+        <ul class="items">
+          <li>
+            <label><input type="checkbox" />Apple</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Orange</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Grapes</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Berry</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />A really long item here</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Mango</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Banana</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Tomato</label>
+          </li>
+        </ul>
+      </div>
+      This is in the middle.
+      <div id="list2" class="dropdown-check-list" tabindex="100">
+        <span class="anchor">Select Veggies</span>
+        <ul class="items">
+          <li>
+            <label><input type="checkbox" />Carrot</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Beet</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Asparagus</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Lettuce</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Pumpkin</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Beans</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Cucumber</label>
+          </li>
+          <li>
+            <label><input type="checkbox" />Tomato</label>
+          </li>
+        </ul>
+      </div>
+      This comes after.
     </main>
     <!-- end of Main -->
 
     <script>
-        function run() {
-            var checkList = document.getElementById('list1');
-            checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
-                if (checkList.classList.contains('visible'))
-                    checkList.classList.remove('visible');
-                else
-                    checkList.classList.add('visible');
-            };
-        }
-        document.addEventListener("DOMContentLoaded", run);
-    </script>
-</body>
+      document.addEventListener("DOMContentLoaded", () => {
+        /* setup any any dropdown-check-lists on the page.*/
+        let checkLists = document.querySelectorAll(".dropdown-check-list");
 
+        checkLists.forEach((checkList) => {
+          /* listen for clicks to show/hide */
+          checkList.getElementsByClassName("anchor")[0].onclick = function (e) {
+            if (checkList.classList.contains("visible"))
+              checkList.classList.remove("visible");
+            else checkList.classList.add("visible");
+          };
+
+          /* have all contained inputs log when clicked */
+          let inputs = checkList.querySelectorAll("input[type=checkbox]");
+          inputs.forEach((input) => {
+            input.onclick = function (e) {
+              let label = input.labels[0].textContent;
+              let state = input.checked;
+              console.log(`Label: ${label}, checked = ${state}`);
+            };
+          });
+        });
+      });
+    </script>
+  </body>
 </html>
