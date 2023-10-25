@@ -35,6 +35,9 @@
         -o-transform: rotate(-45deg);
         -webkit-transform: rotate(-45deg);
         transform: rotate(-45deg);
+        transition-property: transform;
+        transition-duration: 0.2s;
+        /* transition-timing-function: ease-in-out; */
       }
 
       /* wiggles the arrow during slection
@@ -67,6 +70,9 @@
         -o-transform: rotate(45deg);
         -webkit-transform: rotate(45deg);
         transform: rotate(45deg);
+        transition-property: transform;
+        transition-duration: 0.2s;
+        /* transition-timing-function: ease-in-out; */
       }
 
       .dropdown-check-list.visible .items {
@@ -80,16 +86,12 @@
         z-index: 2;
       }
 
-      input[type="checkbox"],
-      input[type="radio"] {
+      input[type="checkbox"]{
         vertical-align: middle;
         position: relative;
         bottom: 1px;
       }
 
-      input[type="radio"] {
-        bottom: 2px;
-      }
     </style>
   </head>
 
@@ -165,14 +167,14 @@
         let checkLists = document.querySelectorAll(".dropdown-check-list");
 
         checkLists.forEach((checkList) => {
-          /* listen for clicks to show/hide */
+          /* listen for clicks in the anchor element to show/hide */
           checkList.getElementsByClassName("anchor")[0].onclick = function (e) {
             if (checkList.classList.contains("visible"))
               checkList.classList.remove("visible");
             else checkList.classList.add("visible");
           };
 
-          /* have all contained inputs log when clicked */
+          /* have all contained inputs log when checked/unchecked */
           let inputs = checkList.querySelectorAll("input[type=checkbox]");
           inputs.forEach((input) => {
             input.onclick = function (e) {

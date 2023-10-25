@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dropdown Checklist</title>
+    <meta name="description" content="Dropdown Checklist web component">
+    <meta name="author" content="S.Fitzgerald">
+</head>
+
+<body>
+    <!-- Main -->
+    <main id="main" style="position: relative;">
+        this is before
+        <dropdown-checklist id="list1"></dropdown-checklist>
+        <div>this is btween them.</div>
+        <dropdown-checklist id="list2"></dropdown-checklist>
+        this is after
+    </main>
+    <!-- end of Main -->
+
+    <script type="module" src="./dd-checklist.mjs"></script>
+
+    <script type="module">
+        document.addEventListener("DOMContentLoaded", () => {
+            let items = [
+                { name: 'My first item', checked: true },
+                { name: 'My second item', checked: true },
+                { name: 'My unchecked item', checked: false },
+            ];
+            list1.setItems(items);
+        });
+    </script>
+</body>
+
+</html>
