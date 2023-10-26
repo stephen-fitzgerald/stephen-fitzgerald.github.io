@@ -8,15 +8,21 @@
     <title>Dropdown Checklist</title>
     <meta name="description" content="Dropdown Checklist web component">
     <meta name="author" content="S.Fitzgerald">
+
+    <style>
+        dropdown-checklist {
+        }
+
+    </style>
 </head>
 
 <body>
     <!-- Main -->
     <main id="main" style="position: relative;">
         this is before
-        <dropdown-checklist id="list1"></dropdown-checklist>
+        <dropdown-checklist id="list1" expanded></dropdown-checklist>
         <div>this is btween them.</div>
-        <dropdown-checklist id="list2"></dropdown-checklist>
+        <dropdown-checklist id="list2" label="List 2 : "></dropdown-checklist>
         this is after
     </main>
     <!-- end of Main -->
@@ -26,11 +32,15 @@
     <script type="module">
         document.addEventListener("DOMContentLoaded", () => {
             let items = [
-                { name: 'My first item', checked: true },
-                { name: 'My second item', checked: true },
-                { name: 'My unchecked item', checked: false },
+                { name: 'My first item', value: 1, checked: true },
+                { name: 'My second item', value: 2, checked: true },
+                { name: 'My unchecked item', value: 3, checked: false },
             ];
+            list1.label = 'Options : ';
             list1.setItems(items);
+            list1.addEventListener('change',(e)=>{
+                console.log(e.detail);
+            });
         });
     </script>
 </body>

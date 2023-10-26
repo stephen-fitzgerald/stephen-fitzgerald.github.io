@@ -1,13 +1,35 @@
 
 const html = String.raw;
 
+/*
+  <dropdown-checklist>
+    #shadow-root (open)
+      <style id='styleEl'></style>
+      <div id='rootEl'>
+        <span id='anchorEl'>label<span><::after>
+        <ul id='itemsEl'>
+          <li id='item-0'>
+          <li id='item-1'>
+          <li id='item-2'>
+          <li id='item-3'>
+        </ul>
+      </div>
+  </dropdown-checklist>
+
+  items = [
+    { name: 'My first item', checked: true },
+    { name: 'My second item', checked: true },
+    { name: 'My unchecked item', checked: false },
+  ];
+*/
+
+
 class DropdownChecklist extends HTMLElement {
 
   static count = 0;
 
   constructor() {
     super();
-    // element created
 
     // Attach a shadow root to the element.
     let shadowRoot = this.attachShadow({ mode: 'open' });
@@ -16,27 +38,29 @@ class DropdownChecklist extends HTMLElement {
     this.styleEl = document.createElement('style');
     this.styleEl.textContent = this.styleText;
     this.styleEl.setAttribute('id', 'styleEl');
-    shadowRoot.appendChild(this.styleEl);
 
     // create a div as a top-level container
-    // todo - get rid of this
     this.rootEl = document.createElement('div');
     this.rootEl.setAttribute('id', 'rootEl');
 
-    // create span for anchor
+    // create a span for the anchor/button element
     this.anchorEl = document.createElement("span");
     this.anchorEl.textContent = this.label;
     this.anchorEl.setAttribute('id', 'anchorEl');
 
-    // create div for items
+    // create a list of items
     this.itemsEl = document.createElement("ul");
     this.itemsEl.setAttribute('id', 'itemsEl');
 
-    // create labels & input[type='checkbox'] for each item
+    // create a label & checkbox for each item
     this.setItems(this.dummyData);
 
+    // anchor and list are children of the root div
     this.rootEl.appendChild(this.anchorEl);
     this.rootEl.appendChild(this.itemsEl);
+
+    // add style and root div to shadow dom
+    shadowRoot.appendChild(this.styleEl);
     shadowRoot.appendChild(this.rootEl);
   }
 
@@ -47,13 +71,30 @@ class DropdownChecklist extends HTMLElement {
     cb.value = value;
     cb.checked = checked ? true : false;
     cb.setAttribute("id", id);
+    this.listenTo(cb);
+
     let lbl = document.createElement("label");
     lbl.htmlFor = id;
     lbl.textContent = name;
+
     let li = document.createElement('li');
     li.appendChild(cb);
     li.appendChild(lbl);
     return (li);
+  }
+
+  listenTo( el ){
+    el.addEventListener("click", this.listener.bind(this));
+  }
+
+  listener(e){
+    //console.log(this.getItems());
+    e.stopPropagation();
+    this.dispatchEvent(
+      new CustomEvent('change', {
+        detail: this.getItems(),
+      }),
+    );
   }
 
   get label() {
@@ -62,7 +103,7 @@ class DropdownChecklist extends HTMLElement {
   }
 
   set label(str) {
-    if (str && str!='') {
+    if (str && str != '') {
       this.setAttribute('label', '' + str);
     } else {
       this.removeAttribute('label');
@@ -168,6 +209,7 @@ class DropdownChecklist extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     // called when one of attributes listed above is modified
     this.updateStyle();
+    if(name==='label'){ this.anchorEl.textContent = this.label}
   }
 
   /**
@@ -184,34 +226,39 @@ class DropdownChecklist extends HTMLElement {
   get styleText() {
     let expanded = this.expanded;
     let rot = expanded ? '45deg' : '-45deg';
-    let anchorColor = expanded ? '#0094ff' : 'black';
+    let anchorColor = expanded ? '#0094ff' : 'inherit';
 
     let ret = `
+
+      :host {
+        --background-closed: inherit;
+        --background-expanded: tan;
+        --color-closed: inherit;
+        --color-expanded: blue;
+        --border-radius: 0.25rem;
+        --list-background-color: rgba(255, 249, 241, 1);
+      }
 
       #rootEl { 
         display: inline-block;
         position: relative;
-      }
-
-      ul {
-        padding: 2px;
-        display: none;
-        margin: 0;
-        border: 1px solid #ccc;
-        border-top: none;
+        color: var(--color);
+        background-color: var(--background-closed);
+        border-radius: var(--border-radius);
       }
 
       li {
         list-style: none;
+        padding: 0.1rem;
       }
 
       #anchorEl {
         position: relative;
         cursor: pointer;
         display: inline-block;
-        padding: 5px 50px 5px 10px;
+        padding: 5px 1.5rem 5px 10px;
         border: 1px solid #ccc;
-        border-radius: 4px;
+        border-radius: inherit;
         color: ${anchorColor};
         -webkit-user-select: none; /* Safari */
         -ms-user-select: none; /* IE 10 and IE 11 */
@@ -221,11 +268,12 @@ class DropdownChecklist extends HTMLElement {
       #anchorEl:after {
         position: absolute;
         content: "";
-        border-right: 2px solid ${anchorColor};
-        border-bottom: 2px solid ${anchorColor};
-        padding: 5px;
+        border-right: 2px solid;
+        border-bottom: 2px solid;
+        border-color: ${anchorColor};
+        padding: 0.2rem 0.2rem 0.2rem 0.2rem;
         right: 10px;
-        top: 25%;
+        top: 35%;
         -moz-transform: rotate(${rot});
         -ms-transform: rotate(${rot});
         -o-transform: rotate(${rot});
@@ -236,6 +284,7 @@ class DropdownChecklist extends HTMLElement {
       }
 
       #itemsEl {
+        width: max-content;
         position: absolute;
         display: ${expanded ? 'flex' : 'none'};
         padding: .25rem .5rem .25rem .5rem;
@@ -246,14 +295,16 @@ class DropdownChecklist extends HTMLElement {
         -ms-user-select: none; /* IE 10 and IE 11 */
         user-select: none; /* Standard syntax */
         flex-direction: column;
-        background-color: rgba(255, 249, 241, 1);
+        background-color: var(--list-background-color);
         z-index: 2;
       }
 
       input[type="checkbox"]{
+        display: inline-block;
         vertical-align: middle;
         position: relative;
-        bottom: 1px;
+        bottom: 0.1rem;
+        right: 0.2rem;
       }
     `;
     return ret;
