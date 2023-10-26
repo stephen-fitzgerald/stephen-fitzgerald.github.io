@@ -7,14 +7,12 @@ class DropdownChecklist extends HTMLElement {
 
   constructor() {
     super();
-
     // element created
-
-    this.label = "Select";
 
     // Attach a shadow root to the element.
     let shadowRoot = this.attachShadow({ mode: 'open' });
 
+    // attach styles
     this.styleEl = document.createElement('style');
     this.styleEl.textContent = this.styleText;
     this.styleEl.setAttribute('id', 'styleEl');
@@ -33,12 +31,6 @@ class DropdownChecklist extends HTMLElement {
     // create div for items
     this.itemsEl = document.createElement("ul");
     this.itemsEl.setAttribute('id', 'itemsEl');
-
-    // create some dummy data
-    this.options = [];
-    for (let i = 0; i < 4; i++) {
-      this.options.push({ name: `Option ${i}`, value: `${i}` });
-    }
 
     // create labels & input[type='checkbox'] for each item
     this.setItems(this.dummyData);
@@ -62,6 +54,19 @@ class DropdownChecklist extends HTMLElement {
     li.appendChild(cb);
     li.appendChild(lbl);
     return (li);
+  }
+
+  get label() {
+    let ret = this.getAttribute('label');
+    return (ret ? ret : 'Select');
+  }
+
+  set label(str) {
+    if (str && str!='') {
+      this.setAttribute('label', '' + str);
+    } else {
+      this.removeAttribute('label');
+    }
   }
 
   get expanded() {
@@ -102,6 +107,13 @@ class DropdownChecklist extends HTMLElement {
     this.updateStyle();
   }
 
+  /**
+   * Get the list items properties as an array of objects
+   * 
+   * @returns [{name,value,checked}]
+   * 
+   * @memberOf DropdownChecklist
+   */
   getItems() {
     let listItems = this.rootEl.querySelectorAll('li input[type=checkbox]');
     let ret = [];
@@ -113,12 +125,60 @@ class DropdownChecklist extends HTMLElement {
     return ret;
   }
 
+  /**
+   * Get the selected items properties as an array of objects
+   * 
+   * @returns [{name,value,checked}]
+   * 
+   * @memberOf DropdownChecklist
+   */
   getSelectedItems() {
     let ret = this.getItems();
     ret = ret.filter((value, index, arr) => {
       return (value.checked);
     });
     return ret;
+  }
+
+  anchorClicked(e) {
+    this.expanded = !this.expanded;
+  }
+
+  updateStyle() {
+    this.styleEl.textContent = this.styleText;
+  }
+
+  connectedCallback() {
+    // browser calls this method when the element is added to the document
+    // (can be called many times if an element is repeatedly added/removed)
+    this.anchorEl.onclick = this.anchorClicked.bind(this);
+  }
+
+  disconnectedCallback() {
+    // browser calls this method when the element is removed from the document
+    // (can be called many times if an element is repeatedly added/removed)
+    this.anchor.removeEventListener('click', this.anchorClicked.bind(this));
+  }
+
+  static get observedAttributes() {
+    /* array of attribute names to monitor for changes */
+    return ['expanded', 'label'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    // called when one of attributes listed above is modified
+    this.updateStyle();
+  }
+
+  /**
+   * called when the element is moved to a new document
+   * (happens in document.adoptNode, very rarely used)
+   *
+   * @memberof MyElement
+   */
+  adoptedCallback() {
+    // todo - remove listeners?
+    console.log('adoptedCallback');
   }
 
   get styleText() {
@@ -198,48 +258,6 @@ class DropdownChecklist extends HTMLElement {
     `;
     return ret;
   }
-
-  anchorClicked(e) {
-    this.expanded = !this.expanded;
-  }
-
-  updateStyle() {
-    this.styleEl.textContent = this.styleText;
-  }
-
-  connectedCallback() {
-    // browser calls this method when the element is added to the document
-    // (can be called many times if an element is repeatedly added/removed)
-    this.anchorEl.onclick = this.anchorClicked.bind(this);
-  }
-
-  disconnectedCallback() {
-    // browser calls this method when the element is removed from the document
-    // (can be called many times if an element is repeatedly added/removed)
-    this.anchor.removeEventListener('click', this.anchorClicked.bind(this));
-  }
-
-  static get observedAttributes() {
-    /* array of attribute names to monitor for changes */
-    return ['expanded'];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    // called when one of attributes listed above is modified
-    this.updateStyle();
-  }
-
-  /**
-   * called when the element is moved to a new document
-   * (happens in document.adoptNode, very rarely used)
-   *
-   * @memberof MyElement
-   */
-  adoptedCallback() {
-    // todo - remove listeners?
-    console.log('adoptedCallback');
-  }
-
   // there can be other element methods and properties
 }
 
