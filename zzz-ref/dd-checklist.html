@@ -11,8 +11,8 @@
 
     <style>
         dropdown-checklist {
+            --color-primary: blue;
         }
-
     </style>
 </head>
 
@@ -20,9 +20,15 @@
     <!-- Main -->
     <main id="main" style="position: relative;">
         this is before
-        <dropdown-checklist id="list1" expanded></dropdown-checklist>
+        <dropdown-checklist id="list1"></dropdown-checklist>
         <div>this is btween them.</div>
-        <dropdown-checklist id="list2" label="List 2 : "></dropdown-checklist>
+        <dropdown-checklist id="list2" label="Attributes" items='[
+                { "name": "From Attributes", "checked": true },
+                { "name": "Oranges", "checked": true },
+                { "name": "Bananas", "checked": false },
+                { "name": "A fruit to be named later",  "checked": true },
+                { "name": "Kiwi fruit", "checked": true }
+            ]' expanded></dropdown-checklist>
         this is after
     </main>
     <!-- end of Main -->
@@ -31,16 +37,19 @@
 
     <script type="module">
         document.addEventListener("DOMContentLoaded", () => {
-            let items = [
-                { name: 'My first item', value: 1, checked: true },
-                { name: 'My second item', value: 2, checked: true },
-                { name: 'My unchecked item', value: 3, checked: false },
-            ];
             list1.label = 'Options : ';
-            list1.setItems(items);
-            list1.addEventListener('change',(e)=>{
-                console.log(e.detail);
+            list1.items = [
+                { name: 'My first item', checked: true },
+                { name: 'My second item', checked: true },
+                { name: 'My unchecked item', checked: false },
+            ];
+            list1.addEventListener('change', (e) => {
+                console.log(JSON.stringify(e.detail));
             });
+            list2.addEventListener('change', (e) => {
+                console.log(JSON.stringify(e.detail));
+            });
+            list1.addEventListener('click', list1.wasClicked());
         });
     </script>
 </body>

@@ -1,5 +1,4 @@
-
-const html = String.raw;
+import {hslStrToObj} from './color.mjs';
 
 /*
   <dropdown-checklist>
@@ -23,6 +22,7 @@ const html = String.raw;
   ];
 */
 
+const html = String.raw;
 
 class DropdownChecklist extends HTMLElement {
 
@@ -48,12 +48,10 @@ class DropdownChecklist extends HTMLElement {
     this.anchorEl.textContent = this.label;
     this.anchorEl.setAttribute('id', 'anchorEl');
 
-    // create a list of items
+    // create a list for items. Items get added
+    // when this.items is set
     this.itemsEl = document.createElement("ul");
     this.itemsEl.setAttribute('id', 'itemsEl');
-
-    // create a label & checkbox for each item
-    this.setItems(this.dummyData);
 
     // anchor and list are children of the root div
     this.rootEl.appendChild(this.anchorEl);
@@ -62,20 +60,45 @@ class DropdownChecklist extends HTMLElement {
     // add style and root div to shadow dom
     shadowRoot.appendChild(this.styleEl);
     shadowRoot.appendChild(this.rootEl);
+
+    this.items = this.dummyData;
   }
 
-  createListItem(name, value, id, checked) {
+  get items() {
+    let listItems = this.rootEl.querySelectorAll('li input[type=checkbox]');
+    let ret = [];
+    listItems.forEach((item) => {
+      ret.push(
+        { name: item.name, checked: item.checked }
+      );
+    });
+    return ret;
+  }
+
+  set items(itemsArray) {
+    this._clearItemsList();
+    const ul = this.itemsEl;
+    itemsArray.forEach((item, index, arr) => {
+      ul.appendChild(
+        this.createListItem(
+          { name: item.name, checked: item.checked, id: `item-${index}` }
+        )
+      );
+    });
+    this.updateStyle();
+  }
+
+  createListItem(obj) {
     let cb = document.createElement("input");
     cb.setAttribute("type", "checkbox");
-    cb.name = name;
-    cb.value = value;
-    cb.checked = checked ? true : false;
-    cb.setAttribute("id", id);
-    this.listenTo(cb);
+    cb.name = obj.name;
+    cb.checked = obj.checked ? true : false;
+    cb.setAttribute("id", obj.id);
+    cb.addEventListener("click", this._cbListener.bind(this));
 
     let lbl = document.createElement("label");
-    lbl.htmlFor = id;
-    lbl.textContent = name;
+    lbl.htmlFor = obj.id;
+    lbl.textContent = obj.name;
 
     let li = document.createElement('li');
     li.appendChild(cb);
@@ -83,18 +106,20 @@ class DropdownChecklist extends HTMLElement {
     return (li);
   }
 
-  listenTo( el ){
-    el.addEventListener("click", this.listener.bind(this));
-  }
-
-  listener(e){
-    //console.log(this.getItems());
+  _cbListener(e) {
     e.stopPropagation();
     this.dispatchEvent(
       new CustomEvent('change', {
-        detail: this.getItems(),
+        detail: this.items,
       }),
     );
+  }
+
+  _clearItemsList() {
+    const ul = this.itemsEl;
+    while (ul.firstChild) {
+      ul.removeChild(ul.firstChild);
+    }
   }
 
   get label() {
@@ -124,61 +149,12 @@ class DropdownChecklist extends HTMLElement {
 
   get dummyData() {
     return ([
-      { name: `Option ${DropdownChecklist.count++}`, value: `1`, checked: true },
-      { name: `Option ${DropdownChecklist.count++}`, value: `2` },
-      { name: `Option ${DropdownChecklist.count++}`, value: `3`, checked: 0 },
-      { name: `A really long long Option ${DropdownChecklist.count++}`, value: `4`, checked: 'k' },
-      { name: `Option ${DropdownChecklist.count++}`, value: `5`, checked: 1 }
+      { name: `Apples`, checked: true },
+      { name: `Oranges` },
+      { name: `Bananas`, checked: 0 },
+      { name: `A fruit to be named later`, checked: 'k' },
+      { name: `Kiwi fruit`, checked: 1 }
     ]);
-  }
-
-  clearItems() {
-    const ul = this.itemsEl;
-    while (ul.firstChild) {
-      ul.removeChild(ul.firstChild);
-    }
-  }
-
-  setItems(itemsArray) {
-    this.clearItems();
-    const ul = this.itemsEl;
-    itemsArray.forEach((item, index, arr) => {
-      ul.appendChild(this.createListItem(item.name, item.value, `item-${index}`, item.checked));
-    });
-    this.updateStyle();
-  }
-
-  /**
-   * Get the list items properties as an array of objects
-   * 
-   * @returns [{name,value,checked}]
-   * 
-   * @memberOf DropdownChecklist
-   */
-  getItems() {
-    let listItems = this.rootEl.querySelectorAll('li input[type=checkbox]');
-    let ret = [];
-    listItems.forEach((item) => {
-      ret.push(
-        { name: item.name, value: item.value, checked: item.checked }
-      );
-    });
-    return ret;
-  }
-
-  /**
-   * Get the selected items properties as an array of objects
-   * 
-   * @returns [{name,value,checked}]
-   * 
-   * @memberOf DropdownChecklist
-   */
-  getSelectedItems() {
-    let ret = this.getItems();
-    ret = ret.filter((value, index, arr) => {
-      return (value.checked);
-    });
-    return ret;
   }
 
   anchorClicked(e) {
@@ -203,13 +179,15 @@ class DropdownChecklist extends HTMLElement {
 
   static get observedAttributes() {
     /* array of attribute names to monitor for changes */
-    return ['expanded', 'label'];
+    return ['expanded', 'label', 'items'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     // called when one of attributes listed above is modified
+    if (name === 'label') { this.anchorEl.textContent = this.label; }
+    if (name === 'items') { this.items = JSON.parse(newValue); }
     this.updateStyle();
-    if(name==='label'){ this.anchorEl.textContent = this.label}
+    this.wasClicked();
   }
 
   /**
@@ -223,33 +201,72 @@ class DropdownChecklist extends HTMLElement {
     console.log('adoptedCallback');
   }
 
+  wasClicked(){
+    let styles = getComputedStyle(this);
+    let colorPrimary =  getComputedStyle(this).colorPrimary;
+    let anchorColor =  getComputedStyle(this.anchorEl).color;
+    let colorPrimaryProp = styles.getPropertyValue('--color-primary');
+    console.log('Anchor color = '+ anchorColor);
+    console.log('Primary color = '+ colorPrimary);
+    console.log('Primary color property = '+ colorPrimaryProp);
+  }
+
   get styleText() {
-    let expanded = this.expanded;
-    let rot = expanded ? '45deg' : '-45deg';
-    let anchorColor = expanded ? '#0094ff' : 'inherit';
+    let rot = this.expanded ? '45deg' : '-45deg';
+    let anchorColor = this.expanded ? 'var(--anchor-color-expanded)' : 'var(--anchor-color)';
+    let anchorBgColor = this.expanded ?
+      'var(--anchor-background-color-expanded)' : 'var(--anchor-background-color)';
+    let anchorBorderColor = 'var(--anchor-border-color)';
+    let listColor = 'var(--list-color)';
+    let listBgColor = 'var(--list-background-color)';
+    let listBorderColor = 'var(--list-border-color)';
 
     let ret = `
 
       :host {
-        --background-closed: inherit;
-        --background-expanded: tan;
-        --color-closed: inherit;
-        --color-expanded: blue;
-        --border-radius: 0.25rem;
-        --list-background-color: rgba(255, 249, 241, 1);
+
+        --lighten-percentage: 20%;
+        --darken-percentage: 15%;
+
+        --color-primary-h: 0;
+        --color-primary-s: 50%;
+        --color-primary-l: 75%;
+
+        --color-primary: hsl(
+            var(--color-primary-h), 
+            var(--color-primary-s), 
+            var(--color-primary-l)
+          );
+        --color-primary-light: hsl(
+            var(--color-primary-h), 
+            var(--color-primary-s), 
+            min(100%,calc(var(--color-primary-l) + var(--lighten-percentage)))
+          );
+        --color-primary-dark: hsl(
+            var(--color-primary-h), 
+            var(--color-primary-s), 
+            max(0%,calc(var(--color-primary-l) - var(--darken-percentage)))
+          );
+
+        --anchor-color: inherit;
+        --anchor-color-expanded: var(--color-primary-dark);
+        --anchor-background-color: inherit;
+        --anchor-background-color-expanded: var(--color-primary-light);
+        --anchor-border-color: var(--anchor-color);
+        --anchor-border-radius: 0.35rem;
+
+        --list-color: ${anchorColor};
+        --list-border-color: ${anchorBorderColor};
+        --list-background-color: ${anchorBgColor};
+
+
       }
 
       #rootEl { 
         display: inline-block;
         position: relative;
-        color: var(--color);
-        background-color: var(--background-closed);
-        border-radius: var(--border-radius);
-      }
-
-      li {
-        list-style: none;
-        padding: 0.1rem;
+        color: inherit;
+        border-radius: var(--anchor-border-radius);
       }
 
       #anchorEl {
@@ -258,8 +275,10 @@ class DropdownChecklist extends HTMLElement {
         display: inline-block;
         padding: 5px 1.5rem 5px 10px;
         border: 1px solid #ccc;
+        border-color: ${anchorBorderColor};
         border-radius: inherit;
         color: ${anchorColor};
+        background-color: ${anchorBgColor};
         -webkit-user-select: none; /* Safari */
         -ms-user-select: none; /* IE 10 and IE 11 */
         user-select: none; /* Standard syntax */
@@ -267,13 +286,13 @@ class DropdownChecklist extends HTMLElement {
       
       #anchorEl:after {
         position: absolute;
+        right: 10px;
+        top: 35%;
         content: "";
         border-right: 2px solid;
         border-bottom: 2px solid;
         border-color: ${anchorColor};
         padding: 0.2rem 0.2rem 0.2rem 0.2rem;
-        right: 10px;
-        top: 35%;
         -moz-transform: rotate(${rot});
         -ms-transform: rotate(${rot});
         -o-transform: rotate(${rot});
@@ -286,17 +305,25 @@ class DropdownChecklist extends HTMLElement {
       #itemsEl {
         width: max-content;
         position: absolute;
-        display: ${expanded ? 'flex' : 'none'};
+        left: var(--anchor-border-radius);
+        top: 95%;
+        display: ${this.expanded ? 'flex' : 'none'};
         padding: .25rem .5rem .25rem .5rem;
         margin: 0;
-        border: 1px solid #ccc;
-        border-top: none;
+        border: 1px solid;
+        border-color: ${listBorderColor};
         -webkit-user-select: none; /* Safari */
         -ms-user-select: none; /* IE 10 and IE 11 */
         user-select: none; /* Standard syntax */
         flex-direction: column;
-        background-color: var(--list-background-color);
-        z-index: 2;
+        color: ${listColor};
+        background-color: ${listBgColor};
+        z-index: 200;
+      }
+
+      li {
+        list-style: none;
+        padding: 0.1rem;
       }
 
       input[type="checkbox"]{

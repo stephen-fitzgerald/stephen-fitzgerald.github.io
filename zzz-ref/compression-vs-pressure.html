@@ -41,17 +41,16 @@
 
   <script type="module">
 
-    import { getDomRefsById } from "../js/pci/util/dom.mjs";
-
-    let doc;
+    let asaPressure = document.getElementById("asa-pressure");
+    let wsuCompression = document.getElementById("wsu-compression");
+    let combatCompression = document.getElementById("combat-compression");
 
     document.addEventListener("DOMContentLoaded", () => {
-      doc = getDomRefsById();
-      wireUpInput(doc.combatCompression);
-      wireUpInput(doc.asaPressure);
-      wireUpInput(doc.wsuCompression);
-      doc.asaPressure.value = "1350";
-      viewToModel(doc.asaPressure);
+      wireUpInput(combatCompression);
+      wireUpInput(asaPressure);
+      wireUpInput(wsuCompression);
+      asaPressure.value = "1350";
+      viewToModel(asaPressure);
     });
 
     function wireUpInput(el) {
@@ -67,17 +66,17 @@
       let val = parseFloat(element.value);
       if (val === NaN) return;
       switch (element) {
-        case doc.combatCompression:
-          doc.asaPressure.value = combatCompressionToPressure(val);
-          doc.wsuCompression.value = combatToWsuCompression(val);
+        case combatCompression:
+          asaPressure.value = combatCompressionToPressure(val);
+          wsuCompression.value = combatToWsuCompression(val);
           break;
-        case doc.asaPressure:
-          doc.combatCompression.value = pressureToCombatCompression(val);
-          doc.wsuCompression.value = pressureToWSUCompression(val);
+        case asaPressure:
+          combatCompression.value = pressureToCombatCompression(val);
+          wsuCompression.value = pressureToWSUCompression(val);
           break;
-        case doc.wsuCompression:
-          doc.combatCompression.value = wsuToCombatCompression(val);
-          doc.asaPressure.value = wsuCompressionToPressure(val);
+        case wsuCompression:
+          combatCompression.value = wsuToCombatCompression(val);
+          asaPressure.value = wsuCompressionToPressure(val);
           break;
       }
     }
