@@ -11,11 +11,11 @@
 */
 export function interp(x, x1, x2, y1, y2, clamp = true) {
 
-    if (isNaN(x1) || isNaN(x2) || x1 == x2) {
+    if (!isNumeric(x1) || !isNumeric(x2) || x1 == x2) {
         throw new Error(`Illegal xMin/xMax arguments: x1= ${x1}, x2= ${x2}`);
     }
 
-    if (isNaN(y1) || isNaN(y2)) {
+    if (!isNumeric(y1) || !isNumeric(y2)) {
         throw new Error(`Illegal yMin/yMax arguments: y1= ${y1}, y2= ${y2}`);
     }
 
@@ -29,4 +29,8 @@ export function interp(x, x1, x2, y1, y2, clamp = true) {
     }
 
     return (ret);
+}
+
+function isNumeric(obj) {
+    return !!(!isNaN(parseFloat(obj)) && isFinite(obj));
 }
