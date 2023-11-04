@@ -8,19 +8,19 @@ import { AbstractView } from "./abstract-view.mjs";
 const html = String.raw;
 
 const matTypeHTML = html`
-    <div id="mat-type-div">
-        <label for="mat-type-sel">Material Type: </label>
-        <select id="mat-type-sel">
-            <option value="Mat_Isotropic">Isotropic</option>
-            <option value="Mat_PlanarIso12">Planar Isotropic 1-2</option>
-            <option value="Mat_PlanarIso13">Planar Isotropic 1-3</option>
-            <option value="Mat_PlanarIso23">Planar Isotropic 2-3</option>
-            <option value="Mat_Orthotropic">Orthotropic</option>
-            <option value="Mat_FRP">FRP</option>
-        </select>
-        <button id="mat-create-btn">Create..</button>
-    </div>
-    `;
+  <div id="mat-type-div">
+      <label for="mat-type-sel">Material Type: </label>
+      <select id="mat-type-sel">
+          <option value="Mat_Isotropic">Isotropic</option>
+          <option value="Mat_PlanarIso12">Planar Isotropic 1-2</option>
+          <option value="Mat_PlanarIso13">Planar Isotropic 1-3</option>
+          <option value="Mat_PlanarIso23">Planar Isotropic 2-3</option>
+          <option value="Mat_Orthotropic">Orthotropic</option>
+          <option value="Mat_FRP">FRP</option>
+      </select>
+      <button id="mat-create-btn">Create..</button>
+  </div>
+  `;
 
 export class MaterialsCreateView extends AbstractView {
   constructor(args = {}) {

@@ -5,19 +5,21 @@ import { parseRequestURL } from '../js/router.mjs';
 import { getMaterial } from '../data/materials-data.mjs';
 import { AbstractView } from './abstract-view.mjs';
 
-export class MaterialView extends AbstractView {
 
+export class MaterialView extends AbstractView {
+    
     constructor(args = {}) {
         super(args);
     }
 
     async buildHTML() {
+        const html = String.raw;
         let request = parseRequestURL();
         let mat;
-        let _html = `<h1> No material with id = ${request.id}.</h1>`;
+        let _html = html`<h1> No material with id = ${request.id}.</h1>`;
         try {
             mat = getMaterial(request.id);
-            _html = `
+            _html = html`
             <section class="section">
                 <h1> Material </h1>
                 <span class="M"> Id : ${request.id}, </span>

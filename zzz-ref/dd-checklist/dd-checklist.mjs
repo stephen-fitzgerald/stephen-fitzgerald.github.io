@@ -1,5 +1,3 @@
-import {hslStrToObj} from './color.mjs';
-
 /*
   <dropdown-checklist>
     #shadow-root (open)
@@ -86,6 +84,7 @@ class DropdownChecklist extends HTMLElement {
       );
     });
     this.updateStyle();
+    console.log(`Property change: items = ${JSON.stringify(itemsArray)}`);
   }
 
   createListItem(obj) {
@@ -128,6 +127,7 @@ class DropdownChecklist extends HTMLElement {
   }
 
   set label(str) {
+    console.log(`Property: label was ${this.label} now = ${str}`);
     if (str && str != '') {
       this.setAttribute('label', '' + str);
     } else {
@@ -140,7 +140,7 @@ class DropdownChecklist extends HTMLElement {
   }
 
   set expanded(val) {
-    if (val) {
+    if (!!val) {
       this.setAttribute('expanded', '');
     } else {
       this.removeAttribute('expanded');
@@ -168,7 +168,7 @@ class DropdownChecklist extends HTMLElement {
   connectedCallback() {
     // browser calls this method when the element is added to the document
     // (can be called many times if an element is repeatedly added/removed)
-    this.anchorEl.onclick = this.anchorClicked.bind(this);
+    this.anchorEl.addEventListener('click', this.anchorClicked.bind(this));
   }
 
   disconnectedCallback() {
@@ -184,10 +184,10 @@ class DropdownChecklist extends HTMLElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     // called when one of attributes listed above is modified
+    console.log(`Atribute changed : ${name} was ${oldValue} now = ${newValue}`);
     if (name === 'label') { this.anchorEl.textContent = this.label; }
     if (name === 'items') { this.items = JSON.parse(newValue); }
     this.updateStyle();
-    this.wasClicked();
   }
 
   /**
@@ -199,16 +199,6 @@ class DropdownChecklist extends HTMLElement {
   adoptedCallback() {
     // todo - remove listeners?
     console.log('adoptedCallback');
-  }
-
-  wasClicked(){
-    let styles = getComputedStyle(this);
-    let colorPrimary =  getComputedStyle(this).colorPrimary;
-    let anchorColor =  getComputedStyle(this.anchorEl).color;
-    let colorPrimaryProp = styles.getPropertyValue('--color-primary');
-    console.log('Anchor color = '+ anchorColor);
-    console.log('Primary color = '+ colorPrimary);
-    console.log('Primary color property = '+ colorPrimaryProp);
   }
 
   get styleText() {

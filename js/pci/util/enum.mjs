@@ -45,6 +45,12 @@ export class Enum {
      */
     static _nextValue = 0;
     
+    get nextValue(){
+        let ret = Enum._nextValue;
+        Enum._nextValue++;
+        return(ret);
+    }
+
     /**
      * Creates an instance of Enum.
      * const daysEnum = new Enum(
@@ -65,8 +71,7 @@ export class Enum {
         //this._clazz = this.constructor.name;
 
         keys.forEach((key, i) => {
-            this[key] = Enum._nextValue;
-            Enum._nextValue += 1;
+            this[key] = this.nextValue;
         });
 
         Object.defineProperty(this, '_keysArray', {
