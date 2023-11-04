@@ -276,7 +276,7 @@ export class Material {
      * @memberof Material
      */
     get PR12() {
-        let arg = "density";
+        let arg = "PR12";
         throw new Error("Sub classes of Material must define getter for " + arg + ".");
     }
 
@@ -286,7 +286,7 @@ export class Material {
      * @memberof Material
      */
     get PR13() {
-        let arg = "PR12";
+        let arg = "PR13";
         throw new Error("Sub classes of Material must define getter for " + arg + ".");
     }
 
@@ -296,7 +296,7 @@ export class Material {
      * @memberof Material
      */
     get PR23() {
-        let arg = "density";
+        let arg = "PR23";
         throw new Error("Sub classes of Material must define getter for " + arg + ".");
     }
 

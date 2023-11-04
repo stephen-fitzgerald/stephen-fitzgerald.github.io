@@ -17,12 +17,13 @@ export class MaterialEditorElement extends HTMLElement {
 
     // attach styles
     this.styleEl = document.createElement('style');
-    this.styleEl.textContent = this.styleText;
+    this.styleEl.innerHTML = this.styleText;
     this.styleEl.setAttribute('id', 'styleEl');
 
     // create a div as a top-level container
     this.rootEl = document.createElement('div');
     this.rootEl.innerHTML = this.templateHTML;
+    this.rootEl.setAttribute('id', 'rootEl');
 
     // add style and root div to shadow dom
     shadowRoot.appendChild(this.styleEl);
@@ -93,7 +94,7 @@ export class MaterialEditorElement extends HTMLElement {
 
   // Wire up UI select options and event handlers
   addListeners() {
-    
+
     let doc = this.shadowRoot;
     // references to HTML elements
     /** @type HTMLInputElement | null */
@@ -333,23 +334,37 @@ export class MaterialEditorElement extends HTMLElement {
     this.modelToView();
   };
 
+  get bgColor(){
+    return 'white';
+  }
 
+  /*
+    The style tags allow syntax highlighting, but need to be stripped to
+    work properly because this gets wrapped in <style> </style> tags
+    when added to the shadow dom.
+  */
   get styleText() {
-    const css = String.raw;
-    let ret = css`
-      :host {
-        --color-bg: blue;
-      }
+    let ret = html`
+      <style>
+        :host {
+          --bg-color: ${this.bgColor};
+        }
+        #rootEl {
+          padding: 1rem;
+          background-color: var(--bg-color);
+        }
+      </style>
     `;
+    ret = ret.replace('<style>', '').replace('</style>', '');
     return ret;
   }
 
+  /*
+    The html below will be wrapped in a div with id=rootEl
+  */
   get templateHTML() {
-
     let ret = html`
 
-    <div id="rootEl">
-  
       <h1>Material Entry UI</h1>
   
       <br>
@@ -424,7 +439,6 @@ export class MaterialEditorElement extends HTMLElement {
       </div>
   
       <label id="error-message"></label>
-    </div>
     `;
     return ret;
   }
