@@ -335,7 +335,7 @@ export class MaterialEditorElement extends HTMLElement {
   };
 
   get bgColor(){
-    return 'white';
+    return 'antiquewhite';
   }
 
   /*
