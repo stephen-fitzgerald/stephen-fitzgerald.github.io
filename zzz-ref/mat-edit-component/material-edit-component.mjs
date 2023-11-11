@@ -1,4 +1,4 @@
-// @ ts-check
+// @ts-check
 /* jshint esversion: 6 */
 
 import { getMaterial, setMaterial, } from "../../data/materials-data.mjs";
@@ -39,7 +39,7 @@ export class MaterialEditorElement extends HTMLElement {
     let m = getMaterial(this.matId);
     if (m) {
       this.setMaterial(m);
-    } else {
+    } else if (this.errMsgLbl) {
       this.errMsgLbl.textContent = `No material with id = ${this.matId}.`;
     }
   }
@@ -96,6 +96,7 @@ export class MaterialEditorElement extends HTMLElement {
   addListeners() {
 
     let doc = this.shadowRoot;
+    if (doc == undefined) return;
     // references to HTML elements
     /** @type HTMLInputElement | null */
     this.nameFld = doc.querySelector("#mat-name");
@@ -203,8 +204,10 @@ export class MaterialEditorElement extends HTMLElement {
 
   disableReadOnlyElements() {
     // selects elements whose IDs start with 'mat-'
-    /** @type NodeListOf<HTMLInputElement> */
-    let elements = this.shadowRoot.querySelectorAll("[id^=mat-]");
+    /** @type NodeListOf<HTMLInputElement> | undefined */
+    let elements = this.shadowRoot?.querySelectorAll("[id^=mat-]");
+    if (elements == undefined) throw new Error(
+      'elements = shadowRoot?.querySelectorAll("[id^=mat-]") returned undefined.');
     elements.forEach((el) => { el.disabled = false; });
 
     // disable inputs for read-only properties by material type
@@ -334,8 +337,11 @@ export class MaterialEditorElement extends HTMLElement {
     this.modelToView();
   };
 
-  get bgColor(){
+  get bgColor() {
     return 'antiquewhite';
+  }
+  get inputNumWidth() {
+    return '7rem';
   }
 
   /*
@@ -348,10 +354,25 @@ export class MaterialEditorElement extends HTMLElement {
       <style>
         :host {
           --bg-color: ${this.bgColor};
+          --input-num-width: ${this.inputNumWidth};
         }
         #rootEl {
           padding: 1rem;
           background-color: var(--bg-color);
+        }
+        .entry-table {
+          display: grid;
+          grid-template-columns: repeat(9, auto) 1fr;
+          grid-gap: 0.5rem 0.5rem;
+        }
+        .new-row{
+          grid-column: 1;
+        }
+        label.units {
+          margin: 0rem 1rem 0rem 0rem;
+        }
+        input.num {
+          width: var(--input-num-width);
         }
       </style>
     `;
@@ -366,78 +387,80 @@ export class MaterialEditorElement extends HTMLElement {
     let ret = html`
 
       <h1>Material Entry UI</h1>
-  
-      <br>
+
+      <label for="mat-name">Name:</label>
+      <input type="text" size="20" id="mat-name" style="width: 10em">
+      <br><br>
+
       <label for="mat-description">Description:</label>
-      <input  type="text" size="80" id="mat-description" style="width: 20em">
-      <br>
-  
+      <input type="text" size="80" id="mat-description" style="width: 20em">
+      <br><br>
+
       <label>Material Type: </label>
-      <label id="mat-type" style="width: 20em"> </label>
+      <label id="mat-type"> </label>
       <br> <br>
-  
+
       <label for="mat-density">Density:</label>
       <input type="text" class="num" id="mat-density">
-      <label class="units-density">kg/cu.m</label>
-  
+      <label class="units density">kg/cu.m</label>
+
       <br> <br>
-  
-      <label for="mat-E1">E1:</label>
-      <input type="text" class="num" id="mat-E1">
-      <label class="units-modulus">Pa</label>
-  
-      <label for="mat-PR12">PR12:</label>
-      <input type="text" class="num" id="mat-PR12">
-  
-      <label for="mat-G12">G12:</label>
-      <input type="text" class="num" id="mat-G12">
-      <label class="units-modulus">Pa</label>
-  
-      <br>
-  
-      <label for="mat-E2">E2:</label>
-      <input type="text" class="num" id="mat-E2">
-      <label class="units-modulus">Pa</label>
-  
-      <label for="mat-PR13">PR13:</label>
-      <input type="text" class="num" id="mat-PR13">
-  
-      <label for="mat-G13">G13:</label>
-      <input type="text" class="num" id="mat-G13">
-      <label class="units-modulus">Pa</label>
-  
-      <br>
-  
-      <label for="mat-E3">E3:</label>
-      <input type="text" class="num" id="mat-E3">
-      <label class="units-modulus">Pa</label>
-  
-      <label for="mat-PR23">PR23:</label>
-      <input type="text" class="num" id="mat-PR23">
-  
-      <label for="mat-G23">G23:</label>
-      <input type="text" class="num" id="mat-G23">
-      <label class="units-modulus">Pa</label>
-  
+      <div class="entry-table">
+          <label for="mat-E1">E1:</label>
+          <input type="text" class="num" id="mat-E1">
+          <label class="units modulus">Pa</label>
+
+          <label for="mat-PR12">PR12:</label>
+          <input type="text" class="num" id="mat-PR12">
+          <label class="units"></label>
+
+          <label for="mat-G12">G12:</label>
+          <input type="text" class="num" id="mat-G12">
+          <label class="units modulus">Pa</label>
+
+          <label for="mat-E2" class="new-row">E2:</label>
+          <input type="text" class="num" id="mat-E2">
+          <label class="units modulus">Pa</label>
+
+          <label for="mat-PR13">PR13:</label>
+          <input type="text" class="num" id="mat-PR13">
+          <label class="units"></label>
+
+          <label for="mat-G13">G13:</label>
+          <input type="text" class="num" id="mat-G13">
+          <label class="units modulus">Pa</label>
+
+          <label for="mat-E3" class="new-row">E3:</label>
+          <input type="text" class="num" id="mat-E3">
+          <label class="units modulus">Pa</label>
+
+          <label for="mat-PR23">PR23:</label>
+          <input type="text" class="num" id="mat-PR23">
+          <label class="units"></label>
+
+          <label for="mat-G23">G23:</label>
+          <input type="text" class="num" id="mat-G23">
+          <label class="units modulus">Pa</label>
+      </div>
       <br>
       <div id="mat-composite" style="display: none;">
           <br>
           <label for="mat-fiber">Fiber:</label>
           <input type="text" id="mat-fiber">
-  
+
           <label for="mat-resin">Resin:</label>
           <input type="text" id="mat-resin">
-  
+
           <label for="mat-vf">Vf:</label>
           <input type="text" class="num" id="mat-vf">
       </div>
       <br>
       <div id="div-btns" width="32em">
-        <button id="btn-reset" type="submit" class="btn-reset" display="inline-block">Reset</button>
-        <button id="btn-cancel" type="submit" class="btn-cancel" display="inline-block">Cancel</button>
-        <button id="btn-save" type="submit" class="btn-save" display="inline-block">Save</button>
+          <button id="btn-reset" type="submit" class="btn-reset" display="inline-block">Reset</button>
+          <button id="btn-cancel" type="submit" class="btn-cancel" display="inline-block">Cancel</button>
+          <button id="btn-save" type="submit" class="btn-save" display="inline-block">Save</button>
       </div>
-  
+
       <label id="error-message"></label>
     `;
     return ret;

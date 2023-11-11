@@ -211,8 +211,9 @@ class DropdownChecklist extends HTMLElement {
     let listBgColor = 'var(--list-background-color)';
     let listBorderColor = 'var(--list-border-color)';
 
-    let ret = `
-
+    // style tags for syntax highlighting only, they're removed from return
+    let ret = html`
+      <style>
       :host {
 
         --lighten-percentage: 20%;
@@ -248,7 +249,7 @@ class DropdownChecklist extends HTMLElement {
         --list-color: ${anchorColor};
         --list-border-color: ${anchorBorderColor};
         --list-background-color: ${anchorBgColor};
-
+      
 
       }
 
@@ -323,7 +324,9 @@ class DropdownChecklist extends HTMLElement {
         bottom: 0.1rem;
         right: 0.2rem;
       }
+      </style>
     `;
+    ret = ret.replace('<style>', '').replace('</style>', '');
     return ret;
   }
   // there can be other element methods and properties
