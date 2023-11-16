@@ -8,8 +8,7 @@
 import { getRoutes } from '../routes.mjs';
 import { cleanHTML } from './ext/vjs-toolkit/clean-html.mjs';
 
-export function parseRequestURL() {
-
+function parseRequestURL() {
     let url = location.hash.slice(1).toLowerCase() || '/';
     let r = url.split("/");
     let request = {
@@ -35,8 +34,10 @@ export async function router() {
     // Get the page from our hash of supported routes, or the 404 page 
     let page = routes[parsedURL] ? routes[parsedURL] : routes["Error404"];
 
+    // console.log(JSON.stringify(request));
+
     // render the html for the page
-    let html = await page.buildHTML();
+    let html = await page.buildHTML(request);
     //html = cleanHTML(html);
 
     if (currentPage) { currentPage.destroy(); }

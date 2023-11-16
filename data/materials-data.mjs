@@ -1,6 +1,14 @@
 //@ts-check
 
-import { Material, Mat_FRP, Mat_Isotropic, Mat_PlanarIso12, Mat_PlanarIso23 } from '../js/pci/lpt/material.mjs';
+import { 
+    Material, 
+    Mat_FRP, 
+    Mat_Isotropic, 
+    Mat_Orthotropic, 
+    Mat_PlanarIso12, 
+    Mat_PlanarIso13, 
+    Mat_PlanarIso23 
+} from '../js/pci/lpt/material.mjs';
 
 let _materials = null;
 
@@ -23,7 +31,7 @@ export function getMaterial(id) {
  */
 export function addMaterial(m){
     if(m instanceof Material){
-        return( _materials.push(m) - 1 );
+        return( getMaterials().push(m) - 1 );
     }
 }
 

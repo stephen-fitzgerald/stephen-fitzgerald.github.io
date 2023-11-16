@@ -12,7 +12,7 @@ export class MapView extends AbstractView {
     }
 
     /**
-     *  
+     *
      * @return {Promise<string>} the html for the view
      */
     async buildHTML() {
@@ -40,4 +40,10 @@ export class MapView extends AbstractView {
     }
 
 
+}
+
+export class MapViewComponent extends HTMLElement {
+    constructor(){
+        super();
+    }
 }

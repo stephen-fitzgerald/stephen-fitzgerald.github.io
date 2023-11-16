@@ -2,7 +2,6 @@
 /* jshint esversion: 6 */
 
 import { AbstractView } from "./abstract-view.mjs";
-import { parseRequestURL } from "../js/router.mjs";
 import { randRng } from "../js/pci/util/randRng.mjs";
 import { interp } from "../js/pci/util/interp.mjs";
 import { getDomRefsById } from "../js/pci/util/dom.mjs";

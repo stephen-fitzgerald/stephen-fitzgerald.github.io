@@ -39,6 +39,7 @@ const contentToCache = [
 
   "/js/ext/vjs-toolkit/clean-html.mjs",
   "/js/ext/chart.js/chart.esm.mjs",
+  "/js/ext/lodash/esm/isEqual.js",
 
   "/js/pci/bats/bat-calcs.mjs",
   "/js/pci/bats/molded-tube.mjs",

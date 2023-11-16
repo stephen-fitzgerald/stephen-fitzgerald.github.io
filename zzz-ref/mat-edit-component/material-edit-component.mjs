@@ -364,9 +364,9 @@ export class MaterialEditorElement extends HTMLElement {
           display: grid;
           grid-template-columns: repeat(9, auto) 1fr;
           grid-gap: 0.5rem 0.5rem;
-        }
-        .new-row{
-          grid-column: 1;
+          .new-row {
+            grid-column: 1;
+          }
         }
         label.units {
           margin: 0rem 1rem 0rem 0rem;
@@ -455,7 +455,7 @@ export class MaterialEditorElement extends HTMLElement {
           <input type="text" class="num" id="mat-vf">
       </div>
       <br>
-      <div id="div-btns" width="32em">
+      <div id="div-btns" width="48em">
           <button id="btn-reset" type="submit" class="btn-reset" display="inline-block">Reset</button>
           <button id="btn-cancel" type="submit" class="btn-cancel" display="inline-block">Cancel</button>
           <button id="btn-save" type="submit" class="btn-save" display="inline-block">Save</button>

@@ -1,7 +1,6 @@
 // @ts-check
 /* jshint esversion: 6 */
 
-import { parseRequestURL } from "../js/router.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 import { getMaterial, setMaterial, } from "../data/materials-data.mjs";
 import { Material, Mat_Isotropic, Mat_FRP, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, Mat_Orthotropic } from "../js/pci/lpt/material.mjs";
@@ -106,8 +105,22 @@ export class MaterialEditView extends AbstractView {
     this.html = templateHTML;
   }
 
-  async buildHTML() {
-    this.request = parseRequestURL();
+  
+  /**
+   * buildHTML() - build the static html for a view
+   * 
+   * @param {object} [request={}]
+   * @param {string} [request.resource]
+   * @param {string} [request.id]
+   * @param {string} [request.verb]
+   * 
+   * @return {Promise<string | undefined>} the html for the view
+   * @memberof AbstractView
+   * 
+   * @memberOf AbstractView
+   */
+  async buildHTML(request={}) {
+    this.request = request;
     this.errorMessage = undefined;
     /** @type {Mat_PlanarIso12 | Mat_Isotropic | Mat_FRP | Mat_PlanarIso23 |  Mat_Orthotropic | Mat_PlanarIso13 | undefined} */
     this.material = undefined;
@@ -359,7 +372,8 @@ export class MaterialEditView extends AbstractView {
             mat.vf = numberValue;
           break;
         case this.cancelBtn:
-          history.back();
+          // history.back();
+          document.location.hash = "#/materials";
           break;
         case this.resetBtn:
           this.setMaterial(this.targetMaterial);

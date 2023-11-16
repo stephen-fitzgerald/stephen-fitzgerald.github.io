@@ -1,15 +1,13 @@
 // @ts-check
 /* jshint esversion: 6 */
 
-import { parseRequestURL } from "../js/router.mjs";
-
 export class AbstractView {
 
   /**
   * Creates an instance of AbstractView.
   * @param {Object} [args]
-  * @param {string | undefined} [args.title]
-  * @param {string | undefined} [args.html]
+  * @param {string} [args.title]
+  * @param {string} [args.html]
   * @memberof AbstractView
   */
   constructor(args = {}) {
@@ -20,12 +18,18 @@ export class AbstractView {
 
   /**
    * buildHTML() - build the static html for a view
-   *
+   * 
+   * @param {object} [request]
+   * @param {string} [request.resource]
+   * @param {string} [request.id]
+   * @param {string} [request.verb]
+   * 
    * @return {Promise<string | undefined>} the html for the view
    * @memberof AbstractView
+   * 
+   * @memberOf AbstractView
    */
-  async buildHTML() {
-    this.request = parseRequestURL();
+  async buildHTML(request={}) {
     return this.html;
   }
 

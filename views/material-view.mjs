@@ -1,7 +1,6 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { parseRequestURL } from '../js/router.mjs';
 import { getMaterial } from '../data/materials-data.mjs';
 import { AbstractView } from './abstract-view.mjs';
 
@@ -12,17 +11,16 @@ export class MaterialView extends AbstractView {
         super(args);
     }
 
-    async buildHTML() {
+    async buildHTML({id}) {
         const html = String.raw;
-        let request = parseRequestURL();
         let mat;
-        let _html = html`<h1> No material with id = ${request.id}.</h1>`;
+        let _html = html`<h1> No material with id = ${id}.</h1>`;
         try {
-            mat = getMaterial(request.id);
+            mat = getMaterial(id);
             _html = html`
             <section class="section">
                 <h1> Material </h1>
-                <span class="M"> Id : ${request.id}, </span>
+                <span class="M"> Id : ${id}, </span>
                 <span class="M"> Name : ${mat.name}, </span>
                 <span class="M"> Description : ${mat.description}, </span>
                 <span class="M"> Density : ${mat.density} (kg/cu.m)</span>

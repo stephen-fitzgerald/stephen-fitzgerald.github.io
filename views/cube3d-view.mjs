@@ -1,7 +1,6 @@
 // @ts-check
 /* jshint esversion: 6 */
 
-// import { parseRequestURL } from "../js/router.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 
 export class Cube3dView extends AbstractView {
@@ -31,11 +30,11 @@ export class Cube3dView extends AbstractView {
    * @override
    * @returns {Promise<string>}
    */
-  async buildHTML() {
-    if( this.animationFrameId != undefined ){
+  async buildHTML({ resource, id, verb }) {
+    if (this.animationFrameId != undefined) {
       window.cancelAnimationFrame(this.animationFrameId);
     }
-    // this.request = parseRequestURL();
+
     this.html = `<h1>Cube 3D</h1>
                 <canvas id="theCanvas" width="${this.W}" height="${this.H}"></canvas>`;
     return this.html;
@@ -66,7 +65,7 @@ export class Cube3dView extends AbstractView {
    * @param {number} time
    * @memberof Cube3dView
    */
-  modelToView( time ) {
+  modelToView(time) {
     this.render(time);
   }
 
@@ -103,12 +102,12 @@ export class Cube3dView extends AbstractView {
 
   render(time) {
 
-    if( this.lastTime == undefined ){
+    if (this.lastTime == undefined) {
       this.lastTime = time;
     }
 
     let dt = time - this.lastTime;
-    
+
     this.ctx.clearRect(0, 0, this.W, this.H);
 
     this.theta += this.dtheta;

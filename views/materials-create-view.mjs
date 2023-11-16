@@ -1,7 +1,11 @@
 // @ts-check
 /* jshint esversion: 6 */
 
-import { Material, Mat_Isotropic, Mat_Orthotropic, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23 } from "../js/pci/lpt/material.mjs";
+import {
+  Material, Mat_Isotropic,
+  Mat_Orthotropic, Mat_PlanarIso12,
+  Mat_PlanarIso13, Mat_PlanarIso23
+} from "../js/pci/lpt/material.mjs";
 import { addMaterial } from "../data/materials-data.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 

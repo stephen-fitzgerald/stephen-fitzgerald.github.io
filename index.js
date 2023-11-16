@@ -4,6 +4,7 @@ import { router } from "./js/router.mjs";
 import { configureDatabase } from "./js/database-config.mjs";
 import { addListenerToNavItems, toggleNavPane } from "./js/leftNav.mjs";
 
+const RUN_SERVICE_WORKER = false;
 /**
  * Main application entry point
  */
@@ -16,7 +17,7 @@ const app = async () => {
   window.addEventListener("load", router);
 
   // set up service worker for caching
-  if ("serviceWorker" in navigator) {
+  if ("serviceWorker" in navigator && RUN_SERVICE_WORKER) {
     navigator.serviceWorker.register("sw.js");
   }
 
@@ -28,7 +29,7 @@ const app = async () => {
   */
   let menuIcon = document.getElementById("hamburger-icon");
   if (menuIcon !== null) {
-    menuIcon.addEventListener("click", toggleNavPane );
+    menuIcon.addEventListener("click", toggleNavPane);
   }
 
   /*
