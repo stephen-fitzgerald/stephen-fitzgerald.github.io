@@ -4,6 +4,14 @@
 // IndexedDB wrapper class
 export class Database {
   // connect to IndexedDB database
+  /**
+   * Creates an instance of Database.
+   * @param {string} dbName 
+   * @param {number} dbVersion 
+   * @param {function} dbUpgrade f(db: IDBDatabase, oldVer: number, newVer: number)
+   * 
+   * @memberOf Database
+   */
   constructor(dbName, dbVersion, dbUpgrade) {
     //@ts-expect-error
     return new Promise((resolve, reject) => {
@@ -36,14 +44,14 @@ export class Database {
   }
 
   // store item
-  set(storeName, value) {
+  set(storeName, name, value) {
     return new Promise((resolve, reject) => {
-      // new transaction
+      //@ts-expect-error (this could be null?)
       const transaction = this.db.transaction(storeName, "readwrite"),
         store = transaction.objectStore(storeName);
 
       // write record
-      store.put(value);
+      store.put(value, name);
 
       transaction.oncomplete = () => {
         resolve(true); // success
@@ -58,7 +66,7 @@ export class Database {
   // get named item
   get(storeName, name) {
     return new Promise((resolve, reject) => {
-      // new transaction
+      //@ts-expect-error  (this could be null?)
       const transaction = this.db.transaction(storeName, "readonly"),
         store = transaction.objectStore(storeName),
         // read record

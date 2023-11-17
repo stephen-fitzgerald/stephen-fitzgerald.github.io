@@ -1,6 +1,7 @@
 //@ts-check
 import { addMaterial, getMaterial, deleteMaterial, getMaterials, } from "../data/materials-data.mjs";
 import { Material } from "../js/pci/lpt/material.mjs";
+import { serialize } from "../js/pci/util/serialize.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 
 const html = String.raw;
@@ -19,6 +20,8 @@ export class MaterialsListView extends AbstractView {
   async buildHTML() {
     this.materials = getMaterials();
     let mats = this.materials;
+
+    console.log(serialize(mats));
 
     let ret = html`
        <style type="text/css">

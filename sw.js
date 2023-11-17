@@ -4,7 +4,7 @@
 //self.importScripts("/data/materialsData.mjs");
 
 // update name whenever an asset changes
-const cacheName = "stratus-lpt-2022-09-23-02";
+const cacheName = "stratus-lpt-2023-11-16-01";
 
 // Files to cache - add everything required for offline use.
 const contentToCache = [
@@ -96,7 +96,7 @@ self.addEventListener("install", (event) => {
   // as soon as it's finished installing
   // NOTE: don't use this if you don't want your sw to control pages
   // that were loaded with an older version
-  self.skipWaiting();
+  //self.skipWaiting();
 
   event.waitUntil(
     (async () => {

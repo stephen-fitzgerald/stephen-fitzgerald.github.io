@@ -5,7 +5,7 @@ import { CONVERT } from "../js/pci/util/convert.mjs";
 import { Mat_Isotropic, Mat_PlanarIso23 } from "../js/pci/lpt/material.mjs";
 import { printToHTML, syntaxHighlight } from "../js/pci/util/print-to-html.mjs";
 import { CompositeLamina, Laminate } from "../js/pci/lpt/lpt.mjs";
-import { decycle, retrocycle } from "../js/pci/util/serialize.mjs";
+import { decycle, retrocycle, serialize } from "../js/pci/util/serialize.mjs";
 import { ORIENTATION } from "../js/pci/lpt/orientation.mjs";
 import { AbstractView } from "./abstract-view.mjs";
 import { calculateBarrelCompression } from "../js/pci/bats/bat-calcs.mjs";
@@ -184,6 +184,8 @@ function calculateBarrelCompressions(parentElement = document.body) {
     orientations: [UPRIGHT, UPRIGHT, UPRIGHT, UPRIGHT],
     isWoven: false,
   });
+
+  console.log(serialize(lam_4));
 
   let lam_4b = new Laminate({
     name: "Lam_4b",

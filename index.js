@@ -18,7 +18,13 @@ const app = async () => {
 
   // set up service worker for caching
   if ("serviceWorker" in navigator && RUN_SERVICE_WORKER) {
-    navigator.serviceWorker.register("sw.js");
+    //navigator.serviceWorker.register("sw.js");
+    navigator.serviceWorker.register('/sw.js').then(() => {
+      console.log('Service worker registered!');
+    }).catch((error) => {
+      console.warn('Error registering service worker:');
+      console.warn(error);
+    });
   }
 
   // open up the database & bootstrap or update, if needed
