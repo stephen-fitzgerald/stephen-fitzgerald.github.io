@@ -42,6 +42,31 @@ export class Profile {
         }
         return this.xPositions[this.xPositions.length - 1];
     }
+
+    get xRange() {
+        return (this.xMax - this.xMin);
+    }
+
+    get dMin() {
+        if (Array.isArray(this.oDiameters)) {
+            return Math.min(...this.oDiameters);
+        } else {
+            return undefined;
+        }
+    }
+
+    get dMax() {
+        if (Array.isArray(this.oDiameters)) {
+            return Math.max(...this.oDiameters);
+        } else {
+            return undefined;
+        }
+    }
+    
+    get dRange() {
+        return ((this.dMax || 0) - (this.dMin || 0));
+    }
+
     /**
      * Interpolate the OD of this profile for a given x position
      *
@@ -88,7 +113,7 @@ export class Profile {
 
         let ret = interpolateX(od, xArray, yArray);
 
-        if( ret == undefined ){
+        if (ret == undefined) {
             throw new Error(`Can't determine position for diameter = ${od}`);
         }
         return ret;

@@ -1,3 +1,6 @@
+import { Profile } from "../../js/pci/bats/profile.mjs";
+import { isNumeric } from "../../js/pci/util/isNumeric.mjs";
+
 const html = String.raw;
 
 class ProfileCanvas extends HTMLElement {
@@ -8,7 +11,7 @@ class ProfileCanvas extends HTMLElement {
     this.initialized = false;
     this.canvasHeight = 400;
     this.canvasWidth = 600;
-    
+
     // Attach a shadow root to the element.
     let shadowRoot = this.attachShadow({ mode: 'open' });
 
@@ -26,6 +29,13 @@ class ProfileCanvas extends HTMLElement {
     shadowRoot.appendChild(this.styleEl);
     shadowRoot.appendChild(this.rootEl);
 
+    this._profile = new Profile({
+      xPositions: [0.00, 0.25, 0.50, 0.75, 1.00],
+      oDiameters: [0.01, 0.02, 0.03, 0.01, 0.05]
+    });
+
+    this._borderPercentage = 10.0;
+
     // element created
   }
 
@@ -42,11 +52,12 @@ class ProfileCanvas extends HTMLElement {
 
   static get observedAttributes() {
     /* array of attribute names to monitor for changes */
-    return ['coordinates'];
+    return ['profile'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     // called when one of attributes listed above is modified
+    if (name === 'profile') { this.profile = JSON.parse(newValue); }
   }
 
   /**
@@ -58,13 +69,36 @@ class ProfileCanvas extends HTMLElement {
   adoptedCallback() {
   }
 
-    /*
+
+  get profile() {
+    return (this._profile);
+  }
+
+  set profile(value) {
+    if (value instanceof Profile) {
+      this._profile = value;
+    } else {
+      this._profile = new Profile(value);
+    }
+  }
+
+  get borderPercentage() {
+    return this._borderPercentage;
+  }
+
+  set borderPercentage(value) {
+    if (isNumeric(value) && value >= 0 && value <= 100) {
+      this._borderPercentage = value;
+    }
+  }
+
+  /*
     The style tags allow syntax highlighting, but need to be stripped to
     work properly because this gets wrapped in <style> </style> tags
     when added to the shadow dom.
   */
-    get styleText() {
-      let ret = html`
+  get styleText() {
+    let ret = html`
         <style>
           :host {
             --bg-color: lightblue;
@@ -80,9 +114,9 @@ class ProfileCanvas extends HTMLElement {
           }
         </style>
       `;
-      ret = ret.replace('<style>', '').replace('</style>', '');
-      return ret;
-    }
+    ret = ret.replace('<style>', '').replace('</style>', '');
+    return ret;
+  }
 
   get templateHTML() {
     let ret = html`
@@ -91,41 +125,38 @@ class ProfileCanvas extends HTMLElement {
     return ret;
   }
 
-  get canvas(){
+  get canvas() {
     return this.shadowRoot.querySelector("#profile-canvas");
   }
 
-  get profile(){
-    return( {
-      xPositions: [ 0.00, 0.25, 0.50, 0.75, 1.00 ],
-      oDiameters: [ 0.01, 0.02, 0.03, 0.01, 0.05 ]
-    });
-    
-  }
 
   drawProfile() {
     const canvas = this.canvas;
     const profile = this.profile;
-    const context = canvas.getContext('2d');
-    context.fillStyle = 'rgb(220, 242, 255)';
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, canvas.width, canvas.height);
+
     const extents = {
-      minX: Math.min(...profile.xPositions),
-      maxX: Math.max(...profile.xPositions),
-      minY: Math.min(...profile.oDiameters),
-      maxY: Math.max(...profile.oDiameters),
+      minX: profile.xMin,
+      maxX: profile.xMax,
+      minY: profile.dMin,
+      maxY: profile.dMax,
     };
-    let rngX = extents.maxX - extents.minX;
-    let rngY = extents.maxY - extents.minY;
-    const border = 80;
+
+    let rngX = profile.xRange;
+    let rngY = extents.maxY;
+
+    const border = this.borderPercentage / 100.0 * Math.min(canvas.width, canvas.height);
     const offsetX = border;
     const offsetY = canvas.height / 2;
+
+    const context = canvas.getContext('2d');
+    context.fillStyle = 'rgb(235, 235, 235)';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
     let scaleX = (canvas.width - 2 * border) / rngX;
     let scaleY = (canvas.height - 2 * border) / rngY;
 
-    scaleY = Math.min(scaleX, scaleY);
-    scaleX = scaleY;
+    // scaleY = Math.min(scaleX, scaleY);
+    // scaleX = scaleY;
 
     context.beginPath();
 
@@ -150,9 +181,9 @@ class ProfileCanvas extends HTMLElement {
     }
 
     context.moveTo(curX, curY);
-    context.lineTo(curX, 0 * scaleY + offsetY);
+    context.lineTo(curX, offsetY);
     context.moveTo(curX, curYMirror);
-    context.lineTo(curX, 0 * scaleY + offsetY);
+    context.lineTo(curX, offsetY );
 
     context.stroke();
   }

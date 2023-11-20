@@ -323,6 +323,7 @@ function buildTube() {
         clocking: 90.0,
     }));
 
+    // console.log(JSON.stringify(tube));
     return tube;
 }
 

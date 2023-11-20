@@ -105,4 +105,8 @@ export class PlySpec {
         let c = (this.end - this.taperEnd) * this.widthAtEnd;
         return (this.numPieces * (a + b + c));
     }
+
+    get maxWidth(){
+        return( Math.max(this.widthAtStart, this.widthAtEnd));
+    }
 }

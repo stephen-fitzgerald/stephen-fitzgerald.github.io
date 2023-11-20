@@ -20,6 +20,31 @@ let _nextMaterialNumber = 1;
  */
 export class Material {
 
+    static from(obj) {
+        let ret;
+        switch (obj._clazz) {
+            case 'Mat_Isotropic':
+                ret = new Mat_Isotropic(obj);
+                break;
+            case 'Mat_PlanarIso12':
+                ret = new Mat_PlanarIso12(obj);
+                break;
+            case 'Mat_PlanarIso13':
+                ret = new Mat_PlanarIso13(obj);
+                break;
+            case 'Mat_PlanarIso23':
+                ret = new Mat_PlanarIso23(obj);
+                break;
+            case 'Mat_Orthotropic':
+                ret = new Mat_Orthotropic(obj);
+                break;
+            case 'Mat_FRP':
+                ret = new Mat_FRP(obj);
+                break;
+        }
+        return ret;
+    }
+    
     /**
      * Material constructor.  * Do Not Call new Material() Directly !! This is an abstract super class for 
      * specific material types.  

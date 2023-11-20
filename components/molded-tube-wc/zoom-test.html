@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Testing lit</title>
+    <meta name="description" content="Update the description">
+    <meta name="author" content="S.Fitzgerald">
+</head>
+
+<body>
+    <!-- Main -->
+    <main id="main">
+        <canvas id="canvas" width="800" height="800"></canvas>
+    </main>
+    <!-- end of Main -->
+
+    <script type="module">
+
+        function app() {
+
+            const zoomIntensity = 0.2;
+            const canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
+            const width = 1200;
+            const height = 1200;
+
+            let scale = 1;
+            let originx = 0;
+            let originy = 0;
+            let visibleWidth = width;
+            let visibleHeight = height;
+            // Begin the animation loop.
+            draw();
+
+
+            function draw() {
+                // Clear screen to white.
+                context.fillStyle = "#f0f0f0";
+                context.fillRect(originx-1, originy-1, width / scale + 1, height / scale + 1);
+                // Draw the black square.
+                context.fillStyle = "black";
+                // context.fillRect(50, 50, 100, 100);
+
+                context.strokeStyle = "black";
+                context.moveTo(50, 50);
+                context.lineTo(50, 150);
+                context.lineTo(150, 150);
+                context.lineTo(150, 50);
+                context.lineTo(50, 50);
+                context.stroke();
+
+                // Schedule the redraw for the next display refresh.
+                
+            }
+
+            canvas.onwheel = function (event) {
+                event.preventDefault();
+                // Get mouse offset.
+                const mousex = event.clientX - canvas.offsetLeft;
+                const mousey = event.clientY - canvas.offsetTop;
+                // Normalize mouse wheel movement to +1 or -1 to avoid unusual jumps.
+                const wheel = event.deltaY < 0 ? 1 : -1;
+
+                // Compute zoom factor.
+                const zoom = Math.exp(wheel * zoomIntensity);
+
+                // Translate so the visible origin is at the context's origin.
+                context.translate(originx, originy);
+
+                // Compute the new visible origin. Originally the mouse is at a
+                // distance mouse/scale from the corner, we want the point under
+                // the mouse to remain in the same place after the zoom, but this
+                // is at mouse/new_scale away from the corner. Therefore we need to
+                // shift the origin (coordinates of the corner) to account for this.
+                originx -= mousex / (scale * zoom) - mousex / scale;
+                originy -= mousey / (scale * zoom) - mousey / scale;
+
+                // Scale it (centered around the origin due to the translate above).
+                context.scale(zoom, zoom);
+                // Offset the visible origin to it's proper position.
+                context.translate(-originx, -originy);
+
+                // Update scale and others.
+                scale *= zoom;
+                visibleWidth = width / scale;
+                visibleHeight = height / scale;
+                window.requestAnimationFrame(draw);
+            };
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            app();
+        });
+
+    </script>
+
+</body>
+
+</html>

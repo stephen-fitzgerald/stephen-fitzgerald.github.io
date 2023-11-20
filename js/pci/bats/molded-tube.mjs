@@ -1,7 +1,7 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { Material } from '../lpt/material.mjs';
+import { Mat_Isotropic, Material } from '../lpt/material.mjs';
 import { Laminate } from '../lpt/lpt.mjs';
 import { integrateFunction } from '../util/functions.mjs';
 import { registerClazzConstructor } from '../util/serialize.mjs';
@@ -36,14 +36,16 @@ export class MoldedTube {
             if (options.profile instanceof Profile) {
                 this.profile = options.profile;
             } else if (options.profile) {
-                this.profile = Object.assign(new Profile(), options.profile);
+                // this.profile = Object.assign(new Profile(), options.profile);
+                this.profile = new Profile(options.profile);
             }
 
             // resin used for all dry fiber (non-prepreg) layers
             if (options.resin instanceof Material) {
                 this.resin = options.resin;
             } else if (options.resin) {
-                this.resin = Object.assign(new Material(), options.resin);
+                // this.resin = Object.assign(new Material(), options.resin);
+                this.resin = Material.from(options.resin);
             }
 
             // plies, start, end positions, angles & orientations
