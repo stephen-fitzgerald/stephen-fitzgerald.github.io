@@ -2,7 +2,7 @@ import {MoldedTube} from '../../js/pci/bats/molded-tube.mjs'
 
 export function getTube() {
     return new MoldedTube({
-        "name": "Molded Tube",
+        "name": "A Default Molded Tube",
         "description": "A simple molded tube.  1 meter long x 50 mm OD.",
         "profile": {
             "_clazz": "Profile",

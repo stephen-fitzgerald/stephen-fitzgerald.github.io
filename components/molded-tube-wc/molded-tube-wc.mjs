@@ -18,19 +18,6 @@ class MoldedTubeWC extends HTMLElement {
     // Attach a shadow root to the element.
     let shadowRoot = this.attachShadow({ mode: 'open' });
 
-    // attach styles
-    this.styleEl = document.createElement('style');
-    this.styleEl.innerHTML = this.styleText;
-    this.styleEl.setAttribute('id', 'styleEl');
-
-    // create a div as a top-level container
-    this.rootEl = document.createElement('div');
-    this.rootEl.innerHTML = this.templateHTML;
-    this.rootEl.setAttribute('id', 'rootEl');
-
-    // add style and root div to shadow dom
-    shadowRoot.appendChild(this.styleEl);
-    shadowRoot.appendChild(this.rootEl);
     // element created
   }
 
@@ -51,6 +38,24 @@ class MoldedTubeWC extends HTMLElement {
       minY: -this._profile.dMax,
       maxY: this._profile.dMax,
     };
+
+    if( this.label === null ){
+      this.label = this.moldedTube.name;
+    }
+    
+    // attach styles
+    this.styleEl = document.createElement('style');
+    this.styleEl.innerHTML = this.styleText;
+    this.styleEl.setAttribute('id', 'styleEl');
+
+    // create a div as a top-level container
+    this.rootEl = document.createElement('div');
+    this.rootEl.innerHTML = this.templateHTML;
+    this.rootEl.setAttribute('id', 'rootEl');
+
+    // add style and root div to shadow dom
+    this.shadowRoot.appendChild(this.styleEl);
+    this.shadowRoot.appendChild(this.rootEl);
 
     let scalex = 0.8 * (this.canvas.width) / (this._extents.maxX - this._extents.minX);
     let scaley = 0.8 / 7.0 * (this.canvas.height) / (this._extents.maxY - this._extents.minY);
@@ -77,7 +82,7 @@ class MoldedTubeWC extends HTMLElement {
 
   static get observedAttributes() {
     /* array of attribute names to monitor for changes */
-    return ['molded-tube'];
+    return ['label', 'molded-tube'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -92,6 +97,20 @@ class MoldedTubeWC extends HTMLElement {
    * @memberof MyElement
    */
   adoptedCallback() {
+  }
+
+  get label() {
+    let ret = this.getAttribute('label');
+    return ret;
+  }
+
+  set label(str) {
+    console.log(`Property: label was ${this.label} now = ${str}`);
+    if (str && str != '') {
+      this.setAttribute('label', '' + str);
+    } else {
+      this.removeAttribute('label');
+    }
   }
 
   get canvas() {
@@ -134,6 +153,9 @@ class MoldedTubeWC extends HTMLElement {
           canvas {
             border: 1px solid black;
           }
+          label {
+            color: red;
+          }
         </style>
       `;
     ret = ret.replace('<style>', '').replace('</style>', '');
@@ -142,6 +164,7 @@ class MoldedTubeWC extends HTMLElement {
 
   get templateHTML() {
     let ret = html`
+      <label id="label">${this.label}</label><br>
       <canvas id="profile-canvas" height="${this.canvasHeight}" width="${this.canvasWidth}"></canvas>
     `;
     return ret;
