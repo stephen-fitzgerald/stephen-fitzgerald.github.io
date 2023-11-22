@@ -12,8 +12,8 @@ class MoldedTubeWC extends HTMLElement {
     super();
 
     this.initialized = false;
-    this.canvasHeight = 1800;
-    this.canvasWidth = 900;
+    this.canvasHeight = 600;
+    this.canvasWidth = 300;
 
     // Attach a shadow root to the element.
     let shadowRoot = this.attachShadow({ mode: 'open' });
@@ -31,8 +31,6 @@ class MoldedTubeWC extends HTMLElement {
     // add style and root div to shadow dom
     shadowRoot.appendChild(this.styleEl);
     shadowRoot.appendChild(this.rootEl);
-
-
     // element created
   }
 
@@ -40,38 +38,33 @@ class MoldedTubeWC extends HTMLElement {
     // browser calls this method when the element is added to the document
     // (can be called many times if an element is repeatedly added/removed)
 
-
-    this._context = this.canvas.getContext('2d');
-    this._borderPercentage = 10.0;
     this._moldedTube = getTube();
     this._profile = this.moldedTube.profile;
     this._plySpecs = this.moldedTube.plySpecs;
 
-    this._zoomIntensity = 0.2;
-
-    this._zoom = 1; // zoom = canvas.width / visibileWidth
-    this._originx = 0;
-    this._originy = 0;
-    this._visibleWidth = this.canvas.width;
-    this._visibleHeight = this.canvas.height;
+    this._zoomIntensity = 0.15;
 
     // extents is in real worlld units = meters
     this._extents = {
       minX: this._profile.xMin,
       maxX: this._profile.xMax,
-      minY: this._profile.dMin,
+      minY: -this._profile.dMax,
       maxY: this._profile.dMax,
     };
 
-    let sx = (this.canvas.width - 2 * this.border) / (this._extents.maxX - this._extents.minX);
-    let sy = (this.canvas.height - 2 * this.border) / (this._extents.maxY - this._extents.minY);
-
-    this._scale = {
-      x: Math.min(sx, sy),
-      y: Math.min(sx, sy),
-    };
+    let scalex = 0.8 * (this.canvas.width) / (this._extents.maxX - this._extents.minX);
+    let scaley = 0.8 / 7.0 * (this.canvas.height) / (this._extents.maxY - this._extents.minY);
+    this._scale = Math.min(scalex, scaley);
+    this._original_scale = this._scale; // scale has units of px/meter
+    this._originx = 0;  // origin x & y are in world units, ie meters
+    this._originy = 0; // origin x & y are in world units, ie meters
 
     this.canvas.onwheel = this.mouseWheel.bind(this);
+    this.canvas.onmousedown = this.mousedown.bind(this);
+    this.canvas.onmousemove = this.mousemove.bind(this);
+    this.canvas.onmouseup = this.mouseup.bind(this);
+    this.canvas.onmouseout = this.mouseup.bind(this);
+    this.canvas.ondblclick = this.dblclick.bind(this);
 
     // Begin the animation loop.
     this.drawProfile();
@@ -105,6 +98,10 @@ class MoldedTubeWC extends HTMLElement {
     return this.shadowRoot.querySelector("#profile-canvas");
   }
 
+  get context() {
+    return this.canvas.getContext("2d");
+  }
+
   get moldedTube() {
     return this._moldedTube;
   }
@@ -115,26 +112,6 @@ class MoldedTubeWC extends HTMLElement {
     } else {
       this_moldedTube = new MoldedTube(value);
     }
-  }
-
-  get borderPercentage() {
-    return this._borderPercentage;
-  }
-
-  set borderPercentage(value) {
-    if (isNumeric(value) && value >= 0 && value <= 100) {
-      this._borderPercentage = value;
-    }
-  }
-
-  get border() {
-    return Math.max(
-      0,
-      this._borderPercentage / 100.0 * Math.min(
-        this.canvas.width,
-        this.canvas.height
-      )
-    );
   }
 
   /*
@@ -171,24 +148,23 @@ class MoldedTubeWC extends HTMLElement {
   }
 
   drawProfile() {
-    let canvas = this.canvas;
-    let border = this.border;
-    let scale = this._scale;
-    let rngY = this._extents.maxY - this._extents.minY;
-    let profile = this._profile;
-    let plySpecs = this._plySpecs;
+    const scale = this._scale; // px / meter
+    const rngY = this._extents.maxY;  // meters
+    const border = 0.1; // meters
+    const canvas = this.canvas;
+    const profile = this._profile;
+    const plySpecs = this._plySpecs;
+    const context = this.context;
 
-    // const context = canvas.getContext('2d');
-    const context = this._context;
     context.save();
-    context.fillStyle = 'rgb(235, 235, 235)';
+    context.fillStyle = 'rgb(245, 245, 245)';
     context.fillRect(0, 0, canvas.width, canvas.height);
+    context.translate(-this._originx * scale, -this._originy * scale);
 
-    context.translate(border, border + rngY * scale.y / 2.0);
+    // move down & right to create a border area
+    context.translate(border * scale, (border + rngY / 2.0) * scale);
 
-    context.scale(this._zoom, this._zoom);
-    context.translate(-this._originx, -this._originy);
-
+    // draw the profile
     context.beginPath();
 
     let curX = profile.xPositions[0];
@@ -197,15 +173,13 @@ class MoldedTubeWC extends HTMLElement {
     let nextX, nextY, nextYMirror;
 
     for (let i = 0; i < profile.xPositions.length; i++) {
-      nextX = profile.xPositions[i] * scale.x;
-      nextY = profile.oDiameters[i] / 2.0 * scale.y;
+      nextX = profile.xPositions[i] * scale;
+      nextY = profile.oDiameters[i] / 2.0 * scale;
       nextYMirror = -nextY;
       context.moveTo(curX, curY);
       context.lineTo(nextX, nextY);
-
       context.moveTo(curX, curYMirror);
       context.lineTo(nextX, nextYMirror);
-
       curX = nextX;
       curY = nextY;
       curYMirror = nextYMirror;
@@ -214,18 +188,24 @@ class MoldedTubeWC extends HTMLElement {
     context.moveTo(curX, curY);
     context.lineTo(curX, curYMirror);
 
-    context.stroke();
+    context.stroke();  // finish drawing profile
 
+    // move down to below the profile before drawing the plies
+    context.translate(0, (rngY / 2.0) * scale * 1.2);
+
+    // draw the plies
     context.strokeStyle = '#ff0000';
 
-    context.translate(0, rngY * scale.y / 2.0 + border);
-
+    // scale the ply widths, so a full wrap is equal in size to the diameter
     let plyWidthScale = 1 / 3.14159;
+    // .. or not
+    plyWidthScale = 1.0;
 
+    // draw each ply
     plySpecs.forEach((plySpec, index) => {
-      context.translate(0, plySpec.maxWidth * scale.y / 2.0 * plyWidthScale);
-      this.drawPly(plySpec, context, { x: scale.x, y: scale.y * plyWidthScale });
-      context.translate(0, plySpec.maxWidth * scale.y / 2.0 * plyWidthScale + border / 3.0);
+      context.translate(0, (plySpec.maxWidth / 2.0 * plyWidthScale) * scale * 1.2);
+      this.drawPly(plySpec, context, { x: scale, y: scale * plyWidthScale });
+      context.translate(0, (plySpec.maxWidth / 2.0 * plyWidthScale) * scale * 1.2);
     });
     context.restore();
   }
@@ -254,42 +234,67 @@ class MoldedTubeWC extends HTMLElement {
     ctx.restore();
   }
 
-
-
   mouseWheel(event) {
     event.preventDefault();
     const canvas = this.canvas;
-    
+
     const mousex = event.clientX - canvas.offsetLeft;
     const mousey = event.clientY - canvas.offsetTop;
+
     // Normalize mouse wheel movement to +1 or -1 to avoid unusual jumps.
     const wheel = event.deltaY < 0 ? 1 : -1;
 
     // Compute zoom factor.
     const zoom = Math.exp(wheel * this._zoomIntensity);
 
-    // Translate so the visible origin is at the context's origin.
-    //context.translate(this._originx, this._originy);
-
     // Compute the new visible origin. Originally the mouse is at a
     // distance mouse/scale from the corner, we want the point under
     // the mouse to remain in the same place after the zoom, but this
     // is at mouse/new_scale away from the corner. Therefore we need to
     // shift the origin (coordinates of the corner) to account for this.
-    this._originx -= mousex / (this._zoom * zoom) - mousex / this._zoom;
-    this._originy -= mousey / (this._zoom * zoom) - mousey / this._zoom;
+    this._originx -= mousex / (this._scale * zoom) - mousex / this._scale;
+    this._originy -= mousey / (this._scale * zoom) - mousey / this._scale;
 
-    // Scale it (centered around the origin due to the translate above).
-    //context.scale(zoom, zoom);
-    // Offset the visible origin to it's proper position.
-    //context.translate(-this._originx, -this._originy);
-
-    // Update scale and others.
-    this._zoom *= zoom;
-    this._visibleWidth = this.canvas.width / this._zoom;
-    this._visibleHeight = this.canvas.height / this._zoom;
+    // Update scale and redraw.
+    this._scale *= zoom;
     this.drawProfile();
   };
+
+  mousedown(event) {
+    this._dragging = true;
+    this._dragStart = {
+      x: event.pageX - this.canvas.offsetLeft,
+      y: event.pageY - this.canvas.offsetTop
+    };
+  }
+
+  mousemove(event) {
+    if (this._dragging) {
+      this._dragEnd = {
+        x: event.pageX - this.canvas.offsetLeft,
+        y: event.pageY - this.canvas.offsetTop
+      };
+      this._originx -= (this._dragEnd.x - this._dragStart.x) / this._scale;
+      this._originy -= (this._dragEnd.y - this._dragStart.y) / this._scale;
+      this._dragStart = this._dragEnd;
+      this._dragEnd = undefined;
+      this.drawProfile();
+
+    }
+  }
+
+  mouseup() {
+    this._dragging = false;
+    this._dragStart = undefined;
+    this._dragEnd = undefined;
+  }
+
+  dblclick(event) {
+    this._scale = this._original_scale;
+    this._originx = 0;
+    this._originy = 0;
+    this.drawProfile();
+  }
 }
 
 customElements.define("molded-tube", MoldedTubeWC);
