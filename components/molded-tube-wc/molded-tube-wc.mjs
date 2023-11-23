@@ -24,14 +24,16 @@ class MoldedTubeWC extends HTMLElement {
       this.moldedTube = getTube();
     }
     this.label = this.moldedTube ? this.moldedTube.name : "";
-    // console.log("constructor");
+    console.log("constructor");
   }
 
   /**
-   * The array of attribute names to monitor for changes
+   * The array of attribute names to monitor for changes.
+   * Attribute changes are synced to corisponding properties,
+   * but we do not reflect property changes back to the attributes.
    */
   static get observedAttributes() {
-    return ['width', 'height','label', 'molded-tube'];
+    return ['width', 'height', 'label', 'molded-tube'];
   }
 
   /**
@@ -40,11 +42,11 @@ class MoldedTubeWC extends HTMLElement {
    */
   attributeChangedCallback(name, oldValue, newValue) {
     // called when one of attributes listed above is modified
+    // Note: this.render() is called from all setters.
     if (name === 'molded-tube') { this.moldedTube = JSON.parse(newValue); }
     if (name === 'label') { this.label = newValue; }
     if (name === 'height') { this.height = newValue; }
     if (name === 'width') { this.width = newValue; }
-    if (this.initialized) this.render();
     console.log(`"${name}" was "${oldValue}" is now "${newValue}"`);
   }
 
@@ -158,40 +160,43 @@ class MoldedTubeWC extends HTMLElement {
    */
   set label(str) {
     this._label = "" + str;
+    this.render();
   }
 
   /**
-   * 
+   * Get the height of the canvas element
    */
   get height() {
     return this._height;
   }
 
   /**
-   * 
+   * Set the height of the canvas element
    */
   set height(h) {
     h = Number.parseInt(h);
     if (h > 0) {
       this._height = h;
     }
+    this.render();
   }
 
   /**
-   * 
+   * Get the width of the canvas element
    */
   get width() {
     return this._width;
   }
 
   /**
-   * 
+   * Set the width of the canvas element
    */
   set width(w) {
     w = Number.parseInt(w);
     if (w > 0) {
       this._width = w;
     }
+    this.render();
   }
 
   /**
@@ -214,6 +219,7 @@ class MoldedTubeWC extends HTMLElement {
     } else {
       this_moldedTube = new MoldedTube(theMoldedTube);
     }
+    this.render;
   }
 
   /**
@@ -266,6 +272,9 @@ class MoldedTubeWC extends HTMLElement {
    * Resets scale to 1:1 and the origin offset to 0,0
    */
   render() {
+
+    // exit if connectedCallback() has not been called yet.
+    if (!(this.initialized)) { return; }
 
     this.canvas.height = this.height;
     this.canvas.width = this.width;
