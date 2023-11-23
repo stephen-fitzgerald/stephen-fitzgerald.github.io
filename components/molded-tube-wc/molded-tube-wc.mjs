@@ -17,8 +17,8 @@ class MoldedTubeWC extends HTMLElement {
 
     // element created, set some default values
 
-    this.canvasHeight = 600;
-    this.canvasWidth = 300;
+    this.height = 600;
+    this.width = 300;
 
     if (this.moldedTube == null) {
       this.moldedTube = getTube();
@@ -31,7 +31,7 @@ class MoldedTubeWC extends HTMLElement {
    * The array of attribute names to monitor for changes
    */
   static get observedAttributes() {
-    return ['label', 'molded-tube'];
+    return ['width', 'height','label', 'molded-tube'];
   }
 
   /**
@@ -42,6 +42,8 @@ class MoldedTubeWC extends HTMLElement {
     // called when one of attributes listed above is modified
     if (name === 'molded-tube') { this.moldedTube = JSON.parse(newValue); }
     if (name === 'label') { this.label = newValue; }
+    if (name === 'height') { this.height = newValue; }
+    if (name === 'width') { this.width = newValue; }
     if (this.initialized) this.render();
     console.log(`"${name}" was "${oldValue}" is now "${newValue}"`);
   }
@@ -159,6 +161,40 @@ class MoldedTubeWC extends HTMLElement {
   }
 
   /**
+   * 
+   */
+  get height() {
+    return this._height;
+  }
+
+  /**
+   * 
+   */
+  set height(h) {
+    h = Number.parseInt(h);
+    if (h > 0) {
+      this._height = h;
+    }
+  }
+
+  /**
+   * 
+   */
+  get width() {
+    return this._width;
+  }
+
+  /**
+   * 
+   */
+  set width(w) {
+    w = Number.parseInt(w);
+    if (w > 0) {
+      this._width = w;
+    }
+  }
+
+  /**
    * Get the MoldedTube object that this element displays.
    * 
    * @returns {MoldedTube}
@@ -231,8 +267,8 @@ class MoldedTubeWC extends HTMLElement {
    */
   render() {
 
-    this.canvas.height = this.canvasHeight;
-    this.canvas.width = this.canvasWidth;
+    this.canvas.height = this.height;
+    this.canvas.width = this.width;
 
     this.labelEl.textContent = this.label;
     this._profile = this.moldedTube.profile;
