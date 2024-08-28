@@ -30,7 +30,7 @@ export function layupTest() {
     assert(steelLayer instanceof SolidLayer, "created instance of SolidLayer");
     assert(steelLayer instanceof AbstractLayer, "SolidLayer is instance of AbstractLayer");
     assert(steelLaminate instanceof Laminate, "SolidLayer.getLaminate returns a Laminate");
-    assert((diff(steel.E1, steelLaminate.E1)) < 0.0175, "Layer E1 == material E1, within 1.75%");
+    assert((diff(steel.E1, steelLaminate.E1)) < 0.0175, "Layer E1 ("+ steelLaminate.E1 +") == material E1 ("+ steel.E1 +"), within 1.75%");
 
     let glassFiber = new Mat_Isotropic({
         name: 'E-Glass Fiber',
