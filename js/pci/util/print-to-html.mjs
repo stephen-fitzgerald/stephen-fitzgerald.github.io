@@ -31,6 +31,7 @@ export function printToHTML(theText, color, parentElement=document.body ) {
     let pre = document.createElement("PRE");
     pre.innerHTML = theText;
     if (color && isString(color)) {
+        // @ts-ignore
         pre.style.color = color;
     }
     parentElement.appendChild(pre);

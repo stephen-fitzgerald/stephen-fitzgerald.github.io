@@ -182,6 +182,7 @@ function reconstitute(root) {
 
         // convert strings to Date objects if they are in ISO date format
         if (isString(obj)) {
+            // @ts-ignore
             obj = isIsoDateString(obj) ? new Date(obj) : obj;
         }
 
@@ -275,6 +276,7 @@ function buildClassMap(obj, classMap) {
 const reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
 
 export function isIsoDateString(str) {
+    // @ts-ignore
     return (isString(str) && reISO.exec(str));
 }
 
