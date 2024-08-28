@@ -41,6 +41,8 @@ const contentToCache = [
   "/js/ext/chart.js/chart.esm.mjs",
   "/js/ext/lodash/esm/isEqual.js",
   "/js/ext/lodash/esm/_baseIsEqual.js",
+  '/js/ext/lodash/esm/_baseIsEqualDeep.js',
+  '/js/ext/lodash/esm/isObjectLike.js',
 
   "/js/pci/bats/bat-calcs.mjs",
   "/js/pci/bats/molded-tube.mjs",
