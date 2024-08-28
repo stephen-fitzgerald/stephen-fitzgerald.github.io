@@ -44,7 +44,7 @@ export class Material {
         }
         return ret;
     }
-    
+
     /**
      * Material constructor.  * Do Not Call new Material() Directly !! This is an abstract super class for 
      * specific material types.  
@@ -981,7 +981,7 @@ export class Mat_FRP extends Material {
 
 
     get density() {
-        if (this.vf && this.fiber && this.resin && this.fiber.density && this.resin.density) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.density && this.resin.density) {
             return (
                 this.vf * this.fiber.density + (1 - this.vf) * this.resin.density
             );
@@ -990,7 +990,7 @@ export class Mat_FRP extends Material {
     }
 
     get E1() {
-        if (this.vf && this.fiber && this.resin && this.fiber.E1 && this.resin.E1) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.E1 && this.resin.E1) {
             return (
                 this.vf * this.fiber.E1 + (1 - this.vf) * this.resin.E1
             );
@@ -999,7 +999,7 @@ export class Mat_FRP extends Material {
     }
 
     get E2() {
-        if (this.vf && this.fiber && this.resin && this.fiber.E2 && this.resin.E2) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.E2 && this.resin.E2) {
             let vf = this.vf;
             let fE2 = this.fiber.E2;
             let rE2 = this.resin.E2;
@@ -1015,7 +1015,7 @@ export class Mat_FRP extends Material {
     }
 
     get E3() {
-        if (this.vf && this.fiber && this.resin && this.fiber.E3 && this.resin.E3) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.E3 && this.resin.E3) {
             let vf = this.vf;
             let fE3 = this.fiber.E3;
             let rE3 = this.resin.E3;
@@ -1031,7 +1031,7 @@ export class Mat_FRP extends Material {
     }
 
     get G12() {
-        if (this.vf && this.fiber && this.resin && this.fiber.G12 && this.resin.G12) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.G12 && this.resin.G12) {
             let vf = this.vf;
             let fprop = this.fiber.G12;
             let rprop = this.resin.G12;
@@ -1048,7 +1048,7 @@ export class Mat_FRP extends Material {
 
 
     get G13() {
-        if (this.vf && this.fiber && this.resin && this.fiber.G13 && this.resin.G13) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.G13 && this.resin.G13) {
             let vf = this.vf;
             let fprop = this.fiber.G13;
             let rprop = this.resin.G13;
@@ -1064,7 +1064,7 @@ export class Mat_FRP extends Material {
     }
 
     get G23() {
-        if (this.vf && this.fiber && this.resin && this.fiber.G23 && this.resin.G23) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.G23 && this.resin.G23) {
             let vf = this.vf;
             let fprop = this.fiber.G23;
             let rprop = this.resin.G23;
@@ -1080,21 +1080,21 @@ export class Mat_FRP extends Material {
     }
 
     get PR12() {
-        if (this.vf && this.fiber && this.resin && this.fiber.PR12 && this.resin.PR12) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.PR12 && this.resin.PR12) {
             return this.vf * this.fiber.PR12 + (1 - this.vf) * this.resin.PR12;
         }
         else { return Mat_FRP.MM_ERROR(); }
     }
 
     get PR13() {
-        if (this.vf && this.fiber && this.resin && this.fiber.PR13 && this.resin.PR13) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.PR13 && this.resin.PR13) {
             return this.vf * this.fiber.PR13 + (1 - this.vf) * this.resin.PR13;
         }
         else { return Mat_FRP.MM_ERROR(); }
     }
 
     get PR23() {
-        if (this.vf && this.fiber && this.resin && this.fiber.PR23 && this.resin.PR23) {
+        if (this.vf != null && this.vf >= 0.0 && this.fiber && this.resin && this.fiber.PR23 && this.resin.PR23) {
             return this.vf * this.fiber.PR23 + (1 - this.vf) * this.resin.PR23;
         }
         else { return Mat_FRP.MM_ERROR(); }

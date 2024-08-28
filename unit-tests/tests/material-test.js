@@ -369,10 +369,11 @@ export function materialTest() {
         resin: resin,
         vf: 0.0,
     });
-    assert(cfrp instanceof Material, "Composite Material instantiated with vf =0.");
-    assert(cfrp.E3 === resin.E3, "Composite E3 === resin E3 @ vf=0");
-    assert(cfrp.G12 === resin.G12, "Composite G12 === resin G12 @ vf=0");
-    assert(cfrp.PR23 === resin.PR23, "Composite PR23 === resin PR23 @ vf=0");
+    assert(isError==false, "No error creating Mat_FRP with Vf = " + cfrp.vf );
+    assert(cfrp instanceof Material, "Mat_FRP with Vf = " + cfrp.vf + " is instance of Material");
+    assert(cfrp.E3 === resin.E3, "Composite E3 (" + cfrp.E3 + ") === resin E3 (" + resin.E3 + ") @ vf=0");
+    assert(cfrp.G12 === resin.G12, "Composite G12 (" + cfrp.G12 + ") === resin G12 (" + resin.G12 + ") @ vf=0");
+    assert(cfrp.PR23 === resin.PR23, "Composite PR23 (" + cfrp.PR23 + ") === resin PR23 (" + resin.PR23 + ") @ vf=0");
 
     cfrp = undefined;
 
