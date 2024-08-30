@@ -4,7 +4,7 @@
 import { AbstractView } from "./abstract-view.mjs";
 import { getMaterial, setMaterial, } from "../data/materials-data.mjs";
 import { Material, Mat_Isotropic, Mat_FRP, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, Mat_Orthotropic } from "../js/pci/lpt/material.mjs";
-import isEqual from "../js/ext/lodash/esm/isEqual.js";
+//import isEqual from "../js/ext/lodash/esm/isEqual.js";
 
 const html = String.raw;
 
