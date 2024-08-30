@@ -4,7 +4,7 @@ import { router } from "./js/router.mjs";
 import { configureDatabase } from "./js/database-config.mjs";
 import { addListenerToNavItems, toggleNavPane } from "./js/leftNav.mjs";
 
-const RUN_SERVICE_WORKER = false;
+const RUN_SERVICE_WORKER = true;
 /**
  * Main application entry point
  */
