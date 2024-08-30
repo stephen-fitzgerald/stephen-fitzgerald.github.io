@@ -196,7 +196,10 @@ export class MaterialEditorElement extends HTMLElement {
     if (this.errMsgLbl) this.errMsgLbl.innerHTML = this.errorMessage ? this.errorMessage : "";
     this.errorMessage = undefined;
 
-    let editsPending = !isEqual(this.material, this.targetMaterial);
+    //@ts-expect-error
+    const LoDash = _;
+
+    let editsPending = !LoDash.isEqual(this.material, this.targetMaterial);
     if (this.resetBtn) this.resetBtn.disabled = editsPending ? false : true;
     if (this.saveBtn) this.saveBtn.disabled = editsPending ? false : true;
 
