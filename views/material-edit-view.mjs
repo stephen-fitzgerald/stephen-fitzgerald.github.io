@@ -86,9 +86,19 @@ const templateHTML = html`
       </div>
       <br>
       <div id="div-btns" width="32em">
-        <button id="btn-reset" type="submit" class="btn-reset" display="inline-block">Reset</button>
-        <button id="btn-cancel" type="submit" class="btn-cancel" display="inline-block">Cancel</button>
-        <button id="btn-save" type="submit" class="btn-save" display="inline-block">Save</button>
+
+        <div class="tooltip">
+          <span class="tooltiptext">Reset everything back to the original values.</span>
+          <button id="btn-reset" type="submit" class="btn-reset" display="inline-block">Reset</button>
+        </div>
+        <div class="tooltip">
+          <span class="tooltiptext">Reset everything & exit.</span>
+          <button id="btn-cancel" type="submit" class="btn-cancel" display="inline-block">Cancel</button>
+        </div>
+        <div class="tooltip">
+          <span class="tooltiptext">Save any changes & exit.</span>
+          <button id="btn-save" type="submit" class="btn-save" display="inline-block">Save</button>
+        </div>
       </div>
 
       <label id="error-message"></label>
@@ -105,7 +115,7 @@ export class MaterialEditView extends AbstractView {
     this.html = templateHTML;
   }
 
-  
+
   /**
    * buildHTML() - build the static html for a view
    * 
@@ -119,7 +129,7 @@ export class MaterialEditView extends AbstractView {
    * 
    * @memberOf AbstractView
    */
-  async buildHTML(request={}) {
+  async buildHTML(request = {}) {
     this.request = request;
     this.errorMessage = undefined;
     /** @type {Mat_PlanarIso12 | Mat_Isotropic | Mat_FRP | Mat_PlanarIso23 |  Mat_Orthotropic | Mat_PlanarIso13 | undefined} */
