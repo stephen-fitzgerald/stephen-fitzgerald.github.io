@@ -1,6 +1,8 @@
 /* jshint esversion: 6 */
 //@ts-check
 
+import isEqual from '../../js/ext/lodash/esm/isEqual.js';
+
 import {
     Material, Mat_Isotropic, Mat_PlanarIso12, Mat_PlanarIso13, Mat_PlanarIso23, Mat_Orthotropic, Mat_FRP
 } from '../../js/pci/lpt/material.mjs';
@@ -11,8 +13,8 @@ import { serialize, deserialize } from '../../js/pci/util/serialize.mjs';
 
 export function materialTest() {
 
-    //@ts-expect-error
-    const LoDash = _;
+    //@ ts-expect-error
+    //const LoDash = _;
 
     let obj;
     let isError;
@@ -395,12 +397,14 @@ export function materialTest() {
     let shortDeserializedCFRP = deserialize(shortSerializedCFRP);
 
     assert(
-        LoDash.isEqual(shortDeserializedCFRP, deserializedCFRP),
+        // LoDash.isEqual(shortDeserializedCFRP, deserializedCFRP),
+        isEqual(shortDeserializedCFRP, deserializedCFRP),
         "deserialize(serialize(cfrp, 6)) is equal to deserialize(serialize(cfrp, null))."
     );
 
     assert(cfrp !== deserializedCFRP, "Deserialized cfrp is not the same object as the original.");
-    assert(LoDash.isEqual(cfrp, deserializedCFRP), "Deserialized cfrp is equal to the original.");
+    //assert(LoDash.isEqual(cfrp, deserializedCFRP), "Deserialized cfrp is equal to the original.");
+    assert(isEqual(cfrp, deserializedCFRP), "Deserialized cfrp is equal to the original.");
 
     try {
         reset();
