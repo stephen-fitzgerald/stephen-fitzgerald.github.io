@@ -317,6 +317,7 @@ export function materialTest() {
         errMsg = err.message;
     }
     assert(!isError && cfrp instanceof Material, "Composite Material instantiated from fiber, resin & vf");
+    // @ts-ignore
     assert(cfrp.E1 === 0.55 * 207e9 + 0.45 * 20e9, "E1 = vf x e1f + (1-vf)*E1r,  E1 = " + cfrp.E1);
     printHighlightedHTML(cfrp);
 
@@ -373,8 +374,11 @@ export function materialTest() {
     });
     assert(isError==false, "No error creating Mat_FRP with Vf = " + cfrp.vf );
     assert(cfrp instanceof Material, "Mat_FRP with Vf = " + cfrp.vf + " is instance of Material");
+    // @ts-ignore
     assert(cfrp.E3 === resin.E3, "Composite E3 (" + cfrp.E3 + ") === resin E3 (" + resin.E3 + ") @ vf=0");
+    // @ts-ignore
     assert(cfrp.G12 === resin.G12, "Composite G12 (" + cfrp.G12 + ") === resin G12 (" + resin.G12 + ") @ vf=0");
+    // @ts-ignore
     assert(cfrp.PR23 === resin.PR23, "Composite PR23 (" + cfrp.PR23 + ") === resin PR23 (" + resin.PR23 + ") @ vf=0");
 
     cfrp = undefined;
@@ -385,14 +389,18 @@ export function materialTest() {
         vf: 1.0,
     });
     assert(cfrp instanceof Material, "Composite Material instantiated with vf = 1.");
+    // @ts-ignore
     assert(cfrp.E3 === fiber.E3, "Composite E3 === fiber E3 @ vf=1.0");
+    // @ts-ignore
     assert(cfrp.G12 === fiber.G12, "Composite G12 === fiber G12 @ vf=1.0");
+    // @ts-ignore
     assert(cfrp.PR23 === fiber.PR23, "Composite PR23 === fiber PR23 @ vf=1.0");
 
     let serializedCFRP = serialize(cfrp, 6);
     printHighlightedHTML(serializedCFRP);
     let deserializedCFRP = deserialize(serializedCFRP);
 
+    // @ts-ignore
     let shortSerializedCFRP = serialize(cfrp, null);
     let shortDeserializedCFRP = deserialize(shortSerializedCFRP);
 
