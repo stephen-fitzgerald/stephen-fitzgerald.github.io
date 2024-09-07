@@ -10,7 +10,7 @@ export function assert(condition, message) {
         let msg = typeof message === 'string' ? message : '';
         if (condition) {
             console.log('✔ ' + msg);
-            printToHTML('✔ ' + msg);
+            printToHTML('✔ ' + msg, "green");
         } else {
             console.error('✖ ' + 'FAILED: ' + msg);
             printToHTML('✖ ' + msg, "red");

@@ -1,22 +1,7 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-/*---------------------------------------------------------------------------
-	linesIntersect() returns non-zero if two line segments intersect.
-----------------------------------------------------------------------------*/
-function linesIntersect(L1p1, L1p2, L2p1, L2p2) {
-    let L1_dx = L1p2.x - L1p1.x;
-    let L1_dy = L1p2.y - L1p1.y;
-    let L2_dx = L2p2.x - L2p1.x;
-    let L2_dy = L2p2.y - L2p1.y;
-    let s = (-L1_dy * (L1p1.x - L2p1.x) + L1_dx * (L1p1.y - L2p1.y)) / (-L2_dx * L1_dy + L1_dx * L2_dy);
-    let t = (+L2_dx * (L1p1.y - L2p1.y) - L2_dy * (L1p1.x - L2p1.x)) / (-L2_dx * L1_dy + L1_dx * L2_dy);
-    //return (s >= 0 && s <= 1 && t >= 0 && t <= 1) ? [L1p1.x + t * L1_dx, L1p1.y + t * L1_dy] : false;
-    //let intx = L1p1.x + t * L1_dx;
-    //let inty = L1p1.y + t * L1_dy;
-    return (s >= 0 && s <= 1 && t >= 0 && t <= 1);
-}
-
+import{ linesIntersect } from "./pci/util/lines-intersect.mjs";
 /*
     0=inactive, 1=convex, 2=R-corner. 
 */
@@ -128,41 +113,41 @@ export class Polygon {
         return (180 - theta);
     }
 
-/*---------------------------------------------------------------------------
-	lineHitsSide() returns non-zero if a line segment from start to end 
-	would intersect any segment of the polygon P.
-----------------------------------------------------------------------------*/
-	lineHitsSide( start,  end) {
+    /*---------------------------------------------------------------------------
+        lineHitsSide() returns non-zero if a line segment from start to end 
+        would intersect any segment of the polygon P.
+    ----------------------------------------------------------------------------*/
+    lineHitsSide(start, end) {
 
-	let				next, i, N, found ;
-	let			L1_start, L1_end, L2_start, L2_end ;
-	
-	N = this.numVertices;
-	
-	L1_start = this.vertexList[start] ;
-	L1_end   = this.vertexList[end] ;
-	found = 0 ;
-	
-	/*-------------------------------------------------------------------
-		Check every side, unless it shares a vertex with the given line
-	---------------------------------------------------------------------*/
-	for( i=0; i<N && !found ; i++ ) {
-	
-		next = this.nextVertex(i,kForward  ) ;
-		
-		if( i!=start && i!=end && next!=start && next!=end ) {
-		
-			L2_start = this.vertexList[i] ;
-			L2_end   = this.vertexList[next] ;
-			
-			if( linesIntersect( L1_start, L1_end , L2_start, L2_end ) ) {
-				found = 1 ;
-			}
-		}
-	}
-	
-	return(found) ;
-}
+        let next, i, N, found;
+        let L1_start, L1_end, L2_start, L2_end;
+
+        N = this.numVertices;
+
+        L1_start = this.vertexList[start];
+        L1_end = this.vertexList[end];
+        found = 0;
+
+        /*-------------------------------------------------------------------
+            Check every side, unless it shares a vertex with the given line
+        ---------------------------------------------------------------------*/
+        for (i = 0; i < N && !found; i++) {
+
+            next = this.nextVertex(i, kForward);
+
+            if (i != start && i != end && next != start && next != end) {
+
+                L2_start = this.vertexList[i];
+                L2_end = this.vertexList[next];
+
+                if (linesIntersect(L1_start, L1_end, L2_start, L2_end)) {
+                    found = 1;
+                }
+            }
+        }
+
+        return (found);
+    }
     /*---------------------------------------------------------------------------
     scoreBarrier() returns non-zero if barrier from start to end is valid.
     It returns :
@@ -212,15 +197,15 @@ export class Polygon {
         beta2 = this.vertexAngle(beforeEnd, end, afterEnd);
         if (alpha2 && beta2 <= alpha2) { return (0); }
 
-        if (lineHitsSide(P, start, end)) { return (0); }
+        if (this.lineHitsSide(start, end)) { return (0); }
 
         ret = 1;
 
-        if (beta1 - alpha1 <= one80) {
+        if (alpha1 && beta1 - alpha1 <= one80) {
             ret += 2;
         }
 
-        if (beta2 > one80 && beta2 - alpha2 <= one80) {
+        if (alpha2 && beta2 > one80 && beta2 - alpha2 <= one80) {
             ret += 4;
         }
 
