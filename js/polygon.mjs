@@ -28,14 +28,12 @@ const kRCorner = 2;
                5 : Barrier is valid, and removes an R-Corner at end.
                7 : Barrier is valid, and removes 2 R-corners.	
 ---------------------------------------------------------------------------*/
-class BarrierScore {
-    static get kInvalid() { return 0; }
-    static get kValid() { return 1; }
-    static get kRGoneScore() { return 3; }
-    static get kRemovesStartR() { return 3; }
-    static get kRemovesEndR() { return 5; }
-    static get kRemovesStartAndEndR() { return 7; }
-}
+const kBarrierIsInvalid = 0;
+const kBarrierIsValid = 1;
+const kBarrierRemovesAnR = 3;
+const kBarrierRemovesStartR = 3;
+const kBarrierRemovesEndR = 5;
+const kBarrierRemovesStartAndEndR = 7;
 
 const kForward = 1;
 const kBackward = -1;
@@ -222,7 +220,7 @@ export class Polygon {
         let alpha1, alpha2, beta1, beta2;
         const one80 = 180.0;
 
-        if (start == end) { return (0); }
+        if (start == end) { return (kBarrierIsInvalid); }
 
         if (start == undefined || start < 0 || start > this.lastVertex) {
             throw new Error("Bad start point.");
@@ -242,7 +240,7 @@ export class Polygon {
         }
 
         if (end == afterStart || end == beforeStart || start == beforeEnd || start == afterEnd) {
-            return (0);
+            return (kBarrierIsInvalid);
         }
 
         if (dir == kForward) {
@@ -250,7 +248,7 @@ export class Polygon {
         } else if (dir == kBackward) {
             alpha1 = this.vertexAngle(beforeStart, start, end);
         }
-        if (alpha1 && alpha1 > one80) { return (0); }
+        if (alpha1 && alpha1 > one80) { return (kBarrierIsInvalid); }
 
         if (dir == kForward) {
             alpha2 = this.vertexAngle(beforeEnd, end, start);
@@ -258,15 +256,15 @@ export class Polygon {
         else if (dir == kBackward) {
             alpha2 = this.vertexAngle(start, end, afterEnd);
         }
-        if (alpha2 && alpha2 > one80) { return (0); }
+        if (alpha2 && alpha2 > one80) { return (kBarrierIsInvalid); }
 
         beta1 = this.vertexAngle(beforeStart, start, afterStart);
-        if (alpha1 && beta1 <= alpha1) { return (0); }
+        if (alpha1 && beta1 <= alpha1) { return (kBarrierIsInvalid); }
 
         beta2 = this.vertexAngle(beforeEnd, end, afterEnd);
-        if (alpha2 && beta2 <= alpha2) { return (0); }
+        if (alpha2 && beta2 <= alpha2) { return (kBarrierIsInvalid); }
 
-        if (this.lineHitsSide(start, end)) { return (0); }
+        if (this.lineHitsSide(start, end)) { return (kBarrierIsInvalid); }
 
         ret = 1;
 
@@ -287,7 +285,6 @@ export class Polygon {
         let nx, ny;
         let x_dir, y_dir, new_x_dir, new_y_dir;
 
-        /* Get # of vertices */
         N = this.numVertices;
 
         /* check for empty polygon */
@@ -430,22 +427,18 @@ export class Polygon {
 
     removeSubPoly(start, end, dir, score) {
 
-        let i, ip1, N;
-        let xi, yi, xip1, yip1;
-        let area = 0.0;
-
         if (score == 3 || score == 7) {
-            this.vertexList[start].status = 1;
+            this.vertexList[start].status = kConvex;
         }
 
         if (score == 5 || score == 7) {
-            this.vertexList[end].status = 1;
+            this.vertexList[end].status = kConvex;
         }
 
-        i = start;
-        while ((i = this.nextActiveVertex(i, dir)) != end) {
-            // @ts-ignore
-            this.vertexList[i].status = 0;
+        let i = this.nextActiveVertex(start, dir);
+        while (i != undefined && i != end) {
+            this.vertexList[i].status = kInactive;
+            i = this.nextActiveVertex(i, dir);
         }
     }
 
@@ -474,7 +467,7 @@ export class Polygon {
             Eliminate all R-Corners in the polygon by finding valid
             barriers, and removing the convex sub-polygons they bound.
         ---------------------------------------------------------------*/
-        while ((bStart = this.nextRCorner(bStart, kForward))) {
+        while ((bStart = this.nextRCorner(bStart, kForward)) != undefined) {
 
             bestStart = bestEnd = bestScore = bestDir = 0;
             thisScore = 0;
@@ -490,7 +483,7 @@ export class Polygon {
                 Search forwards for a valid barrier.
             ------------------------------------------------------------*/
             while (bEnd != undefined && !this.isRCorner(bEnd)
-                && bestScore < BarrierScore.kRGoneScore) {
+                && bestScore < kBarrierRemovesAnR) {
 
                 bEnd = this.nextActiveVertex(bEnd, currentDir);
 
@@ -515,7 +508,7 @@ export class Polygon {
             bEnd = this.nextActiveVertex(bStart, currentDir);
 
             while (bEnd != undefined && !this.isRCorner(bEnd)
-                && bestScore < BarrierScore.kRGoneScore) {
+                && bestScore < kBarrierRemovesAnR) {
 
                 bEnd = this.nextActiveVertex(bEnd, currentDir);
 
