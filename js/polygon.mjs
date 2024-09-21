@@ -14,11 +14,11 @@ function sign(n) {
 /*
     0=inactive, 1=convex, 2=R-corner. 
 */
-export class VertexStatus {
-    static get kInactive() { return 0; }
-    static get kConvex() { return 1; }
-    static get kRCorner() { return 2; }
-}
+
+const kInactive = 0;
+const kConvex = 1;
+const kRCorner = 2;
+
 /*---------------------------------------------------------------------------
    scoreBarrier() returns non-zero if barrier from start to end is valid.
    It returns :
@@ -28,7 +28,7 @@ export class VertexStatus {
                5 : Barrier is valid, and removes an R-Corner at end.
                7 : Barrier is valid, and removes 2 R-corners.	
 ---------------------------------------------------------------------------*/
-export class BarrierScore {
+class BarrierScore {
     static get kInvalid() { return 0; }
     static get kValid() { return 1; }
     static get kRGoneScore() { return 3; }
@@ -37,15 +37,11 @@ export class BarrierScore {
     static get kRemovesStartAndEndR() { return 7; }
 }
 
-export class Direction {
-    static get kForward() { return 1; }
-    static get kBackward() { return -1; }
-}
-const kForward = Direction.kForward;
-const kBackward = Direction.kBackward;
+const kForward = 1;
+const kBackward = -1;
 
 export class Vertex {
-    constructor(x, y, status = VertexStatus.kInactive) {
+    constructor(x, y, status = kInactive) {
         this.x = x;
         this.y = y;
         this.status = status; // 0=inactive, 1=convex, 2=R-corner. 
@@ -70,11 +66,16 @@ export class Polygon {
         return this.vertexList.length;
     }
 
-    addVertex(x, y) {
+    /**
+     * Add a new Vertex at the point x, y
+     * @param {number} x x coordinate
+     * @param {number} y y coordinate
+     */
+    addVertexAt(x, y) {
         this.vertexList.push(new Vertex(x, y));
     }
 
-    insertVertex(x, y, before) {
+    insertVertexAt(x, y, before) {
         if (before < this.firstVertex) {
             before = this.firstVertex;
         }
@@ -84,7 +85,6 @@ export class Polygon {
         let v = new Vertex(x, y);
         this.vertexList.splice(before, 0, v);
     }
-
 
     /**
      * Returns the index of the next vertex in the given direction
@@ -114,7 +114,7 @@ export class Polygon {
 
         let next = this.nextVertex(current, dir);
         while (next != current) {
-            if (this.vertexList[next].status != VertexStatus.kInactive) {
+            if (this.vertexList[next].status != kInactive) {
                 return (next);
             }
             next = this.nextVertex(next, dir);
@@ -215,7 +215,7 @@ export class Polygon {
                 7 : Barrier is valid, and removes 2 R-corners.	
     ---------------------------------------------------------------------------*/
     //int	scoreBarrier(PolyHndl P,int start, int end, int dir ) {
-    scoreBarrier(P, start, end, dir) {
+    scoreBarrier(start, end, dir) {
 
         let ret;
         let beforeStart, afterStart, beforeEnd, afterEnd;
@@ -223,6 +223,13 @@ export class Polygon {
         const one80 = 180.0;
 
         if (start == end) { return (0); }
+
+        if (start == undefined || start < 0 || start > this.lastVertex) {
+            throw new Error("Bad start point.");
+        }
+        if (end == undefined || end < 0 || end > this.lastVertex) {
+            throw new Error("Bad end point.");
+        }
 
         beforeStart = this.nextActiveVertex(start, kBackward);
         afterStart = this.nextActiveVertex(start, kForward);
@@ -274,7 +281,7 @@ export class Polygon {
         return (ret);
     }
 
-    isConvex() {
+    get isConvex() {
 
         let i, N;
         let nx, ny;
@@ -298,7 +305,7 @@ export class Polygon {
 
         /* loop through edges looking for direction changes */
 
-        for (i = 0; i < N; i++) {
+        for (i = 0; i < N - 1; i++) {
             new_x_dir = sign(this.vertexList[i + 1].x - this.vertexList[i].x);
             new_y_dir = sign(this.vertexList[i + 1].y - this.vertexList[i].y);
 
@@ -334,9 +341,9 @@ export class Polygon {
             prev = this.nextVertex(i, kBackward);
             angle = this.vertexAngle(prev, i, next);
             if (angle <= 180.0) {
-                this.vertexList[i].status = VertexStatus.kConvex;
+                this.vertexList[i].status = kConvex;
             } else {
-                this.vertexList[i].status = VertexStatus.kRCorner;
+                this.vertexList[i].status = kRCorner;
             }
         }
     }
@@ -347,13 +354,15 @@ export class Polygon {
         if (current < this.firstVertex || current > this.lastVertex)
             return (false);
 
-        return (this.vertexList[current].status == VertexStatus.kRCorner);
+        return (this.vertexList[current].status == kRCorner);
     }
 
-
-    /*---------------------------------------------------------------------------
-        nextRCorner() finds the next R-corner. Returns 0 if none.
-    ----------------------------------------------------------------------------*/
+    /**
+     * 
+     * @param {number} curr starting vertex (0 - N-1)
+     * @param {number} dir direction 1 or -1
+     * @returns {number | undefined } index of next R corner from curr in direction dir, or undefined
+     */
     nextRCorner(curr, dir) {
 
         let i, N, ret, current;
@@ -363,17 +372,16 @@ export class Polygon {
         current = curr;
         if (current < 0 || current >= N) current = 0;
 
-        ret = 0;
+        ret = undefined;
         i = current;
 
         while ((i = this.nextActiveVertex(i, dir))) {
             if (this.isRCorner(i)) {
-                ret = i;
-                break;
+                return (i);
             }
-            else {
-                if (i == current || i == 0) break;
-            }
+            // else {
+            //     if (i == current || i == undefined) break;
+            // }
         }
 
         return (ret);
@@ -454,7 +462,7 @@ export class Polygon {
         let area = 0.0, subPolyArea = 0.0;
 
         area = 0.0;
-        bStart = 1;
+        bStart = 0;
 
         /*-------------------------------------------------------------
             Update the status field of each vertex in the polygon.
@@ -529,7 +537,7 @@ export class Polygon {
                 If a barrier is found add the sub-polygon area to
                 our total, and remove the sub-polygon.
             -----------------------------------------------------------*/
-            if (bestScore) {
+            if (bestScore > 0) {
                 subPolyArea = this.cnvxPolyArea(bestStart, bestEnd, bestDir);
                 area += subPolyArea;
                 this.removeSubPoly(bestStart, bestEnd, bestDir, bestScore);
