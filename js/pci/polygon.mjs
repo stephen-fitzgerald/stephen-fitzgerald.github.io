@@ -5,6 +5,13 @@ import { linesIntersect } from "./util/lines-intersect.mjs";
 
 const kEps = 1.0e-33;
 
+
+/**
+ * Retrun +/-1, based on the sign of the argument, or 0 if it's 0.0
+ *
+ * @param {number} n
+ * @returns {(1 | -1 | 0)}
+ */
 function sign(n) {
     if (n < 0) return (-1.0);
     if (n > 0) return (1.0);
