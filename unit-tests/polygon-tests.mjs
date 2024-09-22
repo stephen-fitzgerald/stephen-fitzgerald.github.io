@@ -1,6 +1,6 @@
 // @ts-check
 import { assert, diff } from "../js/pci/util/assert.mjs";
-import { Polygon } from "../js/polygon.mjs";
+import { Polygon } from "../js/pci/polygon.mjs";
 import {printToHTML, syntaxHighlight} from "../js/pci/util/print-to-html.mjs";
 
 /**

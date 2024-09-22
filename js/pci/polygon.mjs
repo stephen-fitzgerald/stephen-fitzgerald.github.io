@@ -1,7 +1,7 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { linesIntersect } from "./pci/util/lines-intersect.mjs";
+import { linesIntersect } from "./util/lines-intersect.mjs";
 
 const kEps = 1.0e-33;
 
