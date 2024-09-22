@@ -11,22 +11,21 @@ function sign(n) {
     return (0.0);
 }
 
-/*
-    0=inactive, 1=convex, 2=R-corner. 
-*/
+/*---------------------------------------------------------------------------
+  Direction of traversal around polygon vertices
+---------------------------------------------------------------------------*/
+const kForward = 1;
+const kBackward = -1;
 
+/*---------------------------------------------------------------------------
+   vertex status
+---------------------------------------------------------------------------*/
 const kInactive = 0;
 const kConvex = 1;
 const kRCorner = 2;
 
 /*---------------------------------------------------------------------------
    scoreBarrier() returns non-zero if barrier from start to end is valid.
-   It returns :
-               0 : Barrier is invalid
-               1 : Barrier is valid
-               3 : Barrier is valid, and removes the R-corner at start.
-               5 : Barrier is valid, and removes an R-Corner at end.
-               7 : Barrier is valid, and removes 2 R-corners.	
 ---------------------------------------------------------------------------*/
 const kBarrierIsInvalid = 0;
 const kBarrierIsValid = 1;
@@ -35,8 +34,6 @@ const kBarrierRemovesStartR = 3;
 const kBarrierRemovesEndR = 5;
 const kBarrierRemovesStartAndEndR = 7;
 
-const kForward = 1;
-const kBackward = -1;
 
 export class Vertex {
     constructor(x, y, status = kInactive) {
