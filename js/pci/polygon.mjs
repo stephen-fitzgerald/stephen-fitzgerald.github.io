@@ -2,21 +2,9 @@
 /*jshint esversion: 6 */
 
 import { linesIntersect } from "./util/lines-intersect.mjs";
+import { sign } from "./util/sign.mjs";
 
 const kEps = 1.0e-33;
-
-
-/**
- * Retrun +/-1, based on the sign of the argument, or 0 if it's 0.0
- *
- * @param {number} n
- * @returns {(1 | -1 | 0)}
- */
-function sign(n) {
-    if (n < 0) return (-1.0);
-    if (n > 0) return (1.0);
-    return (0.0);
-}
 
 /*---------------------------------------------------------------------------
   Direction of traversal around polygon vertices
@@ -66,6 +54,33 @@ export class Polygon {
 
     get numVertices() {
         return this.vertexList.length;
+    }
+
+    get extents(){
+        const ret = {};
+        this.vertexList.forEach(v=>{
+            if( ret.xMin == undefined || v.x < ret.xMin ){
+                ret.xMin = v.x;
+            }
+            if( ret.xMax == undefined || v.x > ret.xMax ){
+                ret.xMax = v.x;
+            }
+            if( ret.yMin == undefined || v.y < ret.yMin ){
+                ret.yMin = v.y;
+            }
+            if( ret.yMax == undefined || v.y > ret.yMax ){
+                ret.yMax = v.y;
+            }
+        });
+        return ret;
+    }
+    
+    getVertices(){
+        const ret=[];
+        this.vertexList.forEach((val,indx,array)=>{
+            ret.push({x:val.x, y:val.y});
+        })
+        return ret;
     }
 
     /**
