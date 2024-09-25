@@ -15,9 +15,9 @@ const kBackward = -1;
 /*---------------------------------------------------------------------------
    vertex status
 ---------------------------------------------------------------------------*/
-const kInactive = 0;
-const kConvex = 1;
-const kRCorner = 2;
+const kStatusInactive = 0;
+const kStatusConvex = 1;
+const kStatusRCorner = 2;
 
 /*---------------------------------------------------------------------------
    scoreBarrier() returns non-zero if barrier from start to end is valid.
@@ -31,17 +31,24 @@ const kBarrierRemovesStartAndEndR = 7;
 
 
 export class Vertex {
-    constructor(x, y, status = kInactive) {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.status = status; // 0=inactive, 1=convex, 2=R-corner. 
     }
 }
 
 export class Polygon {
 
-    constructor(vertexList = []) {
-        this.vertexList = vertexList;
+    constructor(vertexList = [], statusList=[]) {
+        this.vertexList = Array(...vertexList);
+        if (statusList == undefined || statusList == []) {
+            this.statusList = Array(vertexList.length).fill(0);
+        } else if (statusList.length == vertexList.length) {
+            this.statusList = Array(...statusList);
+        }
+        else {
+            throw new Error("Status list length does not match vertex list.");
+        }
     }
 
     get firstVertex() {
@@ -56,30 +63,30 @@ export class Polygon {
         return this.vertexList.length;
     }
 
-    get extents(){
+    get extents() {
         const ret = {};
-        this.vertexList.forEach(v=>{
-            if( ret.xMin == undefined || v.x < ret.xMin ){
+        this.vertexList.forEach(v => {
+            if (ret.xMin == undefined || v.x < ret.xMin) {
                 ret.xMin = v.x;
             }
-            if( ret.xMax == undefined || v.x > ret.xMax ){
+            if (ret.xMax == undefined || v.x > ret.xMax) {
                 ret.xMax = v.x;
             }
-            if( ret.yMin == undefined || v.y < ret.yMin ){
+            if (ret.yMin == undefined || v.y < ret.yMin) {
                 ret.yMin = v.y;
             }
-            if( ret.yMax == undefined || v.y > ret.yMax ){
+            if (ret.yMax == undefined || v.y > ret.yMax) {
                 ret.yMax = v.y;
             }
         });
         return ret;
     }
-    
-    getVertices(){
-        const ret=[];
-        this.vertexList.forEach((val,indx,array)=>{
-            ret.push({x:val.x, y:val.y});
-        })
+
+    get vertices() {
+        const ret = [];
+        this.vertexList.forEach((val, indx, array) => {
+            ret.push(new Vertex(val.x, val.y));
+        });
         return ret;
     }
 
@@ -90,6 +97,7 @@ export class Polygon {
      */
     addVertexAt(x, y) {
         this.vertexList.push(new Vertex(x, y));
+        this.statusList.push(kStatusInactive);
     }
 
     insertVertexAt(x, y, before) {
@@ -131,7 +139,7 @@ export class Polygon {
 
         let next = this.nextVertex(current, dir);
         while (next != current) {
-            if (this.vertexList[next].status != kInactive) {
+            if (this.vertexList[next].status != kStatusInactive) {
                 return (next);
             }
             next = this.nextVertex(next, dir);
@@ -357,9 +365,9 @@ export class Polygon {
             prev = this.nextVertex(i, kBackward);
             angle = this.vertexAngle(prev, i, next);
             if (angle <= 180.0) {
-                this.vertexList[i].status = kConvex;
+                this.vertexList[i].status = kStatusConvex;
             } else {
-                this.vertexList[i].status = kRCorner;
+                this.vertexList[i].status = kStatusRCorner;
             }
         }
     }
@@ -370,7 +378,7 @@ export class Polygon {
         if (current < this.firstVertex || current > this.lastVertex)
             return (false);
 
-        return (this.vertexList[current].status == kRCorner);
+        return (this.vertexList[current].status == kStatusRCorner);
     }
 
     /**
@@ -447,16 +455,16 @@ export class Polygon {
     removeSubPoly(start, end, dir, score) {
 
         if (score == 3 || score == 7) {
-            this.vertexList[start].status = kConvex;
+            this.vertexList[start].status = kStatusConvex;
         }
 
         if (score == 5 || score == 7) {
-            this.vertexList[end].status = kConvex;
+            this.vertexList[end].status = kStatusConvex;
         }
 
         let i = this.nextActiveVertex(start, dir);
         while (i != undefined && i != end) {
-            this.vertexList[i].status = kInactive;
+            this.vertexList[i].status = kStatusInactive;
             i = this.nextActiveVertex(i, dir);
         }
     }
