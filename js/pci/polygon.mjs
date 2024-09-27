@@ -385,10 +385,7 @@ export class Polygon {
      * @returns {number | undefined } index of next R corner from curr in direction dir, or undefined
      */
     nextRCorner(start, dir) {
-
-        const N = this.numVertices;
         let ret = undefined;
-
         let i = this.nextActiveVertex(start, dir);
         while (i != undefined && i != start) {
             if (this.isRCorner(i)) {
