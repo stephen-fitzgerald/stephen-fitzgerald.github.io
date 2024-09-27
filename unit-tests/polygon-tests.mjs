@@ -1,4 +1,6 @@
 // @ts-check
+/*jshint esversion: 6 */
+
 import { assert, diff } from "../js/pci/util/assert.mjs";
 import { Polygon } from "../js/pci/polygon.mjs";
 import { printToHTML, syntaxHighlight } from "../js/pci/util/print-to-html.mjs";
@@ -23,7 +25,7 @@ function appendCanvas(parentElement = document.body) {
 function drawPolygon(p, context, scale, offset) {
     context.fillStyle = 'white';
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-    const origVertices = p.getVertices();
+    const origVertices = p.vertices;
     const vertices = origVertices.map((v, i) => {
         return { x: v.x * scale.x, y: v.y * scale.y };
     });

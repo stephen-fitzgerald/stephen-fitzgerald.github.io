@@ -39,7 +39,7 @@ export class Vertex {
 
 export class Polygon {
 
-    constructor(vertexList = [], statusList=[]) {
+    constructor(vertexList = [], statusList = []) {
         this.vertexList = Array(...vertexList);
         if (statusList == undefined || statusList == []) {
             this.statusList = Array(vertexList.length).fill(0);
@@ -139,7 +139,7 @@ export class Polygon {
 
         let next = this.nextVertex(current, dir);
         while (next != current) {
-            if (this.vertexList[next].status != kStatusInactive) {
+            if (this.statusList[next] != kStatusInactive) {
                 return (next);
             }
             next = this.nextVertex(next, dir);
@@ -365,9 +365,9 @@ export class Polygon {
             prev = this.nextVertex(i, kBackward);
             angle = this.vertexAngle(prev, i, next);
             if (angle <= 180.0) {
-                this.vertexList[i].status = kStatusConvex;
+                this.statusList[i] = kStatusConvex;
             } else {
-                this.vertexList[i].status = kStatusRCorner;
+                this.statusList[i] = kStatusRCorner;
             }
         }
     }
@@ -375,39 +375,27 @@ export class Polygon {
         isRCorner() returns non-zero if current is R-corner.
     ----------------------------------------------------------------------------*/
     isRCorner(current) {
-        if (current < this.firstVertex || current > this.lastVertex)
-            return (false);
-
-        return (this.vertexList[current].status == kStatusRCorner);
+        return (this.statusList[current] == kStatusRCorner);
     }
 
     /**
      * 
-     * @param {number} curr starting vertex (0 - N-1)
+     * @param {number} start starting vertex (0 - N-1)
      * @param {number} dir direction 1 or -1
      * @returns {number | undefined } index of next R corner from curr in direction dir, or undefined
      */
-    nextRCorner(curr, dir) {
+    nextRCorner(start, dir) {
 
-        let i, N, ret, current;
+        const N = this.numVertices;
+        let ret = undefined;
 
-        N = this.numVertices;
-
-        current = curr;
-        if (current < 0 || current >= N) current = 0;
-
-        ret = undefined;
-        i = current;
-
-        while ((i = this.nextActiveVertex(i, dir))) {
+        let i = this.nextActiveVertex(start, dir);
+        while (i != undefined && i != start) {
             if (this.isRCorner(i)) {
                 return (i);
             }
-            // else {
-            //     if (i == current || i == undefined) break;
-            // }
+            i = this.nextActiveVertex(i, dir);
         }
-
         return (ret);
     }
 
@@ -455,16 +443,16 @@ export class Polygon {
     removeSubPoly(start, end, dir, score) {
 
         if (score == 3 || score == 7) {
-            this.vertexList[start].status = kStatusConvex;
+            this.statusList[start] = kStatusConvex;
         }
 
         if (score == 5 || score == 7) {
-            this.vertexList[end].status = kStatusConvex;
+            this.statusList[end] = kStatusConvex;
         }
 
         let i = this.nextActiveVertex(start, dir);
         while (i != undefined && i != end) {
-            this.vertexList[i].status = kStatusInactive;
+            this.statusList[i] = kStatusInactive;
             i = this.nextActiveVertex(i, dir);
         }
     }
