@@ -39,6 +39,13 @@ export class Vertex {
 
 export class Polygon {
 
+    
+    /**
+     * Creates an instance of Polygon.
+     *
+     * @constructor
+     * @param {{x: number ,y: number}[]} [vertexList=[]]
+     */
     constructor(vertexList = []) {
         this.vertexList = Array(...vertexList);
         this.statusList = Array(vertexList.length).fill(0);
