@@ -85,6 +85,15 @@ export function applyPrecision(num) {
     return String(Number(num).toPrecision(4));
 }
 
+
+/**
+ * Returns a syntax highlighted string of html that contains
+ * a stringified Version of the input object.
+ *
+ * @export
+ * @param {string | object} txt
+ * @returns {string} an html string
+ */
 export function syntaxHighlight(txt) {
     if (typeof txt != 'string') {
         txt = JSON.stringify(decycle(txt), undefined, 4);
