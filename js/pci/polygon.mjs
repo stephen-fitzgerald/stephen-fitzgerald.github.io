@@ -346,6 +346,26 @@ export class Polygon {
         }
     }
 
+    get isSimple(){
+
+        if(this.isConvex)
+            return true;
+
+        throw new Error("isSimple() is not implemented yet.");
+        
+        let N = this.numVertices; 
+        let linesToCheck = [];
+
+        for (let i = 0; i < N - 1; i++) {
+            let start = this.vertexList[i];
+            let end = this.vertexList[i+1];
+            linesToCheck.push({start,end});
+        }
+
+        
+
+
+    }
     /*---------------------------------------------------------------------------
         UpdateStatus() updates the status field for each vertex
         0=inactive, 1=convex, 2=R-corner. 

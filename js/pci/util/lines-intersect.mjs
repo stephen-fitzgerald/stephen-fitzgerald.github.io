@@ -9,10 +9,11 @@ const kEps = 1.0e-33;
  * @param {{x: number, y: number}} end1 - line 1 end
  * @param {{x: number, y: number}} start2 - line 2 start
  * @param {{x: number, y: number}} end2 - line 2 end
+ * @param {number} [eps=kEps] tolerance for comparisons default is 1.0e-33
  * 
  * @returns {boolean} true if segments intersect
  */
-export function linesIntersect(start1, end1, start2, end2) {
+export function linesIntersect(start1, end1, start2, end2, eps = kEps) {
 
     const abs = Math.abs;
 
@@ -41,16 +42,16 @@ export function linesIntersect(start1, end1, start2, end2) {
         If the boxes intersect, and both segments are either horizontal or 
         vertical then the segments intersect.
     ---------------------------------------------------------------------*/
-    if ((abs(L1dx) < kEps || abs(L1dy) < kEps)
-        && (abs(L2dx) < kEps || abs(L2dy) < kEps)) {
+    if ((abs(L1dx) < eps || abs(L1dy) < eps)
+        && (abs(L2dx) < eps || abs(L2dy) < eps)) {
         return (true);
     }
 
     // if any end points are common then segments intersect
-    if (abs(start1.x - start2.x) < kEps && abs(start1.y - start2.y) < kEps) return true;
-    if (abs(start1.x - end2.x) < kEps && abs(start1.y - end2.y) < kEps) return true;
-    if (abs(end1.x - start2.x) < kEps && abs(end1.y - start2.y) < kEps) return true;
-    if (abs(end1.x - end2.x) < kEps && abs(end1.y - end2.y) < kEps) return true;
+    if (abs(start1.x - start2.x) < eps && abs(start1.y - start2.y) < eps) return true;
+    if (abs(start1.x - end2.x) < eps && abs(start1.y - end2.y) < eps) return true;
+    if (abs(end1.x - start2.x) < eps && abs(end1.y - start2.y) < eps) return true;
+    if (abs(end1.x - end2.x) < eps && abs(end1.y - end2.y) < eps) return true;
 
     let s = (-L1dy * (start1.x - start2.x) + L1dx * (start1.y - start2.y)) / (-L2dx * L1dy + L1dx * L2dy);
     let t = (+L2dx * (start1.y - start2.y) - L2dy * (start1.x - start2.x)) / (-L2dx * L1dy + L1dx * L2dy);

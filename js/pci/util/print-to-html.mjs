@@ -3,6 +3,7 @@
 
 //@ts-ignore
 import { decycle } from './serialize.mjs';
+import { isString } from './util.mjs';
 
 let styles = {
     number: 'style="color:darkorange;" ',
@@ -19,10 +20,6 @@ let classes = {
     boolean: 'class="boolean" ',
     null: 'class="null" ',
 };
-
-function isString(obj) {
-    return !!(typeof obj === 'string' || obj instanceof String);
-}
 
 export function printToHTML(theText, color, parentElement=document.body ) {
     if (typeof theText != 'string') {
