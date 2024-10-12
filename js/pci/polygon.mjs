@@ -39,20 +39,16 @@ export class Vertex {
 
 export class Polygon {
 
-    constructor(vertexList = [], statusList = []) {
+    
+    /**
+     * Creates an instance of Polygon.
+     *
+     * @constructor
+     * @param {{x: number ,y: number}[]} [vertexList=[]]
+     */
+    constructor(vertexList = []) {
         this.vertexList = Array(...vertexList);
-        if (statusList == undefined || statusList == []) {
-            this.statusList = Array(vertexList.length).fill(0);
-        } else if (statusList.length == vertexList.length) {
-            this.statusList = Array(...statusList);
-        }
-        else {
-            throw new Error("Status list length does not match vertex list.");
-        }
-    }
-
-    get firstVertex() {
-        return 0;
+        this.statusList = Array(vertexList.length).fill(0);
     }
 
     get lastVertex() {
@@ -101,10 +97,10 @@ export class Polygon {
     }
 
     insertVertexAt(x, y, before) {
-        if (before < this.firstVertex) {
-            before = this.firstVertex;
+        if (before < 0) {
+            before = 0;
         }
-        if (before > this.lastVertex) {
+        if (before == undefined || before > this.lastVertex) {
             before = this.lastVertex;
         }
         let v = new Vertex(x, y);
@@ -114,31 +110,31 @@ export class Polygon {
     /**
      * Returns the index of the next vertex in the given direction
      *
-     * @param {number} current
+     * @param {number} start
      * @param {number} [dir=kForward]
      * @returns {number}
      */
-    nextVertex(current, dir = kForward) {
-        let ret = current + dir;
-        if (ret > this.lastVertex) ret = this.firstVertex;
-        if (ret < this.firstVertex) ret = this.lastVertex;
+    nextVertex(start, dir = kForward) {
+        if (start < 0 || start > this.lastVertex)
+            throw new RangeError("Vertex out of range.");
+        let ret = start + dir;
+        if (ret > this.lastVertex) ret = 0;
+        if (ret < 0) ret = this.lastVertex;
         return (ret);
     }
 
     /**
      * returns the next active vertex, or undefined if none.
      *
-     * @param {number} current
+     * @param {number} start
      * @param {number} dir
      * @returns {number | undefined}
      */
-    nextActiveVertex(current, dir) {
-
-        if (current < this.firstVertex || current > this.lastVertex)
+    nextActiveVertex(start, dir) {
+        if (start < 0 || start > this.lastVertex)
             throw new RangeError("Vertex out of range.");
-
-        let next = this.nextVertex(current, dir);
-        while (next != current) {
+        let next = this.nextVertex(start, dir);
+        while (next != start) {
             if (this.statusList[next] != kStatusInactive) {
                 return (next);
             }
@@ -350,6 +346,26 @@ export class Polygon {
         }
     }
 
+    get isSimple(){
+
+        if(this.isConvex)
+            return true;
+
+        throw new Error("isSimple() is not implemented yet.");
+        
+        let N = this.numVertices; 
+        let linesToCheck = [];
+
+        for (let i = 0; i < N - 1; i++) {
+            let start = this.vertexList[i];
+            let end = this.vertexList[i+1];
+            linesToCheck.push({start,end});
+        }
+
+        
+
+
+    }
     /*---------------------------------------------------------------------------
         UpdateStatus() updates the status field for each vertex
         0=inactive, 1=convex, 2=R-corner. 
@@ -385,6 +401,8 @@ export class Polygon {
      * @returns {number | undefined } index of next R corner from curr in direction dir, or undefined
      */
     nextRCorner(start, dir) {
+        if (start < 0 || start > this.lastVertex)
+            throw new RangeError("Vertex out of range.");
         let ret = undefined;
         let i = this.nextActiveVertex(start, dir);
         while (i != undefined && i != start) {

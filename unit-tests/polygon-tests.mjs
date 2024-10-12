@@ -10,15 +10,20 @@ let canvasNum = 0;
 /**
  * Create a new canvas and 
  *
- * @param {HTMLElement} [parentElement=document.body]
- * @returns {HTMLElement | null}
+ * @param {number} [width=400] - defaults to 400
+ * @param {number} [height=200] - defaults to 200
+ * @param {HTMLElement} [parentElement=document.body] defaults to document.body
+ * @returns { HTMLCanvasElement | null}
  */
-function appendCanvas(parentElement = document.body) {
+function appendCanvas(width = 400, height = 200, parentElement = document.body) {
     const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
     canvasNum++;
     canvas.id = 'canvas-' + canvasNum; // gives canvas id
     parentElement.appendChild(canvas);
-    const element = document.getElementById(canvas.id); //find new canvas we created
+    const element = /** @type HTMLCanvasElement | null */
+        (document.getElementById(canvas.id));
     return element;
 }
 
@@ -57,7 +62,7 @@ const app = async () => {
     let pt4 = { x: 0.0, y: 1.0 };
 
     let pt5 = { x: 0.5, y: 0.5 };
-    let pt6 = { x: 0.5, y: 0.5 };
+    let pt6 = { x: -0.5, y: 0.5 };
 
     let result;
     let p;
@@ -91,20 +96,30 @@ const app = async () => {
     result = p.area;
     assert(diff(result, 0.75) < 0.01, "A unit square has an area of 5 pt polygon has area odf 3/4. ( " + result + " ).");
 
-    const canvas = appendCanvas();
+    const canvas = appendCanvas(400, 100);
     if (canvas) {
-        // @ts-ignore
-        canvas.height = 200;
-        // @ts-ignore
-        canvas.width = 400;
-        // @ts-ignore
         const context = canvas.getContext('2d');
-        const extents = p.extents;
-        // printToHTML(extents);
         const scale = { x: 40, y: 40 };
-        const offset = { x: 50, y: 50 };
+        const offset = { x: 50, y: 25 };
         drawPolygon(p, context, scale, offset);
     }
+
+
+    printToHTML("A non-simple Polygon with 5 vertices:");
+    p = new Polygon([pt1, pt2, pt6, pt3, pt4]);
+
+    const canvas2 = appendCanvas(400,100);
+    if (canvas2) {
+        const context = canvas2.getContext('2d');
+        const scale = { x: 40, y: 40 };
+        const offset = { x: 50, y: 25 };
+        drawPolygon(p, context, scale, offset);
+    }
+    result = p.isConvex;
+    assert(result==false, "This is not convex");
+    result = p.area;
+    assert(result==5/12, "Area = 5/12, actual = " + result);
+
     assert(true, "---------- End of tests ----------");
 };
 

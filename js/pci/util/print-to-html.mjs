@@ -3,6 +3,7 @@
 
 //@ts-ignore
 import { decycle } from './serialize.mjs';
+import { isString } from './util.mjs';
 
 let styles = {
     number: 'style="color:darkorange;" ',
@@ -19,10 +20,6 @@ let classes = {
     boolean: 'class="boolean" ',
     null: 'class="null" ',
 };
-
-function isString(obj) {
-    return !!(typeof obj === 'string' || obj instanceof String);
-}
 
 export function printToHTML(theText, color, parentElement=document.body ) {
     if (typeof theText != 'string') {
@@ -85,6 +82,15 @@ export function applyPrecision(num) {
     return String(Number(num).toPrecision(4));
 }
 
+
+/**
+ * Returns a syntax highlighted string of html that contains
+ * a stringified Version of the input object.
+ *
+ * @export
+ * @param {string | object} txt
+ * @returns {string} an html string
+ */
 export function syntaxHighlight(txt) {
     if (typeof txt != 'string') {
         txt = JSON.stringify(decycle(txt), undefined, 4);
