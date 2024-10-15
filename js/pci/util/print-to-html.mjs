@@ -117,3 +117,24 @@ export function syntaxHighlight(txt) {
         return '<span ' + classes[cls] + styles[cls] + '>' + match + '</span>';
     });
 }
+
+let canvasNum = 0;
+/**
+ * Create a new canvas and append it as a child of the parentElement
+ *
+ * @param {number} [width=400] - defaults to 400
+ * @param {number} [height=200] - defaults to 200
+ * @param {HTMLElement} [parentElement=document.body] defaults to document.body
+ * @returns { HTMLCanvasElement | null}
+ */
+export function appendCanvas(width = 400, height = 200, parentElement = document.body) {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvasNum++;
+    canvas.id = 'canvas-' + canvasNum; // gives canvas id
+    parentElement.appendChild(canvas);
+    const element = /** @type HTMLCanvasElement | null */
+        (document.getElementById(canvas.id));
+    return element;
+}
