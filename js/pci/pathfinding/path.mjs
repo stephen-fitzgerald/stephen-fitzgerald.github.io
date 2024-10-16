@@ -1,9 +1,7 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { assert, diff } from "../util/assert.mjs";
-import { Polygon } from "../polygon.mjs";
-import { printToHTML, syntaxHighlight } from "../util/print-to-html.mjs";
+import { printToHTML, syntaxHighlight, appendCanvas } from "../util/print-to-html.mjs";
 
 const eps = 1.0;
 
@@ -128,6 +126,124 @@ function pointInPolygon(point, polygon) {
     return inside;
 }
 
+
+/**
+ * Get the extents of an array of x,y points
+ *
+ * @param {Array<{ x: number; y: number; }>} points
+ * @returns {{ xmin: any; xmax: number; ymin: any; ymax: number; }}
+ */
+function getExtents(points) {
+    let ret = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
+    for (let i = 0; i < points.length; i++) {
+        let x = points[i].x;
+        let y = points[i].y;
+        if (x < ret.xmin) ret.xmin = x;
+        if (x > ret.xmax) ret.xmax = x;
+        if (y < ret.ymin) ret.ymin = y;
+        if (y > ret.ymax) ret.ymax = y;
+
+    }
+    return ret;
+}
+
+
+/**
+ * get the scale and offset to center an object with extents into a canvas
+ * so that it covers 80% of the area.
+ *
+ * @param {HTMLCanvasElement} canvas
+ * @param {{xmin:number, xmax:number, ymin:number, ymax:number}} extents
+ * @param {number} [coverFactor=0.80] defaults to 80%
+ * @returns {{ scale: { x: number; y: number; }; offset: { x: number; y: number; }; }}
+ */
+function scaleAndOffset(canvas, extents, coverFactor = 0.80) {
+    const width = extents.xmax - extents.xmin;
+    const height = extents.ymax - extents.ymin;
+
+    // Calculate the scale factor to fit the extents in the canvas
+    const scaleFactor = 0.80 * Math.min(canvas.width / width, canvas.height / height);
+
+    // Calculate the dimensions of the scaled extents
+    const scaledWidth = width * scaleFactor;
+    const scaledHeight = height * scaleFactor;
+
+    // Calculate the offsets to center the extents in the canvas
+    const xOffset = (canvas.width - scaledWidth) / 2;
+    const yOffset = (canvas.height - scaledHeight) / 2;
+
+    // Return the calculated scale and offsets
+    return {
+        scale: { x: scaleFactor, y: scaleFactor },
+        offset: { x: xOffset, y: yOffset }
+    };
+}
+
+
+/**
+ * Draw a border around an HTMLCanvasElement
+ *
+ * @param {HTMLCanvasElement} canvas
+ * @param {number} [inset=1.5]
+ */
+function drawBorder(canvas, inset = 1.5) {
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    context.beginPath();
+    context.moveTo(inset, inset);
+    context.lineTo(context.canvas.width - inset, inset);
+    context.lineTo(context.canvas.width - inset, context.canvas.height - inset);
+    context.lineTo(inset, context.canvas.height - inset);
+    context.lineTo(inset, inset);
+    context.stroke();
+}
+
+
+
+/**
+ * Draw a polygon in an HTMLCanvasElement.
+ * Note that y=0 is at the bottom of the canvas.
+ *
+ * @param {Array<{x:number, y:number}>} p
+ * @param {HTMLCanvasElement} canvas
+ * @param {{x:number,y:number}} scale
+ * @param {{x:number,y:number}} offset
+ */
+function drawPolygon(p, canvas, scale, offset) {
+    drawPath(p, canvas, scale, offset, true);
+}
+
+
+/**
+ * Description placeholder
+ *
+ * @param {Array<{x:number, y:number}>} path
+ * @param {HTMLCanvasElement} canvas
+ * @param {{x:number,y:number}} scale
+ * @param {{x:number,y:number}} offset
+ * @param {boolean} [close=false] if true close the loop
+ */
+function drawPath(path, canvas, scale, offset, close = false) {
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    const yMax = context.canvas.height;
+    const vertices = path.map((v, i) => {
+        return {
+            x: Math.floor(offset.x + v.x * scale.x) + 0.5,
+            y: Math.floor(yMax - (offset.y + v.y * scale.y)) + 0.5
+        };
+    });
+    context.beginPath();
+    context.moveTo(vertices[0].x, vertices[0].y);
+    for (let i = 1; i < vertices.length; i++) {
+        context.lineTo(vertices[i].x, vertices[i].y);
+    }
+    if (close) {
+        context.lineTo(vertices[0].x, vertices[0].y);
+    }
+    context.stroke();
+}
+
 // Example usage
 // Define polygon as an array of points
 let polygon = [
@@ -136,7 +252,7 @@ let polygon = [
     new Node(1, 1),
     new Node(2, 1),
     new Node(2, 0),
-    new Node(3, 0),
+    new Node(3.25, 0),
     new Node(3, 3),
     new Node(2, 3),
     new Node(2, 2),
@@ -146,7 +262,7 @@ let polygon = [
 ];
 
 let start = new Node(0.75, 2.75);
-let goal = new Node(2.25, 2.75);
+let goal = new Node(2.05, 0.15);
 
 start.neighbors = [polygon[2], polygon[9]];
 polygon[2].neighbors = [start, polygon[3], polygon[8], polygon[9]];
@@ -157,4 +273,28 @@ goal.neighbors = [polygon[3], polygon[8]];
 
 let path = aStar(start, goal);
 printToHTML(path);
-console.log(path);  // Outputs the path found
+
+const canvas = appendCanvas(800, 400);
+if (!canvas)
+    throw new Error("Could not create HTMLCanvasElement");
+
+const context = canvas.getContext('2d');
+if (!context)
+    throw new Error("Graphics context (CanvasContext2d) not found");
+
+const extents = getExtents(polygon);
+
+const { scale, offset } = scaleAndOffset(canvas, extents);
+
+context.lineWidth = 1;
+
+context.strokeStyle = 'blue';
+drawBorder(canvas);
+
+context.strokeStyle = 'black';
+drawPolygon(polygon, canvas, scale, offset);
+
+context.strokeStyle = 'red';
+drawPath(path, canvas, scale, offset);
+
+printToHTML("done");

@@ -31,7 +31,7 @@ class Node {
  * @param {Array<{x: number, y: number}>} polygon - An array of points representing the polygon's vertices.
  * @returns {boolean} - True if the point is inside the polygon, false otherwise.
  */
-function pointInPolygon(point, polygon) {
+export function pointInPolygon(point, polygon) {
     let x = point.x, y = point.y;
     let inside = false;
 
@@ -56,7 +56,7 @@ function pointInPolygon(point, polygon) {
     * @param {{x:number, y:number}} pt3
     * @returns {number}
     */
-function vertexAngle(pt1, pt2, pt3) {
+export function vertexAngle(pt1, pt2, pt3) {
 
     let x1x2 = (pt2.x - pt1.x);
     let x3x2 = (pt3.x - pt2.x);
@@ -114,7 +114,7 @@ function crossProduct(p1, p2, p3) {
  * @param {Array<{x: number, y: number}>} polygon - An array of points representing the polygon's vertices.
  * @returns {Array<{x: number, y: number}>} - An array of concave vertices.
  */
-function findConcaveVertices(polygon) {
+export function findConcaveVertices(polygon) {
     const concaveVertices = [];
     const n = polygon.length;
 
@@ -182,7 +182,7 @@ function doLinesIntersect(p1, p2, p3, p4) {
  * @param {Array<{x: number, y: number}>} polygon - The polygon's vertices.
  * @returns {boolean} - True if v1 and v2 can see each other, false otherwise.
  */
-function canSeeEachOther(v1, v2, polygon) {
+export function canSeeEachOther(v1, v2, polygon) {
     const n = polygon.length;
 
     for (let i = 0; i < n; i++) {
@@ -199,18 +199,18 @@ function canSeeEachOther(v1, v2, polygon) {
 }
 
 /**
- * Returns the pairs of concave vertices that can "see" each other.
- * @param {Array<{x: number, y: number}>} concaveVertices - The concave vertices of the polygon.
+ * Returns the pairs of vertices that can "see" each other.
+ * @param {Array<{x: number, y: number}>} vertices - The vertices to check.
  * @param {Array<{x: number, y: number}>} polygon - The polygon's vertices.
  * @returns {Array<{v1:{x: number, y: number}, v2:{x: number, y: number}}>} - An array of convex vertex pairs that can see each other.
  */
-function findVisibleConcaveVertices(concaveVertices, polygon) {
+export function findVisibleConcaveVertices(vertices, polygon) {
     const visiblePairs = [];
 
-    for (let i = 0; i < concaveVertices.length; i++) {
-        for (let j = i + 1; j < concaveVertices.length; j++) {
-            const v1 = concaveVertices[i];
-            const v2 = concaveVertices[j];
+    for (let i = 0; i < vertices.length; i++) {
+        for (let j = i + 1; j < vertices.length; j++) {
+            const v1 = vertices[i];
+            const v2 = vertices[j];
 
             // Check if these two concave vertices can see each other
             if (canSeeEachOther(v1, v2, polygon)) {
@@ -222,7 +222,7 @@ function findVisibleConcaveVertices(concaveVertices, polygon) {
 }
 
 // Example usage
-const polygon = [
+const _polygon = [
     { x: 0, y: 0 },
     { x: 10, y: 0 },
     { x: 10, y: 10 },
@@ -230,10 +230,10 @@ const polygon = [
     { x: 0, y: 10 }
 ];
 
-const concaveVertices = [
+const _concaveVertices = [
     { x: 5, y: 5 },   // Example concave vertex
     { x: 7, y: 7 }    // Another concave vertex, for example
 ];
 
-const visiblePairs = findVisibleConcaveVertices(concaveVertices, polygon);
+const visiblePairs = findVisibleConcaveVertices(_concaveVertices, _polygon);
 console.log(visiblePairs);  // Outputs index pairs of concave vertices that can see each other
