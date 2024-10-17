@@ -65,7 +65,6 @@ function aStar(start, goal) {
             }
 
             let gScore = currentNode.g + distance(currentNode, neighbor);  // New g score
-            // let inOpen = openList.find(node => node.x === neighbor.x && node.y === neighbor.y);
             let inOpen = openList.find(node => node === neighbor);
 
             if (!inOpen || gScore < neighbor.g) {
