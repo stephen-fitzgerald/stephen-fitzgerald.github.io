@@ -214,7 +214,10 @@ function drawPolygon(p, canvas, scale, offset) {
 
 
 /**
- * Description placeholder
+ * Draw a path of lines on a canvas using the scale factor and offset. 
+ * The path is defined by an array of x,y points.
+ * If close is true, a line will be drawn between the last & first points, 
+ * closing the loop.
  *
  * @param {Array<{x:number, y:number}>} path
  * @param {HTMLCanvasElement} canvas
