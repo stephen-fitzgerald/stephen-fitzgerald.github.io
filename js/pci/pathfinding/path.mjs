@@ -2,8 +2,7 @@
 /*jshint esversion: 6 */
 
 import { printToHTML, syntaxHighlight, appendCanvas } from "../util/print-to-html.mjs";
-
-const eps = 1.0;
+import { CanvasMouseTracker } from "./CanvasMouseTracker.mjs";
 
 /**
  * Class representing a node in the A* algorithm.
@@ -37,6 +36,14 @@ class Node {
 function aStar(start, goal) {
     let openList = [];
     let closedList = [];
+
+    function heuristic(node, goal) {
+        return distance(node, goal);
+    }
+
+    function distance(nodeA, nodeB) {
+        return Math.sqrt((nodeB.x - nodeA.x) ** 2 + (nodeB.y - nodeA.y) ** 2);
+    }
 
     openList.push(start);
 
@@ -79,29 +86,9 @@ function aStar(start, goal) {
             }
         }
     }
-
     return [];  // No path found
 }
 
-/**
- * Calculates the heuristic distance (Euclidean) between a node and the goal.
- * @param {Node} node - The current node.
- * @param {Node} goal - The goal node.
- * @returns {number} - The heuristic cost to the goal.
- */
-function heuristic(node, goal) {
-    return distance(node, goal);
-}
-
-/**
- * Calculates the Euclidean distance between two nodes.
- * @param {Node} nodeA - The first node.
- * @param {Node} nodeB - The second node.
- * @returns {number} - The distance between the two nodes.
- */
-function distance(nodeA, nodeB) {
-    return Math.sqrt((nodeB.x - nodeA.x) ** 2 + (nodeB.y - nodeA.y) ** 2);
-}
 
 /**
  * Determines if a point is inside a polygon using the Ray-Casting algorithm.
@@ -280,23 +267,27 @@ const canvas = appendCanvas(800, 400);
 if (!canvas)
     throw new Error("Could not create HTMLCanvasElement");
 
-const context = canvas.getContext('2d');
-if (!context)
-    throw new Error("Graphics context (CanvasContext2d) not found");
+// const context = canvas.getContext('2d');
+// if (!context)
+//     throw new Error("Graphics context (CanvasContext2d) not found");
 
-const extents = getExtents(polygon);
+// const extents = getExtents(polygon);
 
-const { scale, offset } = scaleAndOffset(canvas, extents);
+// const { scale, offset } = scaleAndOffset(canvas, extents);
 
-context.lineWidth = 1;
+// context.lineWidth = 1;
 
-context.strokeStyle = 'blue';
-drawBorder(canvas);
+// context.strokeStyle = 'blue';
+// drawBorder(canvas);
 
-context.strokeStyle = 'black';
-drawPolygon(polygon, canvas, scale, offset);
+// context.strokeStyle = 'black';
+// drawPolygon(polygon, canvas, scale, offset);
 
-context.strokeStyle = 'red';
-drawPath(path, canvas, scale, offset);
+// context.strokeStyle = 'red';
+// drawPath(path, canvas, scale, offset);
 
 printToHTML("done");
+
+let tracker = new CanvasMouseTracker(canvas, polygon, path);
+//tracker.polygon = polygon;
+
