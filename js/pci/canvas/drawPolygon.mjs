@@ -53,13 +53,15 @@ export function scaleAndOffset(canvas, extents, coverFactor = 0.80) {
 /**
  * Draw a polygon in an HTMLCanvasElement.
  * Note that y=0 is at the bottom of the canvas.
+ * default scale = { x: 1.0, y: 1.0 }
+ * default offset = { x: 0.0, y: 0.0 }
  *
  * @param {Array<{x:number, y:number}>} p
  * @param {HTMLCanvasElement} canvas
- * @param {{x:number,y:number}} scale
- * @param {{x:number,y:number}} offset
+ * @param {{x:number,y:number}} [scale]
+ * @param {{x:number,y:number}} [offset]
  */
-export function drawPolygon(p, canvas, scale, offset) {
+export function drawPolygon(p, canvas, scale = { x: 1.0, y: 1.0 }, offset = { x: 0, y: 0 }) {
     drawPath(p, canvas, scale, offset, true);
 }
 
@@ -76,7 +78,7 @@ export function drawPolygon(p, canvas, scale, offset) {
  * @param {{x:number,y:number}} offset
  * @param {boolean} [close=false] if true close the loop
  */
-export function drawPath(path, canvas, scale, offset, close = false) {
+export function drawPath(path, canvas, scale = { x: 1.0, y: 1.0 }, offset = { x: 0, y: 0 }, close = false) {
     const context = canvas.getContext('2d');
     if (!context) return;
     const yMax = context.canvas.height;
