@@ -2,7 +2,7 @@
 /*jshint esversion: 6 */
 
 import { printToHTML, syntaxHighlight, appendCanvas } from "../util/print-to-html.mjs";
-import { drawPolygon, getExtents, scaleAndOffset } from "../canvas/drawPolygon.mjs";
+import { drawEdges, drawPolygon, getExtents, scaleAndOffset } from "../canvas/drawPolygon.mjs";
 
 /**
  * Helper function to compute the angle between two points relative to the x-axis.
@@ -170,21 +170,22 @@ let polygon = [
 
 const edges = [];
 for (let i = 0; i < polygon.length; i++) {
-    edges[i] = [polygon[i], polygon[(i + 1) % polygon.length]];
+    edges.push([polygon[i], polygon[(i + 1) % polygon.length]]);
 }
 
 const v = { x: 2.5, y: 2.5 };  // Base vertex
 
-const visible = visibleVertices(v, polygon, edges);
+//const visible = visibleVertices(v, polygon, edges);
 //   printToHTML(v);
 //   printToHTML(vertices);
 //   printToHTML(edges);
-printToHTML(visible);
-
-
+//printToHTML(visible);
+printToHTML(edges.length);
 const canvas = appendCanvas(800, 400);
 if (!canvas)
     throw new Error("Could not create HTMLCanvasElement");
 let extents = getExtents(polygon);
 let so = scaleAndOffset(canvas, extents);
-drawPolygon(polygon, canvas, so.scale, so.offset);
+printToHTML(so);
+drawEdges(edges, canvas, so.scale, so.offset);
+// drawPolygon(polygon, canvas, so.scale, so.offset);

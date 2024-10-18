@@ -1,3 +1,5 @@
+// @ts-check
+/*jshint esversion: 6 */
 
 /**
  * Get the extents of an array of x,y points
@@ -95,6 +97,34 @@ export function drawPath(path, canvas, scale = { x: 1.0, y: 1.0 }, offset = { x:
     }
     if (close) {
         context.lineTo(vertices[0].x, vertices[0].y);
+    }
+    context.stroke();
+}
+
+/**
+ * Draw a path of lines on a canvas using the scale factor and offset. 
+ * The path is defined by an array of x,y points.
+ * If close is true, a line will be drawn between the last & first points, 
+ * closing the loop.
+ *
+ * @param {Array<Array<{x:number, y:number}>>} edges
+ * @param {HTMLCanvasElement} canvas
+ * @param {{x:number,y:number}} scale
+ * @param {{x:number,y:number}} offset
+ * @param {boolean} [close=false] if true close the loop
+ */
+export function drawEdges(edges, canvas, scale = { x: 1.0, y: 1.0 }, offset = { x: 0, y: 0 }, close = false) {
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    const yMax = context.canvas.height;
+    context.beginPath();
+    for (let i = 0; i < edges.length; i++) {
+        let pt1x = Math.floor(edges[i][0].x * scale.x + offset.x)+0.5;
+        let pt1y = Math.floor(yMax - (edges[i][0].y * scale.x + offset.y))+0.5;
+        let pt2x = Math.floor(edges[i][1].x * scale.x + offset.x)+0.5;
+        let pt2y = Math.floor(yMax - (edges[i][1].y * scale.x + offset.y))+0.5;
+        context.moveTo(pt1x,pt1y);
+        context.lineTo(pt2x,pt2y);
     }
     context.stroke();
 }
