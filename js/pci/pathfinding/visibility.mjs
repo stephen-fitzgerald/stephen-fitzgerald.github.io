@@ -2,7 +2,7 @@
 /*jshint esversion: 6 */
 
 import { printToHTML, syntaxHighlight, appendCanvas } from "../util/print-to-html.mjs";
-import { drawEdges, drawPolygon, getExtents, scaleAndOffset } from "../canvas/drawPolygon.mjs";
+import { getExtents, CanvasHelper } from "../canvas/drawPolygon.mjs";
 
 /**
  * Helper function to compute the angle between two points relative to the x-axis.
@@ -175,17 +175,29 @@ for (let i = 0; i < polygon.length; i++) {
 
 const v = { x: 2.5, y: 2.5 };  // Base vertex
 
-//const visible = visibleVertices(v, polygon, edges);
+const visible = visibleVertices(v, polygon, edges);
 //   printToHTML(v);
 //   printToHTML(vertices);
 //   printToHTML(edges);
 //printToHTML(visible);
 printToHTML(edges.length);
+
 const canvas = appendCanvas(800, 400);
-if (!canvas)
-    throw new Error("Could not create HTMLCanvasElement");
+const helper = new CanvasHelper(canvas);
 let extents = getExtents(polygon);
-let so = scaleAndOffset(canvas, extents);
-printToHTML(so);
-drawEdges(edges, canvas, so.scale, so.offset);
+let so = helper.calcScaleAndOffset(extents);
+helper.scale = so.scale;
+helper.offset = so.offset;
+const context = helper.context;
+// helper.zoom = 1;
+//helper.zoomCenter = helper.canvasCenterPt;
+// helper.zoomCenter = {x:150,y:-20};
+helper.drawEdges(edges);
+context.strokeStyle = 'red';
+helper.drawPoint(v);
+helper.labelPoint(v, "end");
+context.strokeStyle = 'blue';
+helper.drawPoints(polygon);
+context.strokeStyle = 'grey';
+helper.labelPoints(polygon);
 // drawPolygon(polygon, canvas, so.scale, so.offset);
