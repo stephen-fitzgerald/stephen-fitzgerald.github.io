@@ -2,7 +2,7 @@
 /*jshint esversion: 6 */
 
 import { printToHTML, syntaxHighlight, appendCanvas } from "../util/print-to-html.mjs";
-import { getExtents, CanvasHelper } from "../canvas/drawPolygon.mjs";
+import { CanvasHelper } from "../canvas/canvas-helper.mjs";
 
 /**
  * Helper function to compute the angle between two points relative to the x-axis.
@@ -153,7 +153,7 @@ function doLinesIntersect(p1, p2, p3, p4) {
 }
 // Example usage
 // Define polygon as an array of points
-let polygon = [
+const polygon = [
     { x: 0, y: 0 },
     { x: 1, y: 0 },
     { x: 1, y: 1 },
@@ -173,31 +173,57 @@ for (let i = 0; i < polygon.length; i++) {
     edges.push([polygon[i], polygon[(i + 1) % polygon.length]]);
 }
 
-const v = { x: 2.5, y: 2.5 };  // Base vertex
+const start = { x: 0.5, y: 2.85 };  
+const end = { x: 2.75, y: 2.5 };  
 
-const visible = visibleVertices(v, polygon, edges);
-//   printToHTML(v);
-//   printToHTML(vertices);
-//   printToHTML(edges);
-//printToHTML(visible);
-printToHTML(edges.length);
+const visible = visibleVertices(start, polygon, edges);
+
+printToHTML("Done with CanvasHelper: ");
+
+class PolygonCanvas extends CanvasHelper {
+    constructor(canvas, polygon, start, end) {
+        super(canvas);
+        this.polygon = polygon;
+        this.start = { x: start.x, y: start.y };
+        this.end = { x: end.x, y: end.y };
+        this.draw();
+    }
+
+    draw() {
+
+        let extents = this.polygonExtents();
+        let so = this.calcScaleAndOffset(extents);
+        this.scale = so.scale;
+        this.offset = so.offset;
+
+        this.clear();
+        this.context.save();
+        // super.draw();
+
+        this.context.strokeStyle = 'black';
+        this.drawWorldPolygon(this.polygon);
+        this.context.strokeStyle = 'blue';
+        this.drawWorldPoints(this.polygon);
+        this.context.strokeStyle = 'grey';
+        this.labelWorldPoints(this.polygon);
+
+        this.context.strokeStyle = 'green';
+        this.drawWorldPoint(this.start);
+        this.labelWorldPoint(this.start, "start");
+
+        this.context.strokeStyle = 'red';
+        this.drawWorldPoint(this.end);
+        this.labelWorldPoint(this.end, "end");
+
+        this.context.strokeStyle = 'black';
+        this.drawPoint({x:this.canvasX, y:this.canvasY});
+
+        this.context.restore
+
+        // console.log("draw");        
+    }
+}
 
 const canvas = appendCanvas(800, 400);
-const helper = new CanvasHelper(canvas);
-let extents = getExtents(polygon);
-let so = helper.calcScaleAndOffset(extents);
-helper.scale = so.scale;
-helper.offset = so.offset;
-const context = helper.context;
-// helper.zoom = 1;
-//helper.zoomCenter = helper.canvasCenterPt;
-// helper.zoomCenter = {x:150,y:-20};
-helper.drawEdges(edges);
-context.strokeStyle = 'red';
-helper.drawPoint(v);
-helper.labelPoint(v, "end");
-context.strokeStyle = 'blue';
-helper.drawPoints(polygon);
-context.strokeStyle = 'grey';
-helper.labelPoints(polygon);
-// drawPolygon(polygon, canvas, so.scale, so.offset);
+const helper = new PolygonCanvas(canvas, polygon, start, end );
+helper.draw();
