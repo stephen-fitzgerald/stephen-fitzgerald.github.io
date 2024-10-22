@@ -4,6 +4,62 @@
 import { printToHTML, syntaxHighlight, appendCanvas } from "../util/print-to-html.mjs";
 import { CanvasMouseTracker } from "./CanvasMouseTracker.mjs";
 
+
+class Graph {
+    // Map() with nodes as keys, and nodes as values.
+    // nodes are {x,y} points, + extra graph-related data: f,g,h,parent.
+    adjacencyList;
+
+    constructor() {
+        this.adjacencyList = new Map();
+    }
+
+    addNode(node) {
+        this.adjacencyList.set(node, new Set());
+    }
+
+    addEdge(node1, node2) {
+        this.adjacencyList.get(node1).add(node2);
+        this.adjacencyList.get(node2).add(node1);
+    }
+
+    getNeighboors(node) {
+        return this.adjacencyList.get(node);
+    }
+
+    hasEdge(node1, node2) {
+        return this.adjacencyList.get(node1).has(node2);
+    }
+
+
+    /**
+     * Create a graph node at an x,y point
+     *
+     * @static
+     * @param {{x:number, y:number}} pt
+     * @returns {{pt:{x:number, y:number}, f:number, g:number, h:number, parent:any}}
+     */
+    addNodeForPt(pt) {
+        let n = {
+            pt: pt,
+            f: 0.0,
+            g: 0.0,
+            h: 0.0,
+            parent: null,
+        };
+        this.adjacencyList.set(n, new Set());
+        return n;
+    }
+
+    getNodeForPt(pt) {
+        this.adjacencyList.forEach((_value, key) => {
+            if (key.pt === pt)
+                return key;
+        });
+        return undefined;
+    }
+}
+
 /**
  * Class representing a node in the A* algorithm.
  */
@@ -71,11 +127,11 @@ function aStar(start, goal) {
 
             // Skip neighbors that are in the closed list
             if (closedList.find(node => node === neighbor)) {
-                continue;  
+                continue;
             }
 
             // Calculate the new g score from the start to this neighbor
-            let gScore = currentNode.g + distance(currentNode, neighbor); 
+            let gScore = currentNode.g + distance(currentNode, neighbor);
 
             // if neighbor not in the open list, or this new path has a lower gScore
             // add it to, or update it in, the open list with updated g, h, f scores & parent
@@ -87,7 +143,7 @@ function aStar(start, goal) {
                 neighbor.parent = currentNode;
                 // Add neighbor to open list if it's not already there
                 if (!inOpen) {
-                    openList.push(neighbor);  
+                    openList.push(neighbor);
                 }
             }
         }
