@@ -1,8 +1,8 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-import { linesIntersect } from "./util/lines-intersect.mjs";
-import { sign } from "./util/sign.mjs";
+import { linesIntersect } from "../util/lines-intersect.mjs";
+import { sign } from "../util/sign.mjs";
 
 const kEps = 1.0e-33;
 

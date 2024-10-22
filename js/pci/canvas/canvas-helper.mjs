@@ -22,8 +22,9 @@ export class CanvasHelper {
 
         this.polygon = undefined;
         this.start = undefined;
-        /** typedef {x:number, y:number} */
+        /** @type {{x:number, y:number}|undefined} */
         this.end = undefined;
+        this.concavePoints = undefined;
 
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
@@ -153,10 +154,12 @@ export class CanvasHelper {
         this.setPosition(event);
         this.readButtons(event);
         // console.log("mouse up");
-        let wp = this.transformPointToWorld(this.mouseLocation);
-        this.end = wp;
-        if( this.draggingEnd ) console.log(`dropping end at x: ${wp.x.toFixed(3)}, y: ${wp.y.toFixed(3)}`);
-        this.draggingEnd = false;
+        if (this.draggingEnd) {
+            let wp = this.transformPointToWorld(this.mouseLocation);
+            console.log(`dropping end at x: ${wp.x.toFixed(3)}, y: ${wp.y.toFixed(3)}`);
+            this.end = wp;
+            this.draggingEnd = false;
+        }
         this.draw();
     };
 
@@ -261,7 +264,7 @@ export class CanvasHelper {
      * @returns {boolean} true if the point is close
      */
     canvasPtIsNearWorldPt(cp, wp, withinPixels = 4) {
-        if( wp == undefined ) return false;
+        if (wp == undefined) return false;
         const cwp = this.transformPointToCanvas(wp);
         const dx = cp.x - cwp.x;
         const dy = cp.y - cwp.y;
@@ -436,6 +439,7 @@ export class CanvasHelper {
      * @param {{x:number, y:number}} pt in world coords
      */
     drawWorldPoint(pt) {
+        if (pt == undefined) return;
         let _pt = this.transformPointToCanvas(pt);
         let context = this.context;
         context.beginPath();
@@ -447,6 +451,7 @@ export class CanvasHelper {
      * @param {Array<{x:number, y:number}>} pts array in world coords
      */
     drawWorldPoints(pts) {
+        if (pts == undefined) return;
         for (let i = 0; i < pts.length; i++) {
             this.drawWorldPoint(pts[i]);
         }

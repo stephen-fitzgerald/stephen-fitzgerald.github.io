@@ -48,7 +48,7 @@ function aStar(start, goal) {
     openList.push(start);
 
     while (openList.length > 0) {
-        // Get node with the lowest f value
+        // Get node with the lowest f value from the open list
         let currentNode = openList.reduce((lowest, node) => lowest.f < node.f ? lowest : node);
 
         // If we've reached the goal, return the path
@@ -66,22 +66,28 @@ function aStar(start, goal) {
         openList = openList.filter(node => node !== currentNode);
         closedList.push(currentNode);
 
+        // go through all of the current node's neighbors
         for (let neighbor of currentNode.neighbors) {
+
+            // Skip neighbors that are in the closed list
             if (closedList.find(node => node === neighbor)) {
-                continue;  // Skip neighbors that are in the closed list
+                continue;  
             }
 
-            let gScore = currentNode.g + distance(currentNode, neighbor);  // New g score
-            let inOpen = openList.find(node => node === neighbor);
+            // Calculate the new g score from the start to this neighbor
+            let gScore = currentNode.g + distance(currentNode, neighbor); 
 
+            // if neighbor not in the open list, or this new path has a lower gScore
+            // add it to, or update it in, the open list with updated g, h, f scores & parent
+            let inOpen = openList.find(node => node === neighbor);
             if (!inOpen || gScore < neighbor.g) {
                 neighbor.g = gScore;
                 neighbor.h = heuristic(neighbor, goal);
                 neighbor.f = neighbor.g + neighbor.h;
                 neighbor.parent = currentNode;
-
+                // Add neighbor to open list if it's not already there
                 if (!inOpen) {
-                    openList.push(neighbor);  // Add neighbor to open list if it's not already there
+                    openList.push(neighbor);  
                 }
             }
         }

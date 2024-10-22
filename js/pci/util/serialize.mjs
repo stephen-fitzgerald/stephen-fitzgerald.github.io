@@ -91,12 +91,15 @@ export function decycleAndStringify(obj, replacer = null, space = 4) {
  * @returns {string} decycled JSON string representation of { classMap: classMap, data: root }, 
  */
 export function serialize(obj, space = 4) {
-    let cm = Array.from(buildClassMap(obj));
+    let decycledObject = decycle(obj);
+    let cm = Array.from(buildClassMap(decycledObject));
     let o = {
-        data: obj,
+        data: decycledObject,
         classMap: cm,
     };
-    let str = decycleAndStringify(o, null, space);
+    //let str = decycleAndStringify(o, null, space);
+    //let str = JSON.stringify(decycledObject, null, space);
+    let str = JSON.stringify(o, null, space);
     return str;
 }
 
