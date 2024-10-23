@@ -143,48 +143,48 @@ export function doLinesIntersect(l1Start, l1End, l2Start, l2End) {
 }
 
 
-/**
- * Create a node graph from a list of edges
- *
- * @param {Array<Array<object>>} edges
- */
-export function edgeListToGraph(edges) {
-    /** @type Set<{object}> */
-    let points = new Set();
-    for (let i = 0; i < edges.length; i++) {
-        points.add(edges[i][0]);
-        points.add(edges[i][1]);
-    }
-    let vertices = Array.from(points);
-    let nodesMap = new Map();
-    for (let i = 0; i < vertices.length; i++) {
-        let vertex = vertices[i];
-        let node = {
-            data: vertex,
-            f: 0.0,
-            g: 0.0,
-            h: 0.0,
-            neighbors: null,
-            parent: null
-        };
-        nodesMap.set(vertex, node);
-    }
-    for (let i = 0; i < vertices.length; i++) {
-        let vertex = vertices[i];
-        let node = nodesMap.get(vertex);
-        let neighbors = new Set();
-        for (let i = 0; i < edges.length; i++) {
-            if (edges[i][0] === vertex) {
-                neighbors.add(nodesMap.get(edges[i][1]));
-            }
-            if (edges[i][1] === vertex) {
-                neighbors.add(nodesMap.get(edges[i][0]));
-            }
-        }
-        node.neighbors = Array.from(neighbors);
-    }
-    return Array.from(nodesMap.values());
-}
+// /**
+//  * Create a node graph from a list of edges
+//  *
+//  * @param {Array<Array<object>>} edges
+//  */
+// export function edgeListToGraph(edges) {
+//     /** @type Set<{object}> */
+//     let points = new Set();
+//     for (let i = 0; i < edges.length; i++) {
+//         points.add(edges[i][0]);
+//         points.add(edges[i][1]);
+//     }
+//     let vertices = Array.from(points);
+//     let nodesMap = new Map();
+//     for (let i = 0; i < vertices.length; i++) {
+//         let vertex = vertices[i];
+//         let node = {
+//             data: vertex,
+//             f: 0.0,
+//             g: 0.0,
+//             h: 0.0,
+//             neighbors: null,
+//             parent: null
+//         };
+//         nodesMap.set(vertex, node);
+//     }
+//     for (let i = 0; i < vertices.length; i++) {
+//         let vertex = vertices[i];
+//         let node = nodesMap.get(vertex);
+//         let neighbors = new Set();
+//         for (let i = 0; i < edges.length; i++) {
+//             if (edges[i][0] === vertex) {
+//                 neighbors.add(nodesMap.get(edges[i][1]));
+//             }
+//             if (edges[i][1] === vertex) {
+//                 neighbors.add(nodesMap.get(edges[i][0]));
+//             }
+//         }
+//         node.neighbors = Array.from(neighbors);
+//     }
+//     return Array.from(nodesMap.values());
+// }
 
 export class PolygonHelper {
 
@@ -264,7 +264,7 @@ export class PolygonHelper {
     }
 
     /**
-     * Determines if the point w_i is visible from point v, based on current blocking edges.
+     * Determines if the point v1 is visible from point v2, based on current blocking edges.
      * @param {{x: number, y: number}} v1 - The base vertex.
      * @param {{x: number, y: number}} v2 - The vertex to check visibility for.
      * @param {Array<Array<{x:number,y:number}>> | undefined} [edges] - Edges that may block the view.  
@@ -299,7 +299,7 @@ export class PolygonHelper {
 
 
     /**
-     * build a visibility list with convex vertices, plus start and end points.
+     * build a visibility list with concave vertices, plus start and end points.
      *
      * @param {{x:number,y:number}} start
      * @param {{x:number,y:number}} end
@@ -319,17 +319,17 @@ export class PolygonHelper {
         return visiblePairs;
     }
 
-    /**
-    * build a visibility list with convex vertices, plus start and end points,
-    * and convert it into a graph.
-    *
-    * @param {{x:number,y:number}} start
-    * @param {{x:number,y:number}} end
-    */
-    buildVisibilityGraph(start, end) {
-        const vList = this.buildVisibilityList(start, end);
-        const vGraph = edgeListToGraph(vList);
-        return vGraph;
-    }
+    // /**
+    // * build a visibility list with convex vertices, plus start and end points,
+    // * and convert it into a graph.
+    // *
+    // * @param {{x:number,y:number}} start
+    // * @param {{x:number,y:number}} end
+    // */
+    // buildVisibilityGraph(start, end) {
+    //     const vList = this.buildVisibilityList(start, end);
+    //     const vGraph = edgeListToGraph(vList);
+    //     return vGraph;
+    // }
 
 }

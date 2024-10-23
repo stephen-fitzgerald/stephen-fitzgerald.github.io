@@ -39,11 +39,19 @@ export class Graph {
     /** @typedef {{ data: Data, f: number, g: number, h: number, parent: Node | null, }} -Node*/
     /** @typedef {Map<Node,Set<Node>>} AdjacencyList */
 
-    constructor() {
+    constructor( edges ) {
         /** @type {AdjacencyList} - Map to find neighbors of a node */
         this.adjacencyList = new Map();
         // Map to find the node that contains an particular data object
         this.nodeMap = new Map();
+
+        if(edges != undefined ){
+            for (let i = 0; i < edges.length; i++) {
+                const node1 = this.addNodeFor(edges[i][0]);
+                const node2 = this.addNodeFor(edges[i][1]);
+                this.addEdge(node1, node2);
+            }
+        }
     }
 
     /**
@@ -191,4 +199,83 @@ export class Graph {
         }
         return theGraph;
     }
+
+
+    /**
+     * Implements the A* pathfinding algorithm.
+     * @param {Node | {x:number,y:number}} start - The start pt.
+     * @param {Node | {x:number,y:number}} goal - The goal pt.
+     * @returns {Array<{x: number, y: number}>} - The path from the start to the goal, or an empty array if no path is found.
+     */
+    aStarPath(start, goal) {
+
+        let StartNode = start instanceof Node ? start : this.getNodeFor(start);
+        let goalNode = goal instanceof Node ? goal : this.getNodeFor(goal);
+
+        if( StartNode == undefined || goalNode == undefined ){
+            // throw new Error("Bad start or goal points.");
+            return [];
+        }
+
+        let openList = [];
+        let closedList = [];
+
+        function heuristic(node, goal) {
+            return distance(node, goal);
+        }
+
+        function distance(nodeA, nodeB) {
+            return Math.sqrt((nodeB.x - nodeA.x) ** 2 + (nodeB.y - nodeA.y) ** 2);
+        }
+
+        openList.push(StartNode);
+
+        while (openList.length > 0) {
+            // Get node with the lowest f value from the open list
+            let currentNode = openList.reduce((lowest, node) => lowest.f < node.f ? lowest : node);
+
+            // If we've reached the goal, return the path
+            if (currentNode === goalNode) {
+                let path = [];
+                let temp = currentNode;
+                while (temp != null) {
+                    path.push(temp.data);
+                    temp = temp.parent;
+                }
+                return path.reverse();  // Return the path from start to goal
+            }
+
+            // Remove current node from open list and add to closed list
+            openList = openList.filter(node => node !== currentNode);
+            closedList.push(currentNode);
+
+            // go through all of the current node's neighbors
+            for (let neighbor of this.getNeighbours(currentNode)) {
+
+                // Skip neighbors that are in the closed list
+                if (closedList.find(node => node === neighbor)) {
+                    continue;
+                }
+
+                // Calculate the new g score from the start to this neighbor
+                let gScore = currentNode.g + distance(currentNode, neighbor);
+
+                // if neighbor not in the open list, or this new path has a lower gScore
+                // add it to, or update it in, the open list with updated g, h, f scores & parent
+                let inOpen = openList.find(node => node === neighbor);
+                if (!inOpen || gScore < neighbor.g) {
+                    neighbor.g = gScore;
+                    neighbor.h = heuristic(neighbor, goalNode);
+                    neighbor.f = neighbor.g + neighbor.h;
+                    neighbor.parent = currentNode;
+                    // Add neighbor to open list if it's not already there
+                    if (!inOpen) {
+                        openList.push(neighbor);
+                    }
+                }
+            }
+        }
+        return [];  // No path found
+    }
+
 }

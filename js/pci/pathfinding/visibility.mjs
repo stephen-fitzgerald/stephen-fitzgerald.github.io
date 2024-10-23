@@ -3,8 +3,9 @@
 
 import { printToHTML, syntaxHighlight, appendCanvas } from "../util/print-to-html.mjs";
 import { CanvasHelper } from "../canvas/canvas-helper.mjs";
-import { edgeListToGraph, PolygonHelper } from "../polygon/polygon-helper.mjs";
+import { PolygonHelper } from "../polygon/polygon-helper.mjs";
 import { decycle, serialize } from "../util/serialize.mjs";
+import { Graph } from "../polygon/graph.mjs";
 
 // Example usage
 // Define polygon as an array of points
@@ -57,18 +58,21 @@ class PolygonCanvas extends CanvasHelper {
     constructor(canvas, polygon, start, end, concaveVertices) {
         super(canvas);
         this.polygon = polygon;
-        this.start = { x: start.x, y: start.y };
-        this.end = { x: end.x, y: end.y };
+        this.start = start;
+        this.end = end;
         this.concaveVertices = concaveVertices;
         this.draggingEnd = false;
         this.draggingStart = false;
+        this.pHelper = new PolygonHelper(this.polygon);
         this.draw();
     }
 
     doMouseMove(event) {
         if (this.draggingStart) {
             let wp = this.transformPointToWorld(this.mouseLocation);
-            this.start = wp;
+            if(this.pHelper.isPointInPolygon(wp)){
+                this.start = wp;
+            }
         }
         if (this.draggingEnd) {
             let wp = this.transformPointToWorld(this.mouseLocation);
@@ -80,8 +84,10 @@ class PolygonCanvas extends CanvasHelper {
         // console.log("mouse up");
         if (this.draggingStart) {
             let wp = this.transformPointToWorld(this.mouseLocation);
-            console.log(`dropping start at x: ${wp.x.toFixed(3)}, y: ${wp.y.toFixed(3)}`);
-            this.start = wp;
+            if(this.pHelper.isPointInPolygon(wp)){
+                this.start = wp;
+            }
+            console.log(`dropping start at x: ${this.start.x.toFixed(3)}, y: ${this.start.y.toFixed(3)}`);
             this.draggingStart = false;
         }
         if (this.draggingEnd) {
@@ -117,10 +123,12 @@ class PolygonCanvas extends CanvasHelper {
         this.context.save();
         // super.draw();
 
+        this.vlist = this.pHelper.buildVisibilityList(this.start, this.end);
+        this.graph = new Graph(this.vlist);
+        this.path = this.graph.aStarPath(this.start, this.end);
 
         this.context.strokeStyle = 'yellow';
-        let vlist = pHelper.buildVisibilityList(this.start, this.end);
-        this.drawEdges(vlist);
+        this.drawEdges(this.vlist);
 
         this.context.strokeStyle = 'black';
         this.drawWorldPolygon(this.polygon);
@@ -143,6 +151,9 @@ class PolygonCanvas extends CanvasHelper {
         this.context.strokeStyle = 'black';
         this.drawPoint({ x: this.canvasX, y: this.canvasY });
 
+        this.context.strokeStyle = 'red';
+        this.drawWorldPath(this.path);
+
         this.context.restore;
 
         // console.log("draw");        
@@ -151,9 +162,3 @@ class PolygonCanvas extends CanvasHelper {
 
 const canvas = appendCanvas(800, 400);
 const helper = new PolygonCanvas(canvas, polygon, start, end, concaveVertices);
-// helper.draw();
-
-let vlist = pHelper.buildVisibilityList(start, end);
-// printToHTML(vlist);
-// let graph = edgeListToGraph(vlist);
-// printToHTML(serialize(graph));

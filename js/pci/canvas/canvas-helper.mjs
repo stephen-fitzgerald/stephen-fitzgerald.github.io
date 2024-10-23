@@ -502,6 +502,7 @@ export class CanvasHelper {
      * @param {boolean} [close=false] if true close the loop
      */
     drawWorldPath(path, close = false) {
+        if(path.length === 0 ) return;
         const vertices = path.map((v, i) => {
             return this.transformPointToCanvas(v);
         });
