@@ -1,27 +1,48 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-class Graph {
-    // Map() with nodes as keys, and nodes as values.
-    // nodes are {x,y} points, + extra graph-related data: f,g,h,parent.
-    /** typedef {{x:number, y:number}} Point */
-    /** @typedef {any} Data */
-    /** @typedef {{ data: Data, f: number, g: number, h: number, parent: Node | null, }} Node*/
+
+/**
+ * Nodes just wrap the data object with some graph traversal properties.
+ * They expose x & y properties of the data object
+ *
+ * @class Node
+ */
+class Node {
+
+    /**
+     * Creates a Node to wrap the data object, with some graph traversal properties.
+     * Nodes expose the data.x & data.y properties of the data object for reading.
+     * IE if node = new Node(data) then node.x === data.x.
+     *
+     * @constructor
+     * @param {{x:number, y:number}} data
+     */
+    constructor(data) {
+        this.data = data;
+        this.f = 0.0;
+        this.g = 0.0;
+        this.h = 0.0;
+        this.parent = null;
+    }
+    get x() {
+        return this.data.x;
+    }
+    get y() {
+        return this.data.y;
+    }
+}
+
+export class Graph {
+
+    /** @typedef {{x:number, y:number}} Data */
+    /** @typedef {{ data: Data, f: number, g: number, h: number, parent: Node | null, }} -Node*/
     /** @typedef {Map<Node,Set<Node>>} AdjacencyList */
 
-    /** Map to find neighbors of a node
-     * @type AdjacencyList 
-     */
-    adjacencyList;
-
-    /** Map to find the node that contains an object
-     *  @type {Map<object,Node>} 
-     */
-    nodeMap;
-
     constructor() {
-        /** @type AdjacencyList */
+        /** @type {AdjacencyList} - Map to find neighbors of a node */
         this.adjacencyList = new Map();
+        // Map to find the node that contains an particular data object
         this.nodeMap = new Map();
     }
 
@@ -59,15 +80,11 @@ class Graph {
      * Get an array of neighbors of a node in this graph
      *
      * @param {Node} node
-     * @returns {Node[]} an array of neighbors
+     * @returns {Node[]} a (possibly empty) array of neighbors
      */
     getNeighbours(node) {
         const set = this.adjacencyList.get(node);
-        const neighbors = [];
-        set?.forEach((node) => {
-            neighbors.push(node);
-        });
-        return neighbors;
+        return set == undefined ? [] : Array.from(set);
     }
 
 
@@ -79,12 +96,27 @@ class Graph {
      * @returns {boolean}
      */
     hasEdge(node1, node2) {
-        let ret = false;
-        const node1Neighbors = this.adjacencyList.get(node1);
-        if (node1Neighbors != undefined) {
-            ret = node1Neighbors.has(node2);
-        }
-        return ret;
+        const set = this.adjacencyList.get(node1);
+        return set == undefined ? false : set.has(node2);
+    }
+
+    /**
+    * Create an edge list, which is an array of edges.  Each edge is a 2-item 
+    * array of Nodes, representing a connection between the pair of Nodes.
+    */
+    getEdges() {
+        const edges = [];
+        this.adjacencyList.forEach((neighbours, node) => {
+            neighbours.forEach((neighbor) => {
+                // check if reciprocal edge exists already
+                if (edges.find((pair) => {
+                    (pair[0] === neighbor && pair[1] === node);
+                }) == undefined) {
+                    edges.push([node, neighbor]);
+                }
+            });
+        });
+        return edges;
     }
 
     /**
@@ -121,16 +153,9 @@ class Graph {
      * @returns { Node } reference for the newly created node
      * */
     addNodeFor(data) {
-        let n = this.getNodeFor(data);
+        let n = this.nodeMap.get(data);
         if (n == undefined) {
-            /** @type Node */
-            n = {
-                data: data,
-                f: 0.0,
-                g: 0.0,
-                h: 0.0,
-                parent: null,
-            };
+            n = new Node(data);
         }
         this.addNode(n);
         return n;
@@ -149,9 +174,9 @@ class Graph {
 
 
     /**
-     * Create a new Graph from an object adjacency list, which
-     * is an array of edges.  Each edge is a 2-item array representing
-     * a connection between the pair of objects.
+     * Create a new Graph from an object edge list, which
+     * is an array of edges.  Each edge is a 2-item array of data objects,
+     * representing a connection between the pair of objects.
      * 
      * @static
      * @param {Array<Array<any>>} edges
