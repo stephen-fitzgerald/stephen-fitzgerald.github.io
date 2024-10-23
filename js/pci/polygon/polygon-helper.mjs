@@ -116,7 +116,7 @@ export function doLinesIntersect(l1Start, l1End, l2Start, l2End) {
         return false;
     }
 
-    // Common point is not an intersection
+    // A common end point is not an intersection
     if (pointsAreEqual(l1Start, l2Start)) return false;
     if (pointsAreEqual(l1Start, l2End)) return false;
     if (pointsAreEqual(l1End, l2Start)) return false;
@@ -143,148 +143,13 @@ export function doLinesIntersect(l1Start, l1End, l2Start, l2End) {
 }
 
 
-class Graph {
-    // Map() with nodes as keys, and nodes as values.
-    // nodes are {x,y} points, + extra graph-related data: f,g,h,parent.
-    /** @typedef {{x:number, y:number}} Point */
-    /** @typedef {{ pt: Point, f: number, g: number, h: number, parent: Node | null, }} Node*/
-    /** @typedef {Map<Node,Set<Node>>} AdjacencyList */
-
-    /** @type AdjacencyList */
-    adjacencyList;
-
-    constructor() {
-        /** @type AdjacencyList */
-        this.adjacencyList = new Map();
-    }
-
-    /**
-     * Create a new node for an x,y point and add it to the graph.
-     *
-     * @param { Point } pt reference to an {x,y} point object
-     * @returns { Node } reference for the newly created node
-     * */
-    addNodeForPt(pt) {
-        /** @type Node */
-        const n = {
-            pt: pt,
-            f: 0.0,
-            g: 0.0,
-            h: 0.0,
-            parent: null,
-        };
-        this.addNode(n);
-        return n;
-    }
-
-    /**
-     * Add a new node to the graph.  
-     * Fails silently if the node is already in the graph.
-     *
-     * @param {Node} node
-     */
-    addNode(node) {
-        if (this.adjacencyList.get(node) == undefined) {
-            this.adjacencyList.set(node, new Set());
-        }
-    }
-
-    /**
-     * Add an edge by adding two nodes to each others neighbors collection
-     *
-     * @param {Node} node1
-     * @param {Node} node2
-     */
-    addEdge(node1, node2) {
-        const list1 = this.adjacencyList.get(node1);
-        const list2 = this.adjacencyList.get(node2);
-        if (list1 && list2) {
-            list1.add(node2);
-            list2.add(node1);
-        }
-    }
-
-    /**
-     * Get an array of neighbors of a node in this graph
-     *
-     * @param {Node} node
-     * @returns {Node[]} an array of neighbors
-     */
-    getNeighbours(node) {
-        const set = this.adjacencyList.get(node);
-        const neighbors = [];
-        set?.forEach((node) => {
-            neighbors.push(node);
-        });
-        return neighbors;
-    }
-
-    
-    /**
-     * Returns true if node2 is a neighbor of node1.
-     *
-     * @param {Node} node1
-     * @param {Node} node2
-     * @returns {boolean}
-     */
-    hasEdge(node1, node2) {
-        let ret = false;
-        const node1Neighbors = this.adjacencyList.get(node1);
-        if (node1Neighbors != undefined) {
-            ret = node1Neighbors.has(node2);
-        }
-        return ret;
-    }
-
-    /**
-     * Remove a node from this graph by removing all references to
-     * it from other node's neighbors lists, and then deleting it from 
-     * the adjacency list.
-     *
-     * @param {Node} nodeToRemove
-     * @returns {boolean} true if the node was found and removed
-     */
-    removeNode(nodeToRemove) {
-        let ret = false;
-        // get the list of the target node's neighbors
-        const neighbours = this.adjacencyList.get(nodeToRemove);
-        if (neighbours != undefined) {
-            // remove nodeToremove from each neighbour's neighbours lists
-            neighbours.forEach((nbr)=>{
-                let nbrs = this.adjacencyList.get(nbr);
-                nbrs?.delete(nodeToRemove);
-            });
-            // clear out the node's neighbours list
-            neighbours.clear();
-            // delete the node from the adjacency list
-            ret = this.adjacencyList.delete(nodeToRemove);
-        }
-        return ret;
-    }
-
-    /**
-     * Find an existing node for the given x,y point,
-     * or undefined if none exists
-     *
-     * @param {Point} pt     
-     * @returns { Node | undefined }
-     */
-    getNodeForPt(pt) {
-        this.adjacencyList.forEach((value, key) => {
-            if (key.pt === pt)
-                return key;
-        });
-        return undefined;
-    }
-}
-
 /**
  * Create a node graph from a list of edges
  *
- * @param {Array<Array<{x:number, y:number}>>} edges
+ * @param {Array<Array<object>>} edges
  */
 export function edgeListToGraph(edges) {
-    /** @type Set<{x:number,y:number}> */
+    /** @type Set<{object}> */
     let points = new Set();
     for (let i = 0; i < edges.length; i++) {
         points.add(edges[i][0]);
@@ -295,8 +160,7 @@ export function edgeListToGraph(edges) {
     for (let i = 0; i < vertices.length; i++) {
         let vertex = vertices[i];
         let node = {
-            x: vertex.x,
-            y: vertex.y,
+            data: vertex,
             f: 0.0,
             g: 0.0,
             h: 0.0,

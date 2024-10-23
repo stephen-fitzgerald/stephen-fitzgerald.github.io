@@ -20,11 +20,11 @@ const PIx2 = 6.283185307;
 export class CanvasHelper {
     constructor(canvas) {
 
-        this.polygon = undefined;
-        this.start = undefined;
-        /** @type {{x:number, y:number}|undefined} */
-        this.end = undefined;
-        this.concavePoints = undefined;
+        // this.polygon = undefined;
+        // this.start = undefined;
+        // /** @type {{x:number, y:number}|undefined} */
+        // this.end = undefined;
+        // this.concavePoints = undefined;
 
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
@@ -77,21 +77,21 @@ export class CanvasHelper {
      *
      * @returns {{ xmin: number; xmax: number; ymin: number; ymax: number; }|undefined}
      */
-    polygonExtents() {
-        if (this.polygon == undefined || this.polygon.length < 2)
-            return undefined;
-        let ret = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
-        for (let i = 0; i < this.polygon.length; i++) {
-            let x = this.polygon[i].x;
-            let y = this.polygon[i].y;
-            if (x < ret.xmin) ret.xmin = x;
-            if (x > ret.xmax) ret.xmax = x;
-            if (y < ret.ymin) ret.ymin = y;
-            if (y > ret.ymax) ret.ymax = y;
+    // polygonExtents() {
+    //     if (this.polygon == undefined || this.polygon.length < 2)
+    //         return undefined;
+    //     let ret = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
+    //     for (let i = 0; i < this.polygon.length; i++) {
+    //         let x = this.polygon[i].x;
+    //         let y = this.polygon[i].y;
+    //         if (x < ret.xmin) ret.xmin = x;
+    //         if (x > ret.xmax) ret.xmax = x;
+    //         if (y < ret.ymin) ret.ymin = y;
+    //         if (y > ret.ymax) ret.ymax = y;
 
-        }
-        return ret;
-    }
+    //     }
+    //     return ret;
+    // }
 
     /**
      * Context menu is called for a right click in the canvas
@@ -112,9 +112,12 @@ export class CanvasHelper {
         this.mouseIsInside = true;
         this.setPosition(event);
         this.readButtons(event);
+        this.doMouseEnter(event);
         this.draw();
     };
 
+    doMouseEnter(event) {
+    }
 
     /**
      * Description placeholder
@@ -125,9 +128,12 @@ export class CanvasHelper {
         this.mouseIsInside = false;
         this.setPosition(event);
         this.readButtons(event);
+        this.doMouseLeave(event);
         this.draw();
     };
 
+    doMouseLeave(event) {
+    }
 
     /**
      * Description placeholder
@@ -137,13 +143,12 @@ export class CanvasHelper {
     mouseMove(event) {
         this.setPosition(event);
         this.readButtons(event);
-        if (this.draggingEnd) {
-            let wp = this.transformPointToWorld(this.mouseLocation);
-            this.end = wp;
-        }
+        this.doMouseMove(event);
         this.draw();
     };
 
+    doMouseMove(event) {
+    }
 
     /**
      * Description placeholder
@@ -153,16 +158,12 @@ export class CanvasHelper {
     mouseUp(event) {
         this.setPosition(event);
         this.readButtons(event);
-        // console.log("mouse up");
-        if (this.draggingEnd) {
-            let wp = this.transformPointToWorld(this.mouseLocation);
-            console.log(`dropping end at x: ${wp.x.toFixed(3)}, y: ${wp.y.toFixed(3)}`);
-            this.end = wp;
-            this.draggingEnd = false;
-        }
+        this.doMouseUp(event);
         this.draw();
     };
 
+    doMouseUp(event) {
+    }
 
     /**
      * Description placeholder
@@ -172,17 +173,12 @@ export class CanvasHelper {
     mouseDown(event) {
         this.setPosition(event);
         this.readButtons(event);
-        const cp = { x: this.canvasX, y: this.canvasY };
-        console.log(`mouse down at x: ${Math.round(cp.x)} y: ${Math.round(cp.y)}`);
-        const wp = this.transformPointToWorld(cp);
-        console.log(`in the world that's x: ${wp.x.toFixed(3)} y: ${wp.y.toFixed(3)}`);
-        if (this.canvasPtIsNearWorldPt(cp, this.end)) {
-            console.log("End point clicked!");
-            this.draggingEnd = true;
-        }
+        this.doMouseDown(event);
         this.draw();
     };
 
+    doMouseDown(event) {
+    }
 
     /**
      * Description placeholder

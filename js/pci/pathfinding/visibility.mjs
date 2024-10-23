@@ -23,28 +23,92 @@ const polygon = [
     { x: 0, y: 3 },
 ];
 
+function getExtents(polygon) {
+    const extents = {
+        xmin: Infinity,
+        xmax: -Infinity,
+        ymin: Infinity,
+        ymax: -Infinity,
+    };
+
+    for (let i = 0; i < polygon.length; i++) {
+        if (extents.xmin == undefined || polygon[i].x < extents.xmin)
+            extents.xmin = polygon[i].x;
+        if (extents.xmax == undefined || polygon[i].x > extents.xmax)
+            extents.xmax = polygon[i].x;
+        if (extents.ymin == undefined || polygon[i].y < extents.ymin)
+            extents.ymin = polygon[i].y;
+        if (extents.ymax == undefined || polygon[i].y > extents.ymax)
+            extents.ymax = polygon[i].y;
+    }
+    return extents;
+}
+
 const pHelper = new PolygonHelper(polygon);
 
 const concaveVertices = pHelper.concaveVertices();
 
-const start = { x: 0.5, y: 2.85 };  
-const end = { x: 2.05, y: 2.75 };  
+const start = { x: 0.5, y: 2.85 };
+const end = { x: 2.05, y: 2.75 };
 
 printToHTML("Done with CanvasHelper: ");
 
 class PolygonCanvas extends CanvasHelper {
-    constructor(canvas, polygon, start, end, concaveVertices ) {
+    constructor(canvas, polygon, start, end, concaveVertices) {
         super(canvas);
         this.polygon = polygon;
         this.start = { x: start.x, y: start.y };
         this.end = { x: end.x, y: end.y };
         this.concaveVertices = concaveVertices;
+        this.draggingEnd = false;
+        this.draggingStart = false;
         this.draw();
+    }
+
+    doMouseMove(event) {
+        if (this.draggingStart) {
+            let wp = this.transformPointToWorld(this.mouseLocation);
+            this.start = wp;
+        }
+        if (this.draggingEnd) {
+            let wp = this.transformPointToWorld(this.mouseLocation);
+            this.end = wp;
+        }
+    }
+
+    doMouseUp(event) {
+        // console.log("mouse up");
+        if (this.draggingStart) {
+            let wp = this.transformPointToWorld(this.mouseLocation);
+            console.log(`dropping start at x: ${wp.x.toFixed(3)}, y: ${wp.y.toFixed(3)}`);
+            this.start = wp;
+            this.draggingStart = false;
+        }
+        if (this.draggingEnd) {
+            let wp = this.transformPointToWorld(this.mouseLocation);
+            console.log(`dropping end at x: ${wp.x.toFixed(3)}, y: ${wp.y.toFixed(3)}`);
+            this.end = wp;
+            this.draggingEnd = false;
+        }
+    }
+
+    doMouseDown(event) {
+        const cp = { x: this.canvasX, y: this.canvasY };
+        console.log(`mouse down at x: ${Math.round(cp.x)} y: ${Math.round(cp.y)}`);
+        const wp = this.transformPointToWorld(cp);
+        console.log(`in the world that's x: ${wp.x.toFixed(3)} y: ${wp.y.toFixed(3)}`);
+        if (this.canvasPtIsNearWorldPt(cp, this.start)) {
+            console.log("Start point clicked!");
+            this.draggingStart = true;
+        }else if (this.canvasPtIsNearWorldPt(cp, this.end)) {
+            console.log("End point clicked!");
+            this.draggingEnd = true;
+        }
     }
 
     draw() {
 
-        let extents = this.polygonExtents();
+        let extents = getExtents(this.polygon);
         let so = this.calcScaleAndOffset(extents);
         this.scale = so.scale;
         this.offset = so.offset;
@@ -55,7 +119,7 @@ class PolygonCanvas extends CanvasHelper {
 
 
         this.context.strokeStyle = 'yellow';
-        let vlist =pHelper.buildVisibilityList(this.start, this.end);
+        let vlist = pHelper.buildVisibilityList(this.start, this.end);
         this.drawEdges(vlist);
 
         this.context.strokeStyle = 'black';
@@ -77,19 +141,19 @@ class PolygonCanvas extends CanvasHelper {
         this.labelWorldPoint(this.end, "end");
 
         this.context.strokeStyle = 'black';
-        this.drawPoint({x:this.canvasX, y:this.canvasY});
+        this.drawPoint({ x: this.canvasX, y: this.canvasY });
 
-        this.context.restore
+        this.context.restore;
 
         // console.log("draw");        
     }
 }
 
 const canvas = appendCanvas(800, 400);
-const helper = new PolygonCanvas(canvas, polygon, start, end, concaveVertices );
-helper.draw();
+const helper = new PolygonCanvas(canvas, polygon, start, end, concaveVertices);
+// helper.draw();
 
-let vlist =pHelper.buildVisibilityList(start, end);
-printToHTML(vlist);
-let graph = edgeListToGraph(vlist);
-printToHTML(serialize(graph));
+let vlist = pHelper.buildVisibilityList(start, end);
+// printToHTML(vlist);
+// let graph = edgeListToGraph(vlist);
+// printToHTML(serialize(graph));
