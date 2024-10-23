@@ -104,7 +104,7 @@ export class Graph {
     * Create an edge list, which is an array of edges.  Each edge is a 2-item 
     * array of Nodes, representing a connection between the pair of Nodes.
     */
-    getEdges() {
+    get edgeList() {
         const edges = [];
         this.adjacencyList.forEach((neighbours, node) => {
             neighbours.forEach((neighbor) => {
