@@ -326,22 +326,22 @@ export class CanvasHelper {
      * get the scale and offset to center an object with extents into a canvas
      * so that it covers a rough percentage of the area.
      *
-     * @param {{xmin:number, xmax:number, ymin:number, ymax:number} | undefined} extents
+     * @param {{xMin:number, xMax:number, yMin:number, yMax:number} | undefined} extents
      * @param {number} [coverFactor=0.80] defaults to 80%
      * @returns {{ scale: { x: number; y: number; }; offset: { x: number; y: number; }; }}
      */
     calcScaleAndOffset(extents, coverFactor = 0.80) {
         if (extents == undefined ||
-            Math.abs(extents.xmax - extents.xmin) < 0.00001 ||
-            Math.abs(extents.ymax - extents.ymin) < 0.00001
+            Math.abs(extents.xMax - extents.xMin) < 0.00001 ||
+            Math.abs(extents.yMax - extents.yMin) < 0.00001
         ) {
             return {
                 scale: { x: 1.0, y: 1.0 },
                 offset: { x: 0.0, y: 0.0 }
             };
         }
-        const width = extents.xmax - extents.xmin;
-        const height = extents.ymax - extents.ymin;
+        const width = extents.xMax - extents.xMin;
+        const height = extents.yMax - extents.yMin;
         const canvas = this.canvas;
 
         // Calculate the scale factor to fit the extents in the canvas

@@ -20,7 +20,7 @@ const EPS = 1e-6;
  * @param {Array<{x: number, y: number}>} polygon - An array of points representing the polygon's vertices.
  * @returns {boolean} - True if the point is inside the polygon, false otherwise.
  */
-export function pointInPolygon(point, polygon) {
+function pointInPolygon(point, polygon) {
     let x = point.x, y = point.y;
     let inside = false;
 
@@ -53,7 +53,7 @@ function crossProduct(p1, p2, p3) {
  * @param {{x: number, y: number}} w - The vertex whose angle to v is to be computed.
  * @returns {number} - The angle in radians.
  */
-export function computeAngle(v, w) {
+function computeAngle(v, w) {
     return Math.atan2(w.y - v.y, w.x - v.x);
 }
 
@@ -63,7 +63,7 @@ export function computeAngle(v, w) {
  * @param {{x: number, y: number}} w - Second point.
  * @returns {number} - The distance between v and w.
  */
-export function computeDistance(v, w) {
+function computeDistance(v, w) {
     return Math.sqrt((v.x - w.x) ** 2 + (v.y - w.y) ** 2);
 }
 
@@ -76,7 +76,7 @@ export function computeDistance(v, w) {
    * @param {{x:number, y:number}} pt3
    * @returns {number}
    */
-export function vertexAngle(pt1, pt2, pt3) {
+function vertexAngle(pt1, pt2, pt3) {
     let x1x2 = (pt2.x - pt1.x);
     let x3x2 = (pt3.x - pt2.x);
     let y1y2 = (pt2.y - pt1.y);
@@ -97,7 +97,7 @@ export function vertexAngle(pt1, pt2, pt3) {
  * @param {{x:number, y:number}} l2End
  * @returns {boolean} true if line 1 intersects line 2.
  */
-export function doLinesIntersect(l1Start, l1End, l2Start, l2End) {
+function doLinesIntersect(l1Start, l1End, l2Start, l2End) {
     function orientation(p, q, r) {
         const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
         if (val === 0) return 0;  // Collinear
@@ -142,50 +142,6 @@ export function doLinesIntersect(l1Start, l1End, l2Start, l2End) {
     return false;
 }
 
-
-// /**
-//  * Create a node graph from a list of edges
-//  *
-//  * @param {Array<Array<object>>} edges
-//  */
-// export function edgeListToGraph(edges) {
-//     /** @type Set<{object}> */
-//     let points = new Set();
-//     for (let i = 0; i < edges.length; i++) {
-//         points.add(edges[i][0]);
-//         points.add(edges[i][1]);
-//     }
-//     let vertices = Array.from(points);
-//     let nodesMap = new Map();
-//     for (let i = 0; i < vertices.length; i++) {
-//         let vertex = vertices[i];
-//         let node = {
-//             data: vertex,
-//             f: 0.0,
-//             g: 0.0,
-//             h: 0.0,
-//             neighbors: null,
-//             parent: null
-//         };
-//         nodesMap.set(vertex, node);
-//     }
-//     for (let i = 0; i < vertices.length; i++) {
-//         let vertex = vertices[i];
-//         let node = nodesMap.get(vertex);
-//         let neighbors = new Set();
-//         for (let i = 0; i < edges.length; i++) {
-//             if (edges[i][0] === vertex) {
-//                 neighbors.add(nodesMap.get(edges[i][1]));
-//             }
-//             if (edges[i][1] === vertex) {
-//                 neighbors.add(nodesMap.get(edges[i][0]));
-//             }
-//         }
-//         node.neighbors = Array.from(neighbors);
-//     }
-//     return Array.from(nodesMap.values());
-// }
-
 export class PolygonHelper {
 
     /**
@@ -197,8 +153,20 @@ export class PolygonHelper {
         this.polygon = polygon;
     }
 
+    
+    /**
+     * The polygon's extents
+     *
+     * @readonly
+     * @type {{xMin:number, xMax:number, yMin:number, yMax:number}}
+     */
     get extents() {
-        const ret = {};
+        const ret = {
+            xMin: Infinity,
+            xMax: -Infinity,
+            yMin: Infinity,
+            yMax: -Infinity,
+        };
         this.polygon.forEach(v => {
             if (ret.xMin == undefined || v.x < ret.xMin) {
                 ret.xMin = v.x;
@@ -318,18 +286,4 @@ export class PolygonHelper {
         }
         return visiblePairs;
     }
-
-    // /**
-    // * build a visibility list with convex vertices, plus start and end points,
-    // * and convert it into a graph.
-    // *
-    // * @param {{x:number,y:number}} start
-    // * @param {{x:number,y:number}} end
-    // */
-    // buildVisibilityGraph(start, end) {
-    //     const vList = this.buildVisibilityList(start, end);
-    //     const vGraph = edgeListToGraph(vList);
-    //     return vGraph;
-    // }
-
 }

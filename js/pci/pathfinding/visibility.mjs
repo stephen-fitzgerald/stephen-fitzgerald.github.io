@@ -4,63 +4,14 @@
 import { printToHTML, syntaxHighlight, appendCanvas } from "../util/print-to-html.mjs";
 import { CanvasHelper } from "../canvas/canvas-helper.mjs";
 import { PolygonHelper } from "../polygon/polygon-helper.mjs";
-import { decycle, serialize } from "../util/serialize.mjs";
 import { Graph } from "../polygon/graph.mjs";
 
-// Example usage
-// Define polygon as an array of points
-const polygon = [
-    { x: 0, y: 0 },
-    { x: 1, y: 0 },
-    { x: 1, y: 1 },
-    { x: 2, y: 1 },
-    { x: 2, y: 0 },
-    { x: 3.25, y: 0 },
-    { x: 3, y: 3 },
-    { x: 2, y: 3 },
-    { x: 2, y: 2 },
-    { x: 1, y: 2 },
-    { x: 1, y: 3 },
-    { x: 0, y: 3 },
-];
-
-function getExtents(polygon) {
-    const extents = {
-        xmin: Infinity,
-        xmax: -Infinity,
-        ymin: Infinity,
-        ymax: -Infinity,
-    };
-
-    for (let i = 0; i < polygon.length; i++) {
-        if (extents.xmin == undefined || polygon[i].x < extents.xmin)
-            extents.xmin = polygon[i].x;
-        if (extents.xmax == undefined || polygon[i].x > extents.xmax)
-            extents.xmax = polygon[i].x;
-        if (extents.ymin == undefined || polygon[i].y < extents.ymin)
-            extents.ymin = polygon[i].y;
-        if (extents.ymax == undefined || polygon[i].y > extents.ymax)
-            extents.ymax = polygon[i].y;
-    }
-    return extents;
-}
-
-const pHelper = new PolygonHelper(polygon);
-
-const concaveVertices = pHelper.concaveVertices();
-
-const start = { x: 0.5, y: 2.85 };
-const end = { x: 2.05, y: 2.75 };
-
-printToHTML("Done with CanvasHelper: ");
-
 class PolygonCanvas extends CanvasHelper {
-    constructor(canvas, polygon, start, end, concaveVertices) {
+    constructor(canvas, polygon, start, end) {
         super(canvas);
         this.polygon = polygon;
         this.start = start;
         this.end = end;
-        this.concaveVertices = concaveVertices;
         this.draggingEnd = false;
         this.draggingStart = false;
         this.pHelper = new PolygonHelper(this.polygon);
@@ -114,15 +65,15 @@ class PolygonCanvas extends CanvasHelper {
 
     draw() {
 
-        let extents = getExtents(this.polygon);
+        let extents = this.pHelper.extents;
         let so = this.calcScaleAndOffset(extents);
         this.scale = so.scale;
         this.offset = so.offset;
 
         this.clear();
         this.context.save();
-        // super.draw();
 
+        this.concaveVertices = pHelper.concaveVertices();
         this.vlist = this.pHelper.buildVisibilityList(this.start, this.end);
         this.graph = new Graph(this.vlist);
         this.path = this.graph.aStarPath(this.start, this.end);
@@ -155,10 +106,30 @@ class PolygonCanvas extends CanvasHelper {
         this.drawWorldPath(this.path);
 
         this.context.restore;
-
-        // console.log("draw");        
     }
 }
 
+// Example usage
+// Define polygon as an array of points
+const polygon = [
+    { x: 0, y: 0 },
+    { x: 1, y: 0 },
+    { x: 1, y: 1 },
+    { x: 2, y: 1 },
+    { x: 2, y: 0 },
+    { x: 3.25, y: 0 },
+    { x: 3, y: 3 },
+    { x: 2, y: 3 },
+    { x: 2, y: 2 },
+    { x: 1, y: 2 },
+    { x: 1, y: 3 },
+    { x: 0, y: 3 },
+];
+
+const pHelper = new PolygonHelper(polygon);
+const start = { x: 0.5, y: 2.85 };
+const end = { x: 2.05, y: 2.75 };
+
+printToHTML("Done with CanvasHelper: ");
 const canvas = appendCanvas(800, 400);
-const helper = new PolygonCanvas(canvas, polygon, start, end, concaveVertices);
+const helper = new PolygonCanvas(canvas, polygon, start, end);
