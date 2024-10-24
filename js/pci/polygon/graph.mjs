@@ -25,12 +25,6 @@ class Node {
         this.h = 0.0;
         this.parent = null;
     }
-    get x() {
-        return this.data.x;
-    }
-    get y() {
-        return this.data.y;
-    }
 }
 
 export class Graph {
@@ -39,13 +33,13 @@ export class Graph {
     /** @typedef {{ data: Data, f: number, g: number, h: number, parent: Node | null, }} -Node*/
     /** @typedef {Map<Node,Set<Node>>} AdjacencyList */
 
-    constructor( edges ) {
+    constructor(edges) {
         /** @type {AdjacencyList} - Map to find neighbors of a node */
         this.adjacencyList = new Map();
         // Map to find the node that contains an particular data object
         this.nodeMap = new Map();
 
-        if(edges != undefined ){
+        if (edges != undefined) {
             for (let i = 0; i < edges.length; i++) {
                 const node1 = this.addNodeFor(edges[i][0]);
                 const node2 = this.addNodeFor(edges[i][1]);
@@ -212,21 +206,22 @@ export class Graph {
         let StartNode = start instanceof Node ? start : this.getNodeFor(start);
         let goalNode = goal instanceof Node ? goal : this.getNodeFor(goal);
 
-        if( StartNode == undefined || goalNode == undefined ){
-            // throw new Error("Bad start or goal points.");
-            return [];
+        if (StartNode == undefined || goalNode == undefined) {
+            return [];  // no path
         }
-
-        let openList = [];
-        let closedList = [];
 
         function heuristic(node, goal) {
             return distance(node, goal);
         }
 
         function distance(nodeA, nodeB) {
-            return Math.sqrt((nodeB.x - nodeA.x) ** 2 + (nodeB.y - nodeA.y) ** 2);
+            return Math.sqrt((nodeB.data.x - nodeA.data.x) ** 2 + (nodeB.data.y - nodeA.data.y) ** 2);
         }
+
+        /** @type {Array<Node>} */
+        let openList = [];
+        /** @type {Array<Node>} */
+        let closedList = [];
 
         openList.push(StartNode);
 
@@ -252,25 +247,23 @@ export class Graph {
             // go through all of the current node's neighbors
             for (let neighbor of this.getNeighbours(currentNode)) {
 
-                // Skip neighbors that are in the closed list
-                if (closedList.find(node => node === neighbor)) {
-                    continue;
-                }
+                if (closedList.includes(neighbor) == false) {
 
-                // Calculate the new g score from the start to this neighbor
-                let gScore = currentNode.g + distance(currentNode, neighbor);
+                    // Calculate the new g score from the start to this neighbor
+                    let gScore = currentNode.g + distance(currentNode, neighbor);
 
-                // if neighbor not in the open list, or this new path has a lower gScore
-                // add it to, or update it in, the open list with updated g, h, f scores & parent
-                let inOpen = openList.find(node => node === neighbor);
-                if (!inOpen || gScore < neighbor.g) {
-                    neighbor.g = gScore;
-                    neighbor.h = heuristic(neighbor, goalNode);
-                    neighbor.f = neighbor.g + neighbor.h;
-                    neighbor.parent = currentNode;
-                    // Add neighbor to open list if it's not already there
-                    if (!inOpen) {
-                        openList.push(neighbor);
+                    // if neighbor not in the open list, or this new path to it has a lower gScore
+                    // add it to, or update it in, the open list with updated g, h, f & parent
+                    let inOpen = openList.includes(neighbor);
+                    if (!inOpen || gScore < neighbor.g) {
+                        neighbor.g = gScore;
+                        neighbor.h = heuristic(neighbor, goalNode);
+                        neighbor.f = neighbor.g + neighbor.h;
+                        neighbor.parent = currentNode;
+                        // Add neighbor to open list if it's not already there
+                        if (!inOpen) {
+                            openList.push(neighbor);
+                        }
                     }
                 }
             }
