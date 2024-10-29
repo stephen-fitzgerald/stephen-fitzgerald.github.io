@@ -4,7 +4,6 @@
 
 /**
  * Nodes just wrap the data object with some graph traversal properties.
- * They expose x & y properties of the data object
  *
  * @class Node
  */
@@ -16,7 +15,7 @@ class Node {
      * IE if node = new Node(data) then node.x === data.x.
      *
      * @constructor
-     * @param {{x:number, y:number}} data
+     * @param {Object} data
      */
     constructor(data) {
         this.data = data;
@@ -36,7 +35,7 @@ export class Graph {
     constructor(edges) {
         /** @type {AdjacencyList} - Map to find neighbors of a node */
         this.adjacencyList = new Map();
-        // Map to find the node that contains an particular data object
+        /** @type {Map<Object,Node>} Map to find the node that contains an particular data object */
         this.nodeMap = new Map();
 
         if (edges != undefined) {
@@ -123,7 +122,7 @@ export class Graph {
 
     /**
      * Remove a node from this graph by removing all references to
-     * it from other node's neighbors lists, and then deleting it from 
+     * it from other node's neighbor lists, and then deleting it from 
      * the adjacency list.
      *
      * @param {Node} nodeToRemove
