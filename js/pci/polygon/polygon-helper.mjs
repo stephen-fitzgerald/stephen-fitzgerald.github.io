@@ -1,19 +1,12 @@
 // @ts-check
 /*jshint esversion: 6 */
 
-
-/**
- * If two world coordinates are this close in x and y they are considered equal
- *
- * @type {0.000001}
- */
-const EPS = 1e-6;
-
 /** @typedef {Array<{x:number,y:number}>} Polygon */
 /** @typedef {{x:number, y:number}} Point */
 /** @typedef {Array<Point>} Edge */
 /** @typedef {Array<Edge>} EdgeList */
 
+const EPS = 0.0 + 0.0000001;
 /**
  * Determines if a point is inside a polygon using the Ray-Casting algorithm.
  * @param {{x: number, y: number}} point - The point to check.
@@ -95,9 +88,10 @@ function vertexAngle(pt1, pt2, pt3) {
  * @param {{x:number, y:number}} l1End
  * @param {{x:number, y:number}} l2Start
  * @param {{x:number, y:number}} l2End
+ * @param {number} eps tolerance to use for point intersections
  * @returns {boolean} true if line 1 intersects line 2.
  */
-function doLinesIntersect(l1Start, l1End, l2Start, l2End) {
+function doLinesIntersect(l1Start, l1End, l2Start, l2End, eps = EPS) {
     function orientation(p, q, r) {
         const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
         if (val === 0) return 0;  // Collinear
@@ -151,9 +145,19 @@ export class PolygonHelper {
      */
     constructor(polygon) {
         this.polygon = polygon;
+        this._eps = Math.abs(0.0000001);
     }
 
-    
+    /** @type {number} */
+    get eps() {
+        return this._eps;
+    }
+
+    /** @param {number} value */
+    set eps(value) {
+        this._eps = Math.abs(value);
+    }
+
     /**
      * The polygon's extents
      *
@@ -244,7 +248,7 @@ export class PolygonHelper {
             edges = this.edgeList;
         }
         for (const edge of edges) {
-            if (doLinesIntersect(v1, v2, edge[0], edge[1])) {
+            if (doLinesIntersect(v1, v2, edge[0], edge[1], this.eps)) {
                 return false; // w_i is blocked by an edge in T
             }
         }

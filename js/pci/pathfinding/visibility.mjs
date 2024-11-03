@@ -18,6 +18,20 @@ class PolygonCanvas extends CanvasHelper {
         this.draw();
     }
 
+    doMouseDown(event) {
+        const cp = { x: this.canvasX, y: this.canvasY };
+        console.log(`mouse down at x: ${Math.round(cp.x)} y: ${Math.round(cp.y)}`);
+        const wp = this.transformPointToWorld(cp);
+        console.log(`in the world that's x: ${wp.x.toFixed(3)} y: ${wp.y.toFixed(3)}`);
+        if (this.canvasPtIsNearWorldPt(cp, this.start)) {
+            console.log("Start point clicked!");
+            this.draggingStart = true;
+        }else if (this.canvasPtIsNearWorldPt(cp, this.end)) {
+            console.log("End point clicked!");
+            this.draggingEnd = true;
+        }
+    }
+
     doMouseMove(event) {
         if (this.draggingStart) {
             let wp = this.transformPointToWorld(this.mouseLocation);
@@ -49,20 +63,6 @@ class PolygonCanvas extends CanvasHelper {
         }
     }
 
-    doMouseDown(event) {
-        const cp = { x: this.canvasX, y: this.canvasY };
-        console.log(`mouse down at x: ${Math.round(cp.x)} y: ${Math.round(cp.y)}`);
-        const wp = this.transformPointToWorld(cp);
-        console.log(`in the world that's x: ${wp.x.toFixed(3)} y: ${wp.y.toFixed(3)}`);
-        if (this.canvasPtIsNearWorldPt(cp, this.start)) {
-            console.log("Start point clicked!");
-            this.draggingStart = true;
-        }else if (this.canvasPtIsNearWorldPt(cp, this.end)) {
-            console.log("End point clicked!");
-            this.draggingEnd = true;
-        }
-    }
-
     draw() {
 
         let extents = this.pHelper.extents;
@@ -73,7 +73,7 @@ class PolygonCanvas extends CanvasHelper {
         this.clear();
         this.context.save();
 
-        this.concaveVertices = pHelper.concaveVertices();
+        this.concaveVertices = this.pHelper.concaveVertices();
         this.vlist = this.pHelper.buildVisibilityList(this.start, this.end);
         this.graph = new Graph(this.vlist);
         this.path = this.graph.aStarPath(this.start, this.end);
@@ -92,11 +92,11 @@ class PolygonCanvas extends CanvasHelper {
         this.drawWorldPoints(this.concaveVertices);
 
         this.context.strokeStyle = 'green';
-        this.drawWorldPoint(this.start);
+        this.drawCircleAtWorldPt(this.start);
         this.labelWorldPoint(this.start, "start");
 
         this.context.strokeStyle = 'red';
-        this.drawWorldPoint(this.end);
+        this.drawCircleAtWorldPt(this.end);
         this.labelWorldPoint(this.end, "end");
 
         this.context.strokeStyle = 'black';
@@ -126,7 +126,7 @@ const polygon = [
     { x: 0, y: 3 },
 ];
 
-const pHelper = new PolygonHelper(polygon);
+// const pHelper = new PolygonHelper(polygon);
 const start = { x: 0.5, y: 2.85 };
 const end = { x: 2.05, y: 2.75 };
 

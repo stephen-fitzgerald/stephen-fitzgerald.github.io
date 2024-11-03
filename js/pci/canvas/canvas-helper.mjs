@@ -434,7 +434,7 @@ export class CanvasHelper {
      * Draw a small circle at a point given in world coordinates
      * @param {{x:number, y:number}} pt in world coords
      */
-    drawWorldPoint(pt) {
+    drawCircleAtWorldPt(pt) {
         if (pt == undefined) return;
         let _pt = this.transformPointToCanvas(pt);
         let context = this.context;
@@ -449,7 +449,7 @@ export class CanvasHelper {
     drawWorldPoints(pts) {
         if (pts == undefined) return;
         for (let i = 0; i < pts.length; i++) {
-            this.drawWorldPoint(pts[i]);
+            this.drawCircleAtWorldPt(pts[i]);
         }
     }
 
@@ -457,11 +457,12 @@ export class CanvasHelper {
      * Label a point on a canvas with text, offset by this.labelOffset.x & .y pixels
      * @param {{x:number, y:number}} pt in world coords
      * @param {string} text
+     * @param {{x:number, y:number}} [offset]
      */
-    labelWorldPoint(pt, text) {
+    labelWorldPoint(pt, text, offset) {
         let _pt = this.transformPointToCanvas(pt);
-        const dx = this.labelOffset.x;
-        const dy = - this.labelOffset.y;
+        const dx = (offset && offset.x) ? offset.x : this.labelOffset.x;
+        const dy = (offset && offset.y) ? offset.y : - this.labelOffset.y;
         this.context.strokeText("" + text, _pt.x + dx, _pt.y + dy);
     }
 
@@ -502,7 +503,7 @@ export class CanvasHelper {
      * @param {boolean} [close=false] if true close the loop
      */
     drawWorldPath(path, close = false) {
-        if(path.length === 0 ) return;
+        if (path.length === 0) return;
         const vertices = path.map((v, i) => {
             return this.transformPointToCanvas(v);
         });
