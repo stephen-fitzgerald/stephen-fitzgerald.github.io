@@ -29,6 +29,23 @@ function pointInPolygon(point, polygon) {
     return inside;
 }
 
+
+/**
+ * Returns true if two points are equal in x,y space
+ * @param {{x:number, y:number}} pt1
+ * @param {{x:number, y:number}} pt2
+ * @param {number} [eps=0.0]
+ * @returns {boolean}
+ */
+function pointsAreEqual(pt1, pt2, eps = 0.0) {
+    if (pt1 === pt2) return true;
+    const dx = Math.abs(pt1.x - pt2.x);
+    if (dx > eps) return false;
+    const dy = Math.abs(pt1.y - pt2.y);
+    if (dy > eps) return false;
+    return ((dx * dx + dy * dy) <= (eps * eps));
+}
+
 /**
  * Calculates the cross product of vectors (p1->p2) and (p2->p3).
  * @param {{x: number, y: number}} p1 - The first point.
@@ -244,15 +261,32 @@ export class PolygonHelper {
      * @returns {boolean} - True if v1<->v2 is visible, false otherwise.
      */
     isVisible(v1, v2, edges = undefined) {
+
         if (edges == undefined) {
             edges = this.edgeList;
         }
+        // if v1, v2 are ends of a common edge they are visible to each other
+        for (const edge of edges) {
+            if (
+                (pointsAreEqual(v1, edge[0]) && pointsAreEqual(v2, edge[1])) ||
+                (pointsAreEqual(v2, edge[0]) && pointsAreEqual(v1, edge[1]))
+            ) {
+                return true;
+            }
+        }
+        // if the line v1-v2 intersects the polygon they are not visible
         for (const edge of edges) {
             if (doLinesIntersect(v1, v2, edge[0], edge[1], this.eps)) {
                 return false; // w_i is blocked by an edge in T
             }
         }
-        return true; // No edge in T blocks the line of sight
+        // if the line v1-v2 is outside of the polygon there is no visibility
+        let midPt = { x: (v1.x + v2.x) / 2, y: (v1.y + v2.y) / 2.0 };
+        if (this.isPointInPolygon(midPt) == false) {
+            return false;
+        }
+        // line v1-v2 not intersected & is inside polygon
+        return true; 
     }
 
     /**
@@ -289,5 +323,26 @@ export class PolygonHelper {
             }
         }
         return visiblePairs;
+    }
+
+
+    /**
+     * The signed area of the polygon, assuming vertices are listed 
+     * counter clockwise around the perimiter, and that +y is up.
+     * @readonly
+     * @type {number}
+     */
+    get signedArea() {
+        let sum = 0;
+        let j = this.polygon.length - 1;
+        for (let i = 0; i < this.polygon.length; i++) {
+            let x1 = this.polygon[i].x;
+            let y1 = this.polygon[i].y;
+            let x2 = this.polygon[j].x;
+            let y2 = this.polygon[j].y;
+            sum += (x2 - x1) * (y2 + y1);
+            j = i;
+        }
+        return sum / 2.0;
     }
 }

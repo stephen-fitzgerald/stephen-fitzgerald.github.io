@@ -12,8 +12,6 @@ class PolygonCanvas extends CanvasHelper {
         this.polygon = polygon;
         this.start = start;
         this.end = end;
-        this.draggingEnd = false;
-        this.draggingStart = false;
         this.pHelper = new PolygonHelper(this.polygon);
         this.draw();
     }
@@ -25,42 +23,36 @@ class PolygonCanvas extends CanvasHelper {
         console.log(`in the world that's x: ${wp.x.toFixed(3)} y: ${wp.y.toFixed(3)}`);
         if (this.canvasPtIsNearWorldPt(cp, this.start)) {
             console.log("Start point clicked!");
-            this.draggingStart = true;
-        }else if (this.canvasPtIsNearWorldPt(cp, this.end)) {
+            this.dragTarget = this.start;
+        } else if (this.canvasPtIsNearWorldPt(cp, this.end)) {
             console.log("End point clicked!");
-            this.draggingEnd = true;
+            this.dragTarget = this.end;
+        } else {
+            for (let i = 0; i < this.polygon.length; i++) {
+                if (this.canvasPtIsNearWorldPt(cp, this.polygon[i])) {
+                    this.dragTarget = this.polygon[i];
+                    break;
+                }
+            }
         }
     }
 
     doMouseMove(event) {
-        if (this.draggingStart) {
-            let wp = this.transformPointToWorld(this.mouseLocation);
-            if(this.pHelper.isPointInPolygon(wp)){
-                this.start = wp;
-            }
-        }
-        if (this.draggingEnd) {
-            let wp = this.transformPointToWorld(this.mouseLocation);
-            this.end = wp;
+        let wp = this.transformPointToWorld(this.mouseLocation);
+        // let inPolygon = this.pHelper.isPointInPolygon(wp);
+        if (this.dragTarget) {
+            this.dragTarget.x = wp.x;
+            this.dragTarget.y = wp.y;
         }
     }
 
     doMouseUp(event) {
-        // console.log("mouse up");
-        if (this.draggingStart) {
-            let wp = this.transformPointToWorld(this.mouseLocation);
-            if(this.pHelper.isPointInPolygon(wp)){
-                this.start = wp;
-            }
-            console.log(`dropping start at x: ${this.start.x.toFixed(3)}, y: ${this.start.y.toFixed(3)}`);
-            this.draggingStart = false;
+        const wp = this.transformPointToWorld(this.mouseLocation);
+        if (this.dragTarget) {
+            this.dragTarget.x = wp.x;
+            this.dragTarget.y = wp.y;
         }
-        if (this.draggingEnd) {
-            let wp = this.transformPointToWorld(this.mouseLocation);
-            console.log(`dropping end at x: ${wp.x.toFixed(3)}, y: ${wp.y.toFixed(3)}`);
-            this.end = wp;
-            this.draggingEnd = false;
-        }
+        this.dragTarget = null;
     }
 
     draw() {
@@ -114,11 +106,11 @@ class PolygonCanvas extends CanvasHelper {
 const polygon = [
     { x: 0, y: 0 },
     { x: 1, y: 0 },
-    { x: 1, y: 1 },
-    { x: 2, y: 1 },
+    { x: 1, y: 1.5 },
+    { x: 2, y: 1.5 },
     { x: 2, y: 0 },
     { x: 3.25, y: 0 },
-    { x: 3, y: 3 },
+    { x: 2.75, y: 3 },
     { x: 2, y: 3 },
     { x: 2, y: 2 },
     { x: 1, y: 2 },
@@ -126,10 +118,11 @@ const polygon = [
     { x: 0, y: 3 },
 ];
 
-// const pHelper = new PolygonHelper(polygon);
 const start = { x: 0.5, y: 2.85 };
 const end = { x: 2.05, y: 2.75 };
 
 printToHTML("Done with CanvasHelper: ");
 const canvas = appendCanvas(800, 400);
 const helper = new PolygonCanvas(canvas, polygon, start, end);
+const ph = helper.pHelper;
+console.log("Area = " + ph.signedArea);

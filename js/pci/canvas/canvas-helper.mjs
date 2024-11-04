@@ -256,7 +256,7 @@ export class CanvasHelper {
      *
      * @param {{x:number,y:number}} cp the point on the canvas
      * @param {{x:number,y:number} | undefined} wp the target point in world coordinates
-     * @param {number} [withinPixels=4] how close it needs to be in pixels
+     * @param {number} [withinPixels=4] how close it needs to be in pixels (default = 4)
      * @returns {boolean} true if the point is close
      */
     canvasPtIsNearWorldPt(cp, wp, withinPixels = 4) {
@@ -264,8 +264,8 @@ export class CanvasHelper {
         const cwp = this.transformPointToCanvas(wp);
         const dx = cp.x - cwp.x;
         const dy = cp.y - cwp.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        return (dist < withinPixels);
+        const dist = Math.abs(dx * dx + dy * dy);
+        return (dist < (withinPixels * withinPixels));
     }
 
     /**
