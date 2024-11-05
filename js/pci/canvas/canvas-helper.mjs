@@ -67,31 +67,9 @@ export class CanvasHelper {
         canvas.addEventListener('mouseup', this.mouseUp.bind(this));
     }
 
-
     get mouseLocation() {
         return { x: this.canvasX, y: this.canvasY };
     }
-
-    /**
-     * Calculate the extents of the polygon in world coordinates.
-     *
-     * @returns {{ xmin: number; xmax: number; ymin: number; ymax: number; }|undefined}
-     */
-    // polygonExtents() {
-    //     if (this.polygon == undefined || this.polygon.length < 2)
-    //         return undefined;
-    //     let ret = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
-    //     for (let i = 0; i < this.polygon.length; i++) {
-    //         let x = this.polygon[i].x;
-    //         let y = this.polygon[i].y;
-    //         if (x < ret.xmin) ret.xmin = x;
-    //         if (x > ret.xmax) ret.xmax = x;
-    //         if (y < ret.ymin) ret.ymin = y;
-    //         if (y > ret.ymax) ret.ymax = y;
-
-    //     }
-    //     return ret;
-    // }
 
     /**
      * Context menu is called for a right click in the canvas

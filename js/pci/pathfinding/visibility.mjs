@@ -126,3 +126,4 @@ const canvas = appendCanvas(800, 400);
 const helper = new PolygonCanvas(canvas, polygon, start, end);
 const ph = helper.pHelper;
 console.log("Area = " + ph.signedArea);
+// helper.zoom = 2.0;
