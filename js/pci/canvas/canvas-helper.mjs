@@ -20,12 +20,6 @@ const PIx2 = 6.283185307;
 export class CanvasHelper {
     constructor(canvas) {
 
-        // this.polygon = undefined;
-        // this.start = undefined;
-        // /** @type {{x:number, y:number}|undefined} */
-        // this.end = undefined;
-        // this.concavePoints = undefined;
-
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
 
@@ -35,9 +29,6 @@ export class CanvasHelper {
 
         this.pointSize = 3;
         this.labelOffset = { x: 6, y: 6 };
-
-        this._zoom = 1.0;
-        this._zoomCenter = { x: this.canvas.width / 2.0, y: this.canvas.height / 2.0 };
 
         this.buttons = 0;
         this.button = 0;
@@ -57,7 +48,6 @@ export class CanvasHelper {
         this.offsetY = 0;
         this.contextMenuIsEnabled = false;
 
-
         canvas.addEventListener('contextmenu', this.contextMenu.bind(this));
 
         canvas.addEventListener('mouseenter', this.mouseEnter.bind(this));
@@ -65,7 +55,28 @@ export class CanvasHelper {
         canvas.addEventListener('mousemove', this.mouseMove.bind(this));
         canvas.addEventListener('mousedown', this.mouseDown.bind(this));
         canvas.addEventListener('mouseup', this.mouseUp.bind(this));
+
+        this.scaleFactor = 1.025;
+        canvas.addEventListener('DOMMouseScroll', this.handleScroll.bind(this), false);
+        canvas.addEventListener('mousewheel', this.handleScroll.bind(this), false);
     }
+
+    handleScroll(evt) {
+        var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
+        if (delta) {
+            let mpc1 = this.mouseLocation;
+            let mpw1 = this.transformPointToWorld(mpc1);
+            let f = Math.pow(this.scaleFactor, delta);
+            this.scale.x *= f;
+            this.scale.y *= f;
+            let mpc2 = this.transformPointToCanvas(mpw1);
+            // adjust offset to keep the mouse point stationary on the canvas
+            this.offset.x -= (mpc2.x - mpc1.x);
+            this.offset.y += this.flipY ? (mpc2.y - mpc1.y) : -(mpc2.y - mpc1.y);
+        }
+        this.draw();
+        return evt.preventDefault() && false;
+    };
 
     get mouseLocation() {
         return { x: this.canvasX, y: this.canvasY };
@@ -246,6 +257,19 @@ export class CanvasHelper {
         return (dist < (withinPixels * withinPixels));
     }
 
+    resetScaleAndOffset(extents) {
+        let so = {
+            scale: { x: 1.0, y: 1.0 },
+            offset: { x: 0.0, y: 0.0 }
+        };
+        if (extents) {
+            so = this.calcScaleAndOffset(extents);
+        }
+        this.scale = so.scale;
+        this.offset = so.offset;
+        this.draw();
+    }
+
     /**
      * 
      */
@@ -286,15 +310,15 @@ export class CanvasHelper {
         _context.restore();
     };
 
-    set zoom(factor) {
-        this._zoom = factor;
-        this.context.scale(this._zoom, this._zoom);
-    }
+    // set zoom(factor) {
+    //     this._zoom = factor;
+    //     this.context.scale(this._zoom, this._zoom);
+    // }
 
-    set zoomCenter(centerPt) {
-        this._translate = { x: centerPt.x, y: centerPt.y };
-        this.context.translate(-centerPt.x, -centerPt.y);
-    }
+    // set zoomCenter(centerPt) {
+    //     this._translate = { x: centerPt.x, y: centerPt.y };
+    //     this.context.translate(-centerPt.x, -centerPt.y);
+    // }
 
     get canvasCenterPt() {
         return { x: this.canvas.width / 2, y: this.canvas.height / 2 };

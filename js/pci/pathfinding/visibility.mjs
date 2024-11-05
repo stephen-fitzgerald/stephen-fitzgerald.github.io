@@ -13,6 +13,7 @@ class PolygonCanvas extends CanvasHelper {
         this.start = start;
         this.end = end;
         this.pHelper = new PolygonHelper(this.polygon);
+        this.firstDraw = true;
         this.draw();
     }
 
@@ -34,7 +35,7 @@ class PolygonCanvas extends CanvasHelper {
                     break;
                 }
             }
-        }
+        } 
     }
 
     doMouseMove(event) {
@@ -55,12 +56,19 @@ class PolygonCanvas extends CanvasHelper {
         this.dragTarget = null;
     }
 
+    resetScaleAndOffset(extents){
+        if(extents==undefined && this.pHelper){
+            extents = this.pHelper.extents;
+        }
+        super.resetScaleAndOffset(extents)
+    }
+
     draw() {
 
-        let extents = this.pHelper.extents;
-        let so = this.calcScaleAndOffset(extents);
-        this.scale = so.scale;
-        this.offset = so.offset;
+        if (this.firstDraw) {
+            this.firstDraw = false;
+            this.resetScaleAndOffset(this.pHelper.extents);
+        }
 
         this.clear();
         this.context.save();
@@ -126,4 +134,7 @@ const canvas = appendCanvas(800, 400);
 const helper = new PolygonCanvas(canvas, polygon, start, end);
 const ph = helper.pHelper;
 console.log("Area = " + ph.signedArea);
-// helper.zoom = 2.0;
+const resetBtn = document.querySelector('#resetBtn');
+resetBtn?.addEventListener('click',()=>{
+    helper.resetScaleAndOffset();
+});
