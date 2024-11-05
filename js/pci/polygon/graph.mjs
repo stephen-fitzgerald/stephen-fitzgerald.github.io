@@ -31,11 +31,20 @@ export class Graph {
     /** @typedef {{x:number, y:number}} Data */
     /** @typedef {{ data: Data, f: number, g: number, h: number, parent: Node | null, }} -Node*/
     /** @typedef {Map<Node,Set<Node>>} AdjacencyList */
+    /** @typedef {Map<Object,Node>} NodeList */
 
+
+    /**
+     * Creates an instance of a Graph from an object edge list, which
+     * is an array of edges.  Each edge is a 2-item array of data objects,
+     * representing a connection between the pair of objects.
+     * @constructor
+     * @param {object} [edges][][] an N x 2 array of data objects
+     */
     constructor(edges) {
-        /** @type {AdjacencyList} - Map to find neighbors of a node */
+        /** @type {Map<Node, Set<Node>>} - Map to find neighbors of a node */
         this.adjacencyList = new Map();
-        /** @type {Map<Object,Node>} Map to find the node that contains an particular data object */
+        /** @type {Map<Object, Node>} Map to find the node that contains an particular data object */
         this.nodeMap = new Map();
 
         if (edges != undefined) {
@@ -50,7 +59,6 @@ export class Graph {
     /**
      * Add a new node to the graph.  
      * Fails silently if the node is already in the graph.
-     *
      * @param {Node} node
      */
     addNode(node) {
@@ -64,7 +72,6 @@ export class Graph {
 
     /**
      * Add an edge by adding two nodes to each others neighbors collection
-     *
      * @param {Node} node1
      * @param {Node} node2
      */
@@ -79,7 +86,6 @@ export class Graph {
 
     /**
      * Get an array of neighbors of a node in this graph
-     *
      * @param {Node} node
      * @returns {Node[]} a (possibly empty) array of neighbors
      */
@@ -91,7 +97,6 @@ export class Graph {
 
     /**
      * Returns true if node2 is a neighbor of node1.
-     *
      * @param {Node} node1
      * @param {Node} node2
      * @returns {boolean}
@@ -124,7 +129,6 @@ export class Graph {
      * Remove a node from this graph by removing all references to
      * it from other node's neighbor lists, and then deleting it from 
      * the adjacency list.
-     *
      * @param {Node} nodeToRemove
      * @returns {boolean} true if the node was found and removed
      */
@@ -149,7 +153,6 @@ export class Graph {
 
     /**
      * Create a new node for a data object, if required, and add it to the graph.
-     *
      * @param { Data } data reference to an {x,y} point object
      * @returns { Node } reference for the newly created node
      * */
@@ -163,36 +166,13 @@ export class Graph {
     }
 
     /**
-     * Find an existing node for the given data,
-     * or undefined if none exists
-     *
+     * Find an existing node for the given data, or undefined if none exists
      * @param {Data} data     
      * @returns { Node | undefined }
      */
     getNodeFor(data) {
         return this.nodeMap.get(data);
     }
-
-
-    /**
-     * Create a new Graph from an object edge list, which
-     * is an array of edges.  Each edge is a 2-item array of data objects,
-     * representing a connection between the pair of objects.
-     * 
-     * @static
-     * @param {Array<Array<any>>} edges
-     * @returns {Graph}
-     */
-    static fromObjectEdgeList(edges) {
-        let theGraph = new Graph();
-        for (let i = 0; i < edges.length; i++) {
-            const node1 = theGraph.addNodeFor(edges[i][0]);
-            const node2 = theGraph.addNodeFor(edges[i][1]);
-            theGraph.addEdge(node1, node2);
-        }
-        return theGraph;
-    }
-
 
     /**
      * Implements the A* pathfinding algorithm.
