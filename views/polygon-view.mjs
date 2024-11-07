@@ -39,11 +39,11 @@ export class PolygonView extends AbstractView {
      */
     async buildHTML() {
         this.html = html`
-        <div style="height:100%; width:100%; display:flex; flex-direction:column;">
+        <div style='width:100%; height:100%; display:flex; flex-flow:column'>
             <h1> Here's a polygon, shown using a CanvasHelper.</h1>
-            <button id="reset-button">Reset</button>
-            <div style="flex: 1; display:flex; flex-direction:column;" id="polygon-div" >
-                <canvas style="flex: 1;" id='polygon-canvas'></canvas>
+            <button style="margin:20px;" id="reset-button">Reset</button>
+            <div style="display: flex; flex-direction:column; flex:1" id="polygon-div" >
+                <canvas style='width:100%; height:100%' id='polygon-canvas'></canvas>
             </div>
         </div>
         `;
@@ -61,26 +61,24 @@ export class PolygonView extends AbstractView {
         const canvasDiv = document.querySelector('#polygon-div');
         if (!canvasDiv) throw new Error("Canvas parent div not found.");
 
-        this.resize();
-
         this.polygonCanvas = new PolygonCanvas(this.canvas, this.polygon, this.start, this.end);
         const ph = this.polygonCanvas.pHelper;
-        console.log("Area = " + ph.signedArea);
+
         const resetBtn = document.querySelector('#reset-button');
         resetBtn?.addEventListener('click', () => {
-            if( this.polygonCanvas == undefined ) throw new Error("No Polygon Canvas");
+            if (this.polygonCanvas == undefined) throw new Error("No Polygon Canvas");
             this.polygonCanvas.resetScaleAndOffset();
         });
 
         this.resizeObserver = new ResizeObserver(entries => {
             this.resize();
-            // for (let entry of entries) {
-            //     this.resize(entry.contentRect);
-            //     console.log("resizing");
-            // }
         });
-
         if (canvasDiv && this.resizeObserver) this.resizeObserver.observe(canvasDiv);
+
+        this.resize();
+        this.polygonCanvas.resetScaleAndOffset();
+
+        console.log("Area = " + ph.signedArea);
 
     }
 
@@ -88,28 +86,13 @@ export class PolygonView extends AbstractView {
     }
 
     /**
-  * Resize the canvas to a rectangle or the parent element.
-  * Move agents so all are still in the canvas
-  * @param {object} [rect] 
-  * @param {number} rect.width 
-  * @param {number} rect.height 
-  */
-    resize(rect) {
-        let parent;
-
-        if (this.canvas == undefined) throw new Error("No canvas.");
-        parent = this.canvas.parentNode;
-
-        if (parent instanceof HTMLDivElement)
-            rect = rect || parent.getBoundingClientRect();
-
-        if (rect == undefined) {
-            throw new Error("No parent rectangle to resize canvas");
-        }
-
-        this.canvas.width = rect.width;
-        this.canvas.height = rect.height;
-        if( this.polygonCanvas )
+     * Resize the canvas to match its on-screen size
+     */
+    resize() {
+        if (!this.canvas ) return;
+        this.canvas.width = this.canvas.offsetWidth;
+        this.canvas.height = this.canvas.offsetHeight;
+        if (this.polygonCanvas)
             this.polygonCanvas.draw();
     }
 
