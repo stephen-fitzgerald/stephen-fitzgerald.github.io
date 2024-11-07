@@ -6,7 +6,7 @@ import { CanvasHelper } from "../canvas/canvas-helper.mjs";
 import { PolygonHelper } from "../polygon/polygon-helper.mjs";
 import { Graph } from "../polygon/graph.mjs";
 
-class PolygonCanvas extends CanvasHelper {
+export class PolygonCanvas extends CanvasHelper {
     constructor(canvas, polygon, start, end) {
         super(canvas);
         this.polygon = polygon;
@@ -35,7 +35,7 @@ class PolygonCanvas extends CanvasHelper {
                     break;
                 }
             }
-        } 
+        }
     }
 
     doMouseMove(event) {
@@ -56,11 +56,11 @@ class PolygonCanvas extends CanvasHelper {
         this.dragTarget = null;
     }
 
-    resetScaleAndOffset(extents){
-        if(extents==undefined && this.pHelper){
+    resetScaleAndOffset(extents) {
+        if (extents == undefined && this.pHelper) {
             extents = this.pHelper.extents;
         }
-        super.resetScaleAndOffset(extents)
+        super.resetScaleAndOffset(extents);
     }
 
     draw() {
@@ -109,32 +109,34 @@ class PolygonCanvas extends CanvasHelper {
     }
 }
 
-// Example usage
-// Define polygon as an array of points
-const polygon = [
-    { x: 0, y: 0 },
-    { x: 1, y: 0 },
-    { x: 1, y: 1.5 },
-    { x: 2, y: 1.5 },
-    { x: 2, y: 0 },
-    { x: 3.25, y: 0 },
-    { x: 2.75, y: 3 },
-    { x: 2, y: 3 },
-    { x: 2, y: 2 },
-    { x: 1, y: 2 },
-    { x: 1, y: 3 },
-    { x: 0, y: 3 },
-];
+function main() {
+    // Example usage
+    // Define polygon as an array of points
+    const polygon = [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 1, y: 1.5 },
+        { x: 2, y: 1.5 },
+        { x: 2, y: 0 },
+        { x: 3.25, y: 0 },
+        { x: 2.75, y: 3 },
+        { x: 2, y: 3 },
+        { x: 2, y: 2 },
+        { x: 1, y: 2 },
+        { x: 1, y: 3 },
+        { x: 0, y: 3 },
+    ];
 
-const start = { x: 0.5, y: 2.85 };
-const end = { x: 2.05, y: 2.75 };
+    const start = { x: 0.5, y: 2.85 };
+    const end = { x: 2.05, y: 2.75 };
 
-printToHTML("Done with CanvasHelper: ");
-const canvas = appendCanvas(800, 400);
-const helper = new PolygonCanvas(canvas, polygon, start, end);
-const ph = helper.pHelper;
-console.log("Area = " + ph.signedArea);
-const resetBtn = document.querySelector('#resetBtn');
-resetBtn?.addEventListener('click',()=>{
-    helper.resetScaleAndOffset();
-});
+    printToHTML("Done with CanvasHelper: ");
+    const canvas = appendCanvas(800, 400);
+    const helper = new PolygonCanvas(canvas, polygon, start, end);
+    const ph = helper.pHelper;
+    console.log("Area = " + ph.signedArea);
+    const resetBtn = document.querySelector('#resetBtn');
+    resetBtn?.addEventListener('click', () => {
+        helper.resetScaleAndOffset();
+    });
+}

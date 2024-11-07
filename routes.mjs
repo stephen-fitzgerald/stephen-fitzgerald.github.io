@@ -14,6 +14,7 @@ import { MaterialsListView } from "./views/materials-list-view.mjs";
 import { MaterialsCreateView } from "./views/materials-create-view.mjs";
 import { StaticView } from "./views/static-view.mjs";
 import { UuidView } from "./views/uuid-view.mjs";
+import { PolygonView } from "./views/polygon-view.mjs";
 
 // these routes never get re-initialized
 const staticRoutes = {
@@ -37,6 +38,7 @@ const staticRoutes = {
   "/3d-glass":          new GlassView({ title: "Stratus LPT:3D Glass Configurator", path: "/views/glass-view.html" }),
 
   "/map":               new MapView({ title: "Stratus LPT: A Map!" }),
+  "/polygon":           new PolygonView({ title: "Stratus LPT: Polygon" }),
 
   Error404:             new StaticView({ title: "Stratus LPT: File Not Found", path: "/views/404.html" }),
 };
