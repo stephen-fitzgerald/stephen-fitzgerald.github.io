@@ -3,6 +3,7 @@ Deploy:  git push github-pages main
 
 Development Repo: git push origin main
 
+Getting the latest code:
 
 Case 1: Don’t care about local changes
 
@@ -43,3 +44,10 @@ Case 2: Care about local changes
         git commit -m ‘Fix conflicts’
         git pull
         will report something like: Already up-to-date.
+
+
+==========================================================
+Adding a new remote repo:
+
+sfitzgerald@Stephens-Mac-mini-2 lpt-spa-vjs % git remote add github-pages https://github.com/stephen-fitzgerald/stephen-fitzgerald.github.io.git
+sfitzgerald@Stephens-Mac-mini-2 lpt-spa-vjs % git remote -v
